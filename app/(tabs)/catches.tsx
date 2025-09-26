@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function HomeScreen() {
+export default function CatchesScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🏠 Home</Text>
-      <Text style={styles.subtitle}> Fishing app!</Text>
+      <Text style={styles.title}>🎣 My Catches</Text>
+      <Text style={styles.subtitle}>Fish stuff</Text>
     </View>
   );
 }
