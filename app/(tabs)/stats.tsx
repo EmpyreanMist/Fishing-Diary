@@ -1,3 +1,4 @@
+import { StatsAchievements } from "@/components/stats/StatsAchievements";
 import { StatsGrid } from "@/components/stats/StatsGrid";
 import { StatsLures } from "@/components/stats/StatsLures";
 import { StatsProgress } from "@/components/stats/StatsProgress";
@@ -22,6 +23,7 @@ export default function StatsScreen() {
           <StatsSpeciesBreakdown />
           <StatsLures />
           <StatsTopLocations />
+          <StatsAchievements />
         </View>
       </ScrollView>
     </SafeAreaView>
