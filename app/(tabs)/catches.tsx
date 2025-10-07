@@ -1,30 +1,94 @@
-import { StyleSheet, Text, View } from "react-native";
+import ActionButton from "@/components/ui/ActionButton";
+import { LinearGradient } from "expo-linear-gradient";
+import { Fish } from "lucide-react-native";
+import { ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CatchesScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🎣 My Catches</Text>
-      <Text style={styles.subtitle}>Fish stuff</Text>
+    <View style={styles.screen}>
+      {/* Gör statusbaren ljus text och genomskinlig så gradienten syns */}
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
+
+      <LinearGradient
+        colors={["#2E8B57", "#4CAF50"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[
+          styles.topbar,
+          { paddingTop: insets.top + 20 },
+        ]}
+      >
+        <View style={styles.headerRow}>
+          <View style={styles.titleRow}>
+            <Fish size={28} color="white" />
+            <Text style={styles.title}>My Catches</Text>
+          </View>
+
+          <ActionButton
+            label="Add Catch"
+            icon="add"
+            color="transparent"
+            size="md"
+            onPress={() => {}}
+          />
+        </View>
+
+        <Text style={styles.subtitleTop}>8 catches logged</Text>
+      </LinearGradient>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <View style={{ height: 500 }} />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#0A121A",
+  },
+  topbar: {
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    overflow: "hidden",
+  },
+  headerRow: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    justifyContent: "space-between",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 8,
+    color: "white",
   },
-  subtitle: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
+  subtitleTop: {
+    marginTop: 6,
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 14,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
   },
 });
