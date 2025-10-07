@@ -17,7 +17,7 @@ export default function CatchesScreen() {
       />
 
       <LinearGradient
-        colors={["#2E8B57", "#4CAF50"]}
+        colors={["#2F7D71", "#2E6F83"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[
@@ -59,8 +59,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0A121A",
   },
   topbar: {
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
     paddingHorizontal: 20,
     paddingBottom: 16,
     overflow: "hidden",
