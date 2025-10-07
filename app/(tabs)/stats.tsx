@@ -2,6 +2,7 @@ import { StatsGrid } from "@/components/stats/StatsGrid";
 import { StatsLures } from "@/components/stats/StatsLures";
 import { StatsProgress } from "@/components/stats/StatsProgress";
 import { StatsSpeciesBreakdown } from "@/components/stats/StatsSpeciesBreakdown";
+import { StatsTopLocations } from "@/components/stats/StatsTopLocations";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatsHeader } from "../../components/stats/StatsHeader";
@@ -20,6 +21,7 @@ export default function StatsScreen() {
           <StatsProgress />
           <StatsSpeciesBreakdown />
           <StatsLures />
+          <StatsTopLocations />
         </View>
       </ScrollView>
     </SafeAreaView>
