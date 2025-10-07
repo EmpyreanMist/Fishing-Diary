@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StatsCard } from "@/components/ui/StatsCard";
+import { StyleSheet, View } from "react-native";
 
 export default function statsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Super cool stats</Text>
-      <Text style={styles.subtitle}>statistics</Text>
+      <StatsCard />
     </View>
   );
 }
@@ -12,7 +12,7 @@ export default function statsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#0A121A",
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
