@@ -1,30 +1,62 @@
-import { StatsCard } from "@/components/ui/StatsCard";
-import { StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function statsScreen() {
+export default function StatsScreen() {
   return (
-    <View style={styles.container}>
-      <StatsCard />
-    </View>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={["#2F7D71", "#2E6F83"]}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.header}
+        >
+          <View style={styles.headerContent}>
+            <Ionicons name="stats-chart" size={26} color="#fff" />
+            <Text style={styles.headerTitle}>Statistics</Text>
+          </View>
+
+          <Text style={styles.headerSubtitle}>
+            Track your fishing progress and achievements
+          </Text>
+        </LinearGradient>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#0A121A",
+  },
   container: {
     flex: 1,
     backgroundColor: "#0A121A",
+  },
+  header: {
+    width: "100%",
+    height: 140,
+  },
+  headerContent: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    height: "50%",
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 24,
+  headerTitle: {
+    color: "#fff",
     fontWeight: "bold",
-    marginBottom: 8,
+    fontSize: 22,
+    marginLeft: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
+  headerSubtitle: {
+    color: "#fff",
+    opacity: 0.9,
+    fontSize: 18,
+    paddingHorizontal: 20,
+    marginTop: 4,
   },
 });
