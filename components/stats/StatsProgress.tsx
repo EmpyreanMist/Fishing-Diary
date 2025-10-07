@@ -17,9 +17,8 @@ const MAX_VALUE = 18; // Maximum value for scaling the bars
 export function StatsProgress() {
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <Ionicons name="trending-up-outline" size={18} color="#5ACCF2" />
+        <Ionicons name="trending-up-outline" size={20} color="#5ACCF2" />
         <Text style={styles.title}>Monthly Progress</Text>
       </View>
 
@@ -27,7 +26,6 @@ export function StatsProgress() {
         Your fishing activity over the past 6 months
       </Text>
 
-      {/* Progress List */}
       {progressData.map((item) => {
         const progressWidth = (item.progress / MAX_VALUE) * 100;
 
@@ -35,7 +33,6 @@ export function StatsProgress() {
           <View key={item.month} style={styles.row}>
             <Text style={styles.month}>{item.month}</Text>
 
-            {/* Progress bar */}
             <View style={styles.progressContainer}>
               <View
                 style={[styles.progressFill, { width: `${progressWidth}%` }]}

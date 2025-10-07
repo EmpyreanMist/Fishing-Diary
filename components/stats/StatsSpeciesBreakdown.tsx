@@ -52,16 +52,18 @@ export function StatsSpeciesBreakdown() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#121B22",
+    backgroundColor: "#121B22", // ✅ rätt färg (ingen blandning)
     borderRadius: 12,
     paddingVertical: 18,
     paddingHorizontal: 16,
     marginHorizontal: 16,
     marginTop: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+
+    // 💡 fixar färgblandningsproblem:
+    shadowColor: "transparent",
+    shadowOpacity: 0,
+    elevation: 0,
+    overflow: "hidden",
   },
   header: {
     flexDirection: "row",

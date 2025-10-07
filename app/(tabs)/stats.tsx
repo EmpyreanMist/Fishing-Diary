@@ -1,4 +1,5 @@
 import { StatsGrid } from "@/components/stats/StatsGrid";
+import { StatsLures } from "@/components/stats/StatsLures";
 import { StatsProgress } from "@/components/stats/StatsProgress";
 import { StatsSpeciesBreakdown } from "@/components/stats/StatsSpeciesBreakdown";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -18,6 +19,7 @@ export default function StatsScreen() {
           <StatsGrid />
           <StatsProgress />
           <StatsSpeciesBreakdown />
+          <StatsLures />
         </View>
       </ScrollView>
     </SafeAreaView>
