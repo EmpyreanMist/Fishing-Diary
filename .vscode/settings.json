@@ -1,7 +1,30 @@
 {
+  // 🧹 Auto-fixar och organiserar på save
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+
+  // 💡 Stäng av TypeScript-diagnoser från node_modules
+  "typescript.validate.enable": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.exclude": ["**/node_modules"],
+
+  // 🚫 Undvik att VS Code bevakar/söker i node_modules
+  "files.watcherExclude": {
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/node_modules": true
+  },
+
+  // 🧠 Förbättrad IntelliSense för React Native + Tailwind + Expo
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "javascript.suggestionActions.enabled": false
 }
