@@ -20,13 +20,13 @@ export default function HomeScreen() {
           size="md"
           onPress={() => console.log("Add trip pressed")}
         />
-        {/*         <ActionButton
+        <ActionButton
           label="Add Trip"
           color="black"
           icon="location-outline"
           size="md"
           onPress={() => console.log("Add trip pressed")}
-        /> */}
+        />
       </View>
 
       <Text style={styles.subtitle}> Fishing app!</Text>
