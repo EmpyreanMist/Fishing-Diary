@@ -10,7 +10,7 @@ type Props = {
 export function StatsCard({ icon, value, label }: Props) {
   return (
     <View style={styles.card}>
-      <Ionicons name={icon} size={28} color="#4FD1D9" />
+      <Ionicons name={icon} size={28} color="#5ACCF2" />
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
     </View>

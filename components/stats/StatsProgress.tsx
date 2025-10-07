@@ -19,7 +19,7 @@ export function StatsProgress() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Ionicons name="trending-up-outline" size={18} color="#4FD1D9" />
+        <Ionicons name="trending-up-outline" size={18} color="#5ACCF2" />
         <Text style={styles.title}>Monthly Progress</Text>
       </View>
 
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: "100%",
-    backgroundColor: "#4FD1D9",
+    backgroundColor: "#5ACCF2",
     borderRadius: 4,
   },
   value: {

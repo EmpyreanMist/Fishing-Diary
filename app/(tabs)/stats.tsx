@@ -1,17 +1,25 @@
 import { StatsGrid } from "@/components/stats/StatsGrid";
 import { StatsProgress } from "@/components/stats/StatsProgress";
-import { StyleSheet, View } from "react-native";
+import { StatsSpeciesBreakdown } from "@/components/stats/StatsSpeciesBreakdown";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatsHeader } from "../../components/stats/StatsHeader";
 
 export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <View style={styles.container}>
-        <StatsHeader />
-        <StatsGrid />
-        <StatsProgress />
-      </View>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          <StatsHeader />
+          <StatsGrid />
+          <StatsProgress />
+          <StatsSpeciesBreakdown />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -20,6 +28,12 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0A121A",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 40,
   },
   container: {
     flex: 1,
