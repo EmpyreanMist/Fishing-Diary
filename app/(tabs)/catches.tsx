@@ -2,9 +2,17 @@ import ActionButton from "@/components/ui/ActionButton";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Fish, Search } from "lucide-react-native";
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CatchesScreen() {
@@ -103,6 +111,28 @@ export default function CatchesScreen() {
           </View>
         </Card>
 
+        <View style={styles.statsRow}>
+          <View style={styles.statCard} accessibilityRole="summary">
+            <Text style={styles.statValue}>8</Text>
+            <Text style={styles.statLabel}>Total</Text>
+          </View>
+
+          <View
+            style={[styles.statCard, styles.statHighlighted]}
+            accessibilityRole="summary"
+          >
+            <Text style={[styles.statValue, styles.statHighlightedValue]}>
+              8.1 kg
+            </Text>
+            <Text style={styles.statLabel}>Biggest</Text>
+          </View>
+
+          <View style={styles.statCard} accessibilityRole="summary">
+            <Text style={styles.statValue}>3</Text>
+            <Text style={styles.statLabel}>Species</Text>
+          </View>
+        </View>
+
         {/* Placeholder för kommande steg (statistikrutor + lista) */}
         <View style={{ height: 24 }} />
       </ScrollView>
@@ -185,5 +215,36 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     marginLeft: 8,
     fontSize: 12,
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 16,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#1F2937",
+    backgroundColor: "#121B22",
+  },
+  statHighlighted: {
+    backgroundColor: "#121B22",
+  },
+  statValue: {
+    color: "#E5E7EB",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  statHighlightedValue: {
+    color: "#5ACCF2", 
+  },
+  statLabel: {
+    color: "#9CA3AF",
+    fontSize: 12,
+    marginTop: 4,
   },
 });
