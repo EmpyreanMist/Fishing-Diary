@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   catchCard: {
-    backgroundColor: "#0D141B",
+    backgroundColor: "#121B22",
     borderColor: "#1F2937",
     borderWidth: 1,
     borderRadius: 16,
