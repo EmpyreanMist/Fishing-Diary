@@ -7,7 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   CalendarDays,
   Fish,
-  FishIcon,
+  Scale,
   MapPin,
   Ruler,
   Search,
@@ -80,7 +80,7 @@ function CatchRow({ item }: { item: CatchItem }) {
 
           <View style={styles.inlineRow}>
             <View style={styles.inlineGroup}>
-              <Fish size={14} color="#9CA3AF" />
+              <Scale size={14} color="#9CA3AF" />
               <Text style={styles.inlineText}>{item.weight}</Text>
             </View>
             <View style={styles.inlineGroup}>
