@@ -4,8 +4,16 @@ import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 
 import { LinearGradient } from "expo-linear-gradient";
-import { Fish, Search } from "lucide-react-native";
 import {
+  CalendarDays,
+  Fish,
+  FishIcon,
+  MapPin,
+  Ruler,
+  Search,
+} from "lucide-react-native";
+import {
+  FlatList,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -14,6 +22,88 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+type CatchItem = {
+  id: string;
+  species: string;
+  weight: string;
+  length: string;
+  lake: string;
+  date: string; // visningsformat
+};
+
+const DUMMY: CatchItem[] = [
+  {
+    id: "1",
+    species: "Pike",
+    weight: "2.3 kg",
+    length: "65 cm",
+    lake: "Lake Superior",
+    date: "2024-10-01",
+  },
+  {
+    id: "2",
+    species: "Perch",
+    weight: "0.8 kg",
+    length: "28 cm",
+    lake: "Lake Michigan",
+    date: "2024-10-08",
+  },
+  {
+    id: "3",
+    species: "Pike",
+    weight: "1.9 kg",
+    length: "58 cm",
+    lake: "Lake Erie",
+    date: "2024-10-05",
+  },
+  {
+    id: "4",
+    species: "Trout",
+    weight: "1.2 kg",
+    length: "45 cm",
+    lake: "Lake Huron",
+    date: "2024-10-03",
+  },
+];
+
+function CatchRow({ item }: { item: CatchItem }) {
+  return (
+    <View style={styles.catchCard}>
+      {/* Vänster: ikon + detaljer */}
+      <View style={styles.catchLeft}>
+        <View style={styles.fishIcon}>
+          <Fish size={18} color="#5ACCF2" />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.catchSpecies}>{item.species}</Text>
+
+          <View style={styles.inlineRow}>
+            <View style={styles.inlineGroup}>
+              <Fish size={14} color="#9CA3AF" />
+              <Text style={styles.inlineText}>{item.weight}</Text>
+            </View>
+            <View style={styles.inlineGroup}>
+              <Ruler size={14} color="#9CA3AF" />
+              <Text style={styles.inlineText}>{item.length}</Text>
+            </View>
+          </View>
+
+          <View style={[styles.inlineGroup, { marginTop: 4 }]}>
+            <MapPin size={14} color="#9CA3AF" />
+            <Text style={styles.locationText}>{item.lake}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Höger: datum-badge */}
+      <View style={styles.dateBadge}>
+        <CalendarDays size={12} color="#9CA3AF" />
+        <Text style={styles.dateText}>{item.date}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default function CatchesScreen() {
   const insets = useSafeAreaInsets();
@@ -133,7 +223,16 @@ export default function CatchesScreen() {
           </View>
         </View>
 
-        {/* Placeholder för kommande steg (statistikrutor + lista) */}
+        <Text style={styles.sectionTitle}>All Catches</Text>
+        <FlatList
+          data={DUMMY}
+          keyExtractor={(i) => i.id}
+          renderItem={({ item }) => <CatchRow item={item} />}
+          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+          scrollEnabled={false}
+          contentContainerStyle={{ paddingTop: 4 }}
+        />
+
         <View style={{ height: 24 }} />
       </ScrollView>
     </View>
@@ -240,11 +339,79 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   statHighlightedValue: {
-    color: "#5ACCF2", 
+    color: "#5ACCF2",
   },
   statLabel: {
     color: "#9CA3AF",
     fontSize: 12,
     marginTop: 4,
+  },
+  sectionTitle: {
+    color: "#E5E7EB",
+    fontSize: 18,
+    fontWeight: "700",
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  catchCard: {
+    backgroundColor: "#0D141B",
+    borderColor: "#1F2937",
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  catchLeft: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  },
+  fishIcon: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  catchSpecies: {
+    color: "#E5E7EB",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  inlineRow: {
+    flexDirection: "row",
+    gap: 16,
+    marginTop: 2,
+  },
+  inlineGroup: {
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+  },
+  inlineText: {
+    color: "#D1D5DB",
+    fontSize: 13,
+  },
+  locationText: {
+    color: "#9CA3AF",
+    fontSize: 12,
+  },
+  dateBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "#1F2937",
+    backgroundColor: "#0D141B",
+    alignSelf: "flex-start",
+  },
+  dateText: {
+    color: "#D1D5DB",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
