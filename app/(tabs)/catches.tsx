@@ -47,7 +47,7 @@ const DUMMY: CatchItem[] = [
     weight: "0.8 kg",
     length: "28 cm",
     lake: "Lake Michigan",
-    date: "2024-10-08",
+    date: "2024-10-03",
   },
   {
     id: "3",
@@ -63,7 +63,7 @@ const DUMMY: CatchItem[] = [
     weight: "1.2 kg",
     length: "45 cm",
     lake: "Lake Huron",
-    date: "2024-10-03",
+    date: "2024-10-08",
   },
 ];
 
@@ -138,7 +138,7 @@ export default function CatchesScreen() {
           />
         </View>
 
-        <Text style={styles.subtitleTop}>8 catches logged</Text>
+        <Text style={styles.subtitleTop}>4 catches logged</Text>
       </LinearGradient>
 
       <ScrollView
@@ -203,7 +203,7 @@ export default function CatchesScreen() {
 
         <View style={styles.statsRow}>
           <View style={styles.statCard} accessibilityRole="summary">
-            <Text style={styles.statValue}>8</Text>
+            <Text style={styles.statValue}>4</Text>
             <Text style={styles.statLabel}>Total</Text>
           </View>
 
@@ -212,7 +212,7 @@ export default function CatchesScreen() {
             accessibilityRole="summary"
           >
             <Text style={[styles.statValue, styles.statHighlightedValue]}>
-              8.1 kg
+              2.3 kg
             </Text>
             <Text style={styles.statLabel}>Biggest</Text>
           </View>
