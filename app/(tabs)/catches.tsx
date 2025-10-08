@@ -7,9 +7,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   CalendarDays,
   Fish,
-  Scale,
   MapPin,
   Ruler,
+  Scale,
   Search,
 } from "lucide-react-native";
 import {
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: "#1F2937",
-    backgroundColor: "#0D141B",
+    backgroundColor: "#0A121A",
     alignSelf: "flex-start",
   },
   dateText: {
