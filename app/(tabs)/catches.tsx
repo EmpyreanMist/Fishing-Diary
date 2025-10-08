@@ -170,7 +170,7 @@ export default function CatchesScreen() {
                 }}
               >
                 <Icon
-                  as={require("lucide-react-native").Search}
+                  as={Search}
                   color="#9CA3AF"
                   style={{ marginLeft: 12 }}
                 />
