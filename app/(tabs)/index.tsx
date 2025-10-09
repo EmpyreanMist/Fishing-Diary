@@ -4,6 +4,14 @@ import { StyleSheet, Text, View } from "react-native";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Supabase URL:</Text>
+        <Text>{process.env.EXPO_PUBLIC_SUPABASE_URL || "❌ Not loaded"}</Text>
+        <Text>Supabase Key:</Text>
+        <Text>
+          {process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ? "✅ Exists" : "❌ Not found"}
+        </Text>
+      </View>
       <Text style={styles.title}>🏠 Home</Text>
       <View style={styles.buttonContainer}>
         <ActionButton
