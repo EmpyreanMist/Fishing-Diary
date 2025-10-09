@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#5ACCF2",
+    color: "#F5F5F5",
     marginTop: 8,
   },
   label: {
