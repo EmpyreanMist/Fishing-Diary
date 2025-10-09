@@ -1,64 +1,64 @@
-import CatchForm from '@/components/addCatch/CatchForm';
-import { StyleSheet } from 'react-native';
-
-import ActionButton from '@/components/ui/ActionButton';
-import { Text, View } from '@gluestack-ui/themed';
+import CatchForm from "@/components/addCatch/CatchForm";
+import { StyleSheet, Image, useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, View } from "@gluestack-ui/themed";
+import ActionButton from "@/components/ui/ActionButton";
 
 export default function HomeScreen() {
+  const { width } = useWindowDimensions();
+
   return (
-    <View style={styles.container}>
-      <CatchForm stmt={true} />
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <View style={styles.container}>
+        <Image
+          style={[styles.image, { width, height: width * 0.6 }]}
+          source={require("../../assets/images/fishing.jpg")}
+          resizeMode="cover"
+        />
+        <View style={styles.overlay}>
+          <Text style={styles.title}>Fishing Diary</Text>
+          <Text style={styles.subtitle}>Your digital angler's log</Text>
+        </View>
 
-      <Text style={styles.title}>🏠 Home</Text>
-      <View style={styles.buttonContainer}>
-        <ActionButton
-          label="Add Catch"
-          color="green"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log('Add Catch pressed')}
-        />
-        <ActionButton
-          label="Add Trip"
-          color="blue"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log('Add trip pressed')}
-        />
-        <ActionButton
-          label="Add Trip"
-          color="black"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log('Add trip pressed')}
-        />
+        <View style={styles.topButtons}>
+          <ActionButton label="+ Add Catch" />
+          <ActionButton label="+ Add Trip" />
+        </View>
       </View>
-
-      <Text style={styles.subtitle}> Fishing app!</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    paddingTop: '20%',
+    backgroundColor: "#0A121A",
   },
-  buttonContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 5,
+  container: {
+    backgroundColor: "#0A121A",
+    alignItems: "center",
+  },
+  image: {
+    alignSelf: "stretch",
+  },
+  overlay: {
+    position: "absolute",
+    top: "40%",
+    left: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#F5F5F5",
   },
   subtitle: {
-    fontSize: 16,
-    color: 'gray',
-    textAlign: 'center',
+    fontSize: 18,
+    color: "#F5F5F5",
+    marginTop: 4,
+  },
+  topButtons: {
+    flexDirection: "row",
+    gap: 12,
+    bottom: 12,
   },
 });
