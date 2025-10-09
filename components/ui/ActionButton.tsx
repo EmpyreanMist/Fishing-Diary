@@ -8,7 +8,7 @@ import type { ComponentProps } from "react";
 type Props = {
   label: string;
   icon?: ComponentProps<typeof Ionicons>["name"];
-  color?: "blue" | "green" | "black";
+  color?: "blue" | "green" | "black" | "transparent";
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
 };
@@ -25,6 +25,7 @@ export default function ActionButton({
     blue: ["#0072FF", "#00C6FF"],
     green: ["#2E8B57", "#4CAF50"],
     black: ["#1A1A1A", "#1A1A1A"],
+    transparent: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.15)"],
   };
 
   // 📏 Sizes

@@ -23,6 +23,37 @@ const Text = React.forwardRef<React.ComponentRef<typeof RNText>, ITextProps>(
     },
     ref
   ) {
+    const resolvedSize =
+      typeof size === 'string' &&
+      ([
+        'xs',
+        'sm',
+        'md',
+        'lg',
+        'xl',
+        '2xl',
+        '3xl',
+        '4xl',
+        '2xs',
+        '5xl',
+        '6xl',
+      ] as const).includes(size as any)
+        ? (size as
+            | 'xs'
+            | 'sm'
+            | 'md'
+            | 'lg'
+            | 'xl'
+            | '2xl'
+            | '3xl'
+            | '4xl'
+            | '2xs'
+            | '5xl'
+            | '6xl')
+        : undefined;
+
+    const numericStyle = typeof size === 'number' ? { fontSize: size } : undefined;
+
     return (
       <RNText
         className={textStyle({
@@ -30,13 +61,14 @@ const Text = React.forwardRef<React.ComponentRef<typeof RNText>, ITextProps>(
           bold: bold as boolean,
           underline: underline as boolean,
           strikeThrough: strikeThrough as boolean,
-          size,
+          size: resolvedSize,
           sub: sub as boolean,
           italic: italic as boolean,
           highlight: highlight as boolean,
           class: className,
         })}
         {...props}
+        style={numericStyle ? [numericStyle, props.style] : props.style}
         ref={ref}
       />
     );
