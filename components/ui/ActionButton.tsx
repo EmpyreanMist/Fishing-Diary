@@ -11,6 +11,8 @@ type Props = {
   color?: "blue" | "green" | "black" | "transparent";
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
+  width?: number | string;
+  height?: number | string;
 };
 
 export default function ActionButton({
@@ -19,8 +21,9 @@ export default function ActionButton({
   color = "blue",
   size = "md",
   onPress,
+  width,
+  height,
 }: Props) {
-  // 🎨 Gradient colors
   const gradients: Record<string, [string, string]> = {
     blue: ["#0072FF", "#00C6FF"],
     green: ["#2E8B57", "#4CAF50"],
@@ -28,7 +31,6 @@ export default function ActionButton({
     transparent: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.15)"],
   };
 
-  // 📏 Sizes
   const sizes = {
     sm: { paddingVertical: 8, paddingHorizontal: 14, fontSize: 14, icon: 18 },
     md: { paddingVertical: 10, paddingHorizontal: 18, fontSize: 15, icon: 20 },
@@ -37,14 +39,13 @@ export default function ActionButton({
 
   const current = sizes[size] || sizes.md;
   const colors = gradients[color] || gradients.blue;
-
   const isDark = color === "black";
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
-      style={styles.button}
+      style={[styles.button, { width: width as any, height: height as any }]}
     >
       {isDark ? (
         <View
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
+    alignSelf: "center",
   },
   gradient: {
     borderRadius: 12,
