@@ -3,6 +3,7 @@ import StatsGrid from "@/components/home/StatsGrid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, StyleSheet } from "react-native";
 import ActionButton from "@/components/ui/ActionButton";
+import RecentCatches from "@/components/home/RecentCatches";
 
 export default function HomeScreen() {
   return (
@@ -34,6 +35,7 @@ export default function HomeScreen() {
             icon={"stats-chart-outline"}
           />
         </View>
+        <RecentCatches />
       </ScrollView>
     </SafeAreaView>
   );
