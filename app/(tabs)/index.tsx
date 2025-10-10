@@ -1,5 +1,6 @@
-import ActionButton from "@/components/ui/ActionButton";
 import { StyleSheet, Text, View } from "react-native";
+import ActionButton from "@/components/ui/ActionButton";
+import CatchForm from "@/components/addCatch/CatchForm";
 
 export default function HomeScreen() {
   return (
@@ -9,10 +10,16 @@ export default function HomeScreen() {
         <Text>{process.env.EXPO_PUBLIC_SUPABASE_URL || "❌ Not loaded"}</Text>
         <Text>Supabase Key:</Text>
         <Text>
-          {process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ? "✅ Exists" : "❌ Not found"}
+          {process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+            ? "✅ Exists"
+            : "❌ Not found"}
         </Text>
       </View>
+
+      <CatchForm stmt={true} />
+
       <Text style={styles.title}>🏠 Home</Text>
+
       <View style={styles.buttonContainer}>
         <ActionButton
           label="Add Catch"
@@ -28,16 +35,9 @@ export default function HomeScreen() {
           size="md"
           onPress={() => console.log("Add trip pressed")}
         />
-        {/*         <ActionButton
-          label="Add Trip"
-          color="black"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log("Add trip pressed")}
-        /> */}
       </View>
 
-      <Text style={styles.subtitle}> Fishing app!</Text>
+      <Text style={styles.subtitle}>Fishing app!</Text>
     </View>
   );
 }
@@ -47,13 +47,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    /* justifyContent: "center", */
     paddingTop: "20%",
   },
   buttonContainer: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
     gap: 5,
+    paddingTop: "20%",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
