@@ -2,7 +2,6 @@ import ActionButton from "@/components/ui/ActionButton";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
-
 import { LinearGradient } from "expo-linear-gradient";
 import {
   CalendarDays,
@@ -169,11 +168,7 @@ export default function CatchesScreen() {
                   backgroundColor: "transparent",
                 }}
               >
-                <Icon
-                  as={Search}
-                  color="#9CA3AF"
-                  style={{ marginLeft: 12 }}
-                />
+                <Icon as={Search} color="#9CA3AF" style={{ marginLeft: 12 }} />
                 <InputField
                   placeholder="Search by species or location..."
                   placeholderTextColor="#6B7280"
@@ -186,7 +181,7 @@ export default function CatchesScreen() {
               </Input>
             </View>
 
-            {/* Filter-pills (statisk layout) */}
+            {/* Filter-pills */}
             <View style={styles.pillsRow}>
               <TouchableOpacity style={styles.pill}>
                 <Text style={styles.pillText}>All Species</Text>
