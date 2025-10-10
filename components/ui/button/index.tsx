@@ -316,12 +316,6 @@ const ButtonText = React.forwardRef<
     action: parentAction,
   } = useStyleContext(SCOPE);
 
-  const resolvedSize =
-    typeof size === 'string' &&
-    (['xs', 'sm', 'md', 'lg', 'xl'] as const).includes(size as any)
-      ? (size as 'xs' | 'sm' | 'md' | 'lg' | 'xl')
-      : undefined;
-
   return (
     <UIButton.Text
       ref={ref}
@@ -333,7 +327,7 @@ const ButtonText = React.forwardRef<
           action: parentAction,
         },
         variant: variant as 'link' | 'outline' | 'solid' | undefined,
-        size: resolvedSize,
+        size,
         action: action as
           | 'primary'
           | 'secondary'
@@ -387,13 +381,6 @@ const ButtonIcon = React.forwardRef<
       />
     );
   }
-
-  const resolvedSize =
-    typeof size === 'string' &&
-    (['xs', 'sm', 'md', 'lg', 'xl'] as const).includes(size as any)
-      ? (size as 'xs' | 'sm' | 'md' | 'lg' | 'xl')
-      : undefined;
-
   return (
     <UIButton.Icon
       {...props}
@@ -403,7 +390,7 @@ const ButtonIcon = React.forwardRef<
           variant: parentVariant,
           action: parentAction,
         },
-        size: resolvedSize,
+        size,
         class: className,
       })}
       ref={ref}
@@ -432,21 +419,9 @@ const ButtonGroup = React.forwardRef<
       <UIButton.Group
         className={buttonGroupStyle({
           class: className,
-          space: space as
-            | 'xs'
-            | 'sm'
-            | 'md'
-            | 'lg'
-            | 'xl'
-            | '2xl'
-            | '3xl'
-            | '4xl',
+          space,
           isAttached: isAttached as boolean,
-          flexDirection: flexDirection as
-            | 'row'
-            | 'column'
-            | 'row-reverse'
-            | 'column-reverse',
+          flexDirection: flexDirection as any,
         })}
         {...props}
         ref={ref}
