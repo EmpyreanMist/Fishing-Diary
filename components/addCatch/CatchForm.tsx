@@ -15,11 +15,13 @@ import SpeciesDropDown from './SpeciesDropDown';
 import ActionButton from '../ui/ActionButton';
 import { StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 
 interface CatchBoolean {
   stmt: boolean;
 }
 export default function CatchForm({ stmt }: CatchBoolean) {
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   if (!stmt) return null;
 
   return (
@@ -28,8 +30,8 @@ export default function CatchForm({ stmt }: CatchBoolean) {
       style={styles.screen}
     >
       <VStack space="$md" reversed={false}>
-        <Box className="w-[100%] h-10 pt-5 pr-5 items-end flex-end'">
-          <Icon as={CloseIcon} size="xl" color="white" className="text-typography-500" />
+        <Box className="w-full h-10 pt-5 pr-5 items-end flex-end'">
+          <Icon as={CloseIcon} size="xl" />
         </Box>
         <Box className="pb-5 pl-5 w-[80%]">
           <Heading size="2xl">Add New Catch</Heading>
@@ -47,30 +49,50 @@ export default function CatchForm({ stmt }: CatchBoolean) {
             <Heading className="" size="lg">
               Weight (kg)
             </Heading>
-            <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-              <InputField placeholder="Enter Text here..." />
+            <Input style={[styles.input, focusedField === 'weight' && styles.inputFocused]}>
+              <InputField
+                placeholder="Enter weight..."
+                onFocus={() => setFocusedField('weight')}
+                onBlur={() => setFocusedField(null)}
+              />
             </Input>
           </Box>
           <Box className="w-1/2">
             <Heading className="" size="lg">
               Length (cm)
             </Heading>
-            <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-              <InputField placeholder="Enter Text here..." />
+            <Input style={[styles.input, focusedField === 'length' && styles.inputFocused]}>
+              <InputField
+                placeholder="Enter length here..."
+                onFocus={() => setFocusedField('length')}
+                onBlur={() => setFocusedField(null)}
+              />
             </Input>
           </Box>
         </HStack>
         <Heading className="py-4" size="lg">
           Location
         </Heading>
-        <Input className="w-full" variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-          <InputField placeholder="Where did you catch it?" />
+        <Input style={[styles.input, focusedField === 'location' && styles.inputFocused]}>
+          <InputField
+            onFocus={() => setFocusedField('location')}
+            onBlur={() => setFocusedField('null')}
+            placeholder="Where did you catch it?"
+          />
         </Input>
         <Heading className="py-4">Lure Used</Heading>
         <LureDropDown />
         <Heading className="py-4">Notes</Heading>
-        <Textarea size="md" isReadOnly={false} isInvalid={false} isDisabled={false} className="w-full">
-          <TextareaInput placeholder="Your text goes here..." />
+        <Textarea
+          size="md"
+          style={[styles.input, focusedField === 'notes' && styles.inputFocused]}
+          className="w-full"
+        >
+          <TextareaInput
+            onFocus={() => setFocusedField('notes')}
+            onBlur={() => setFocusedField('null')}
+            placeholder="Your text goes here..."
+          />
         </Textarea>
         <VStack>
           <HStack className="w-full py-4" space="lg">
@@ -112,5 +134,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#475569', // grå
+    borderRadius: 8,
+  },
+  inputFocused: {
+    borderColor: '#5ACCF2',
   },
 });
