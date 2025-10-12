@@ -12,6 +12,9 @@ import { Camera, MapPinPlus } from 'lucide-react-native';
 import { Button, ButtonIcon, ButtonText } from '../ui/button';
 import LureDropDown from './LureDropDown';
 import SpeciesDropDown from './SpeciesDropDown';
+import ActionButton from '../ui/ActionButton';
+import { StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface CatchBoolean {
   stmt: boolean;
@@ -20,7 +23,10 @@ export default function CatchForm({ stmt }: CatchBoolean) {
   if (!stmt) return null;
 
   return (
-    <View className="absolute top-[8%] left-[5%] right-[5%] z-50 h-[95%] bg-slate-900 border border-outline-200 rounded-lg">
+    <View
+      className="absolute top-[8%] left-[5%] right-[5%] z-50 h-full border border-outline-200 rounded-lg"
+      style={styles.screen}
+    >
       <VStack space="$md" reversed={false}>
         <Box className="w-[100%] h-10 pt-5 pr-5 items-end flex-end'">
           <Icon as={CloseIcon} size="xl" color="white" className="text-typography-500" />
@@ -67,28 +73,44 @@ export default function CatchForm({ stmt }: CatchBoolean) {
           <TextareaInput placeholder="Your text goes here..." />
         </Textarea>
         <VStack>
-          <HStack className="w-full" space="lg">
+          <HStack className="w-full py-4" space="lg">
             {/* Left icon button */}
-            <Button className="w-1/2 flex-1" variant="outline" action="primary">
+            <Button className="w-1/2 flex-1" variant="outline" style={styles.button}>
               <ButtonIcon as={Camera} size="sm" color="white" />
               <ButtonText>Add Photo</ButtonText>
             </Button>
-            <Button className="w-1/2" variant="outline" action="primary">
+            <Button style={styles.button} className="w-1/2" variant="outline" action="primary">
               <ButtonIcon as={MapPinPlus} size="sm" color="white" />
               <ButtonText>Gps Location</ButtonText>
             </Button>
           </HStack>
-          <HStack className="w-full" space="lg">
-            <Button className="w-1/2 flex-1" variant="outline" action="primary">
-              Cancel
-              <ButtonText>Left Icon</ButtonText>
-            </Button>
-            <Button className="w-1/2" variant="outline" action="primary">
-              <ButtonText>Save catch</ButtonText>
-            </Button>
+          <HStack className="w-full mb-2" space="lg">
+            <Box className="w-1/2 flex-1">
+              <ActionButton label="Cancel" color="black" size="md" />
+            </Box>
+            <Box className="w-1/2">
+              <ActionButton label="Save catch" color="blue" size="md" />
+            </Box>
           </HStack>
         </VStack>
       </FormControl>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#0A121A',
+  },
+  button: {
+    backgroundColor: '#1A1A1A',
+    borderColor: '#333',
+    borderWidth: 1,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+});
