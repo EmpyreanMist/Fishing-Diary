@@ -33,20 +33,20 @@ export default function CatchForm({ stmt }: CatchBoolean) {
         <Box className="w-full h-10 pt-5 pr-5 items-end flex-end'">
           <Icon as={CloseIcon} size="xl" />
         </Box>
-        <Box className="pb-5 pl-5 w-[80%]">
-          <Heading size="2xl">Add New Catch</Heading>
-          <Divider />
-          <Heading size="lg">Record your latest fishing trip</Heading>
+        <Box className="px-5 w-[80%]">
+          <Heading size="lg">Add New Catch</Heading>
+          <Divider className='my-2' style={styles.divider}/>
+          <Heading size="sm">Record your latest fishing trip</Heading>
         </Box>
       </VStack>
-      <FormControl className="px-5 pb-10 rounded-lg w-full">
-        <Heading className="" size="lg">
+      <FormControl className="px-5 py-4 rounded-lg w-full">
+        <Heading className="pb-2" size="lg">
           Species
         </Heading>
         <SpeciesDropDown />
-        <HStack className="w-full py-5" space="4xl" reversed={false}>
+        <HStack className="w-full py-4" space="4xl" reversed={false}>
           <Box className="flex-1">
-            <Heading className="" size="lg">
+            <Heading className="pb-2" size="lg">
               Weight (kg)
             </Heading>
             <Input style={[styles.input, focusedField === 'weight' && styles.inputFocused]}>
@@ -58,7 +58,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
             </Input>
           </Box>
           <Box className="w-1/2">
-            <Heading className="" size="lg">
+            <Heading className="pb-2" size="md">
               Length (cm)
             </Heading>
             <Input style={[styles.input, focusedField === 'length' && styles.inputFocused]}>
@@ -70,7 +70,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
             </Input>
           </Box>
         </HStack>
-        <Heading className="py-4" size="lg">
+        <Heading className="py-2" size="md">
           Location
         </Heading>
         <Input style={[styles.input, focusedField === 'location' && styles.inputFocused]}>
@@ -80,9 +80,9 @@ export default function CatchForm({ stmt }: CatchBoolean) {
             placeholder="Where did you catch it?"
           />
         </Input>
-        <Heading className="py-4">Lure Used</Heading>
+        <Heading className="pt-4 pb-2" size="md">Lure Used</Heading>
         <LureDropDown />
-        <Heading className="py-4">Notes</Heading>
+        <Heading className="pt-4">Notes</Heading>
         <Textarea
           size="md"
           style={[styles.input, focusedField === 'notes' && styles.inputFocused]}
@@ -106,7 +106,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
               <ButtonText>Gps Location</ButtonText>
             </Button>
           </HStack>
-          <HStack className="w-full mb-2" space="lg">
+          <HStack className="w-full py-4" space="lg">
             <Box className="w-1/2 flex-1">
               <ActionButton label="Cancel" color="black" size="md" />
             </Box>
@@ -142,5 +142,8 @@ const styles = StyleSheet.create({
   },
   inputFocused: {
     borderColor: '#5ACCF2',
+  },
+  divider: {
+    backgroundColor: '#5ACCF2',
   },
 });
