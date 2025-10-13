@@ -11,7 +11,7 @@ export function MapHeader() {
       style={styles.header}
     >
       <View style={styles.headerContent}>
-        <Ionicons name="location" size={26} color="#fff" />
+        <Ionicons name="location" size={26} color="#F5F5F5" />
         <Text style={styles.headerTitle}>Fishing Map</Text>
       </View>
 
@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerTitle: {
-    color: "#fff",
+    color: "#F5F5F5",
     fontWeight: "bold",
     fontSize: 22,
     marginLeft: 8,
   },
   headerSubtitle: {
-    color: "#fff",
+    color: "#F5F5F5",
     opacity: 0.9,
     fontSize: 18,
     paddingHorizontal: 20,
