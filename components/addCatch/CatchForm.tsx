@@ -75,7 +75,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
         <Input style={[styles.input, focusedField === 'location' && styles.inputFocused]}>
           <InputField
             onFocus={() => setFocusedField('location')}
-            onBlur={() => setFocusedField('null')}
+            onBlur={() => setFocusedField(null)}
             placeholder="Where did you catch it?"
           />
         </Input>
@@ -89,7 +89,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
         >
           <TextareaInput
             onFocus={() => setFocusedField('notes')}
-            onBlur={() => setFocusedField('null')}
+            onBlur={() => setFocusedField(null)}
             placeholder="Your text goes here..."
           />
         </Textarea>
