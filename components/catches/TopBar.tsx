@@ -7,10 +7,9 @@ import ActionButton from "@/components/ui/ActionButton";
 
 type Props = {
   subtitle?: string;
-  onAddPress?: () => void;
 };
 
-export default function TopBar({ subtitle = "4 catches logged", onAddPress }: Props) {
+export default function TopBar({ subtitle = "4 catches logged"}: Props) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -32,7 +31,7 @@ export default function TopBar({ subtitle = "4 catches logged", onAddPress }: Pr
           icon="add"
           color="transparent"
           size="md"
-          onPress={onAddPress}
+          onPress={() => {}}
         />
       </View>
 

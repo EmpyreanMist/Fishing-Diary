@@ -9,7 +9,7 @@ import { DUMMY_CATCHES } from "@/components/catches/dummy/dummyCatches";
 export default function CatchesScreen() {
   return (
     <View style={styles.screen}>
-      <TopBar subtitle={`${DUMMY_CATCHES.length} catches logged`} onAddPress={() => {}} />
+      <TopBar subtitle={`${DUMMY_CATCHES.length} catches logged`} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <SearchFilterCard />
