@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-//TODO: This needs to be adjusted with configurations in RootLayout
+//TODO: DropDown needs to be fixed
 
 export default function LureDropDown() {
   const [focused, setFocused] = useState<boolean | null>(false);

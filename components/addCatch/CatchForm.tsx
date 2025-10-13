@@ -1,10 +1,9 @@
 import { Heading } from '@/components/ui/heading';
 import { HStack } from '@/components/ui/hstack';
-import { Icon } from '@/components/ui/icon';
 import { Input, InputField } from '@/components/ui/input';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import { VStack } from '@/components/ui/vstack';
-import { CloseIcon, FormControl, View } from '@gluestack-ui/themed';
+import { FormControl, View } from '@gluestack-ui/themed';
 
 import { Box } from '@/components/ui/box';
 import { Divider } from '@/components/ui/divider';
@@ -13,7 +12,7 @@ import { Button, ButtonIcon, ButtonText } from '../ui/button';
 import LureDropDown from './LureDropDown';
 import SpeciesDropDown from './SpeciesDropDown';
 import ActionButton from '../ui/ActionButton';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import { useState } from 'react';
 
 interface CatchBoolean {
@@ -24,17 +23,16 @@ export default function CatchForm({ stmt }: CatchBoolean) {
   if (!stmt) return null;
 
   return (
-    <View
-      className="absolute top-[8%] left-[5%] right-[5%] z-50 h-full border border-outline-200 rounded-lg"
-      style={styles.screen}
-    >
+    <View className="w-full" style={styles.screen}>
       <VStack space="$md" reversed={false}>
-        <Box className="w-full h-10 pt-5 pr-5 items-end flex-end'">
-          <Icon as={CloseIcon} size="xl" />
+        <Box className="w-full h-20  p-4 pr-5 items-end flex-end">
+          <Pressable onPress={() => console.log("close")}>
+            <Text style={{ color: 'white', fontSize: 20 }}>X</Text>
+          </Pressable>
         </Box>
         <Box className="px-5 w-[80%]">
           <Heading size="lg">Add New Catch</Heading>
-          <Divider className='my-2' style={styles.divider}/>
+          <Divider className="my-2" style={styles.divider} />
           <Heading size="sm">Record your latest fishing trip</Heading>
         </Box>
       </VStack>
@@ -79,14 +77,12 @@ export default function CatchForm({ stmt }: CatchBoolean) {
             placeholder="Where did you catch it?"
           />
         </Input>
-        <Heading className="pt-4 pb-2" size="md">Lure Used</Heading>
+        <Heading className="pt-4 pb-2" size="md">
+          Lure Used
+        </Heading>
         <LureDropDown />
         <Heading className="pt-4">Notes</Heading>
-        <Textarea
-          size="md"
-          style={[styles.input, focusedField === 'notes' && styles.inputFocused]}
-          className="w-full"
-        >
+        <Textarea size="md" style={[styles.input, focusedField === 'notes' && styles.inputFocused]} className="w-full">
           <TextareaInput
             onFocus={() => setFocusedField('notes')}
             onBlur={() => setFocusedField(null)}
@@ -121,7 +117,7 @@ export default function CatchForm({ stmt }: CatchBoolean) {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
+    /* flex: 1, */
     backgroundColor: '#0A121A',
   },
   button: {
@@ -144,5 +140,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     backgroundColor: '#5ACCF2',
+  },
+  icon: {
+    backgroundColor: 'white',
   },
 });
