@@ -2,8 +2,15 @@ import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
+type StatItem = {
+  icon: keyof typeof Ionicons.glyphMap;
+  value: string;
+  label: string;
+  sub: string;
+};
+
 export default function StatsGrid() {
-  const stats = [
+  const stats: StatItem[] = [
     {
       icon: "fish-outline",
       value: "47",
@@ -40,7 +47,7 @@ export default function StatsGrid() {
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
-          <Ionicons name={item.icon as any} size={32} color="#5ACCF2" />
+          <Ionicons name={item.icon} size={32} color="#5ACCF2" />
           <Text style={styles.value}>{item.value}</Text>
           <Text style={styles.label}>{item.label}</Text>
           <Text style={styles.sub}>{item.sub}</Text>

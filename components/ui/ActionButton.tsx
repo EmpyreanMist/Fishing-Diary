@@ -1,8 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  type DimensionValue,
+} from "react-native";
 import type { ComponentProps } from "react";
 
 type Props = {
@@ -11,8 +16,8 @@ type Props = {
   color?: "blue" | "green" | "black" | "transparent";
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
-  width?: number | string;
-  height?: number | string;
+  width?: DimensionValue;
+  height?: DimensionValue;
 };
 
 export default function ActionButton({
@@ -46,7 +51,11 @@ export default function ActionButton({
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
-      style={[styles.button, { width: width as any, height: height as any }]}
+      style={[
+        styles.button,
+        width !== undefined && { width },
+        height !== undefined && { height },
+      ]}
     >
       {isDark ? (
         <View

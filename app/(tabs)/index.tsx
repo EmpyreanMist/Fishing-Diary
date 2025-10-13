@@ -54,7 +54,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
   },
-  actionButton: {
-    width: "90%",
-  },
 });

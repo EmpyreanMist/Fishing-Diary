@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 type CatchItem = {
   id: string;
@@ -48,13 +48,10 @@ export default function RecentCatches() {
       </View>
       <Text style={styles.subtitle}>Your latest fishing successes</Text>
 
-      <FlatList
-        data={dummyData}
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        contentContainerStyle={{ gap: 12, marginTop: 10 }}
-        renderItem={({ item }) => (
+      <View style={{ gap: 12, marginTop: 10 }}>
+        {dummyData.map((item) => (
           <LinearGradient
+            key={item.id}
             colors={["#1A2732", "#0E141B"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -86,8 +83,8 @@ export default function RecentCatches() {
               <Text style={styles.locationText}>{item.location}</Text>
             </View>
           </LinearGradient>
-        )}
-      />
+        ))}
+      </View>
     </View>
   );
 }
