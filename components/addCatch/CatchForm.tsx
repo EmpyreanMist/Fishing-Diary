@@ -14,7 +14,6 @@ import LureDropDown from './LureDropDown';
 import SpeciesDropDown from './SpeciesDropDown';
 import ActionButton from '../ui/ActionButton';
 import { StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 
 interface CatchBoolean {
