@@ -1,30 +1,36 @@
+import { MapHeader } from "@/components/map/MapHeader";
+import { MapPopularSpots } from "@/components/map/MapPopularSpots";
 import { StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MapScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Beautiful map here</Text>
-      <Text style={styles.subtitle}>Map</Text>
-    </View>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <MapHeader />
+
+        {/* Map component here */}
+
+        <MapPopularSpots />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    backgroundColor: "#0A121A",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
+  scrollView: {
+    flex: 1,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
+  scrollContent: {
+    paddingBottom: 40,
   },
 });
