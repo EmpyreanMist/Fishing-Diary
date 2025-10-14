@@ -5,6 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Input, InputField } from "@/components/ui/input";
 import { Search } from "lucide-react-native";
 
+/**
+ * Renders a dark-themed card containing a search input and two filter pills ("All Species" and "Date (newest)").
+ *
+ * @returns The JSX element for the Search & Filter card.
+ */
 export default function SearchFilterCard() {
   return (
     <Card

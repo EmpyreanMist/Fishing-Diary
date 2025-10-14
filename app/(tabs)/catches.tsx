@@ -6,6 +6,13 @@ import StatsRow from "@/components/catches/StatRow";
 import CatchesList from "@/components/catches/CatchesList";
 import { DUMMY_CATCHES } from "@/components/catches/dummy/dummyCatches";
 
+/**
+ * Renders the main catches screen containing a TopBar, search/filter controls, stats, and a list of catches.
+ *
+ * The screen displays a subtitle with the number of logged catches, a SearchFilterCard, a StatsRow populated from DUMMY_CATCHES, and a CatchesList rendered from DUMMY_CATCHES.
+ *
+ * @returns The React element tree for the catches screen.
+ */
 export default function CatchesScreen() {
   return (
     <View style={styles.screen}>

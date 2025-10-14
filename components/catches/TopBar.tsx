@@ -9,6 +9,12 @@ type Props = {
   subtitle?: string;
 };
 
+/**
+ * Renders the gradient top header for the catches screen, including an icon, title, action button, and subtitle.
+ *
+ * @param subtitle - Subtitle text displayed below the title; defaults to "4 catches logged"
+ * @returns A JSX element containing the gradient top bar with title, icon, action button, and subtitle
+ */
 export default function TopBar({ subtitle = "4 catches logged"}: Props) {
   const insets = useSafeAreaInsets();
 

@@ -3,6 +3,14 @@ import { StyleSheet, Text, View } from "react-native";
 import { CalendarDays, Fish, MapPin, Ruler, Scale } from "lucide-react-native";
 import type { CatchItem } from "./types/catch";
 
+/**
+ * Render a stylized card showing a single catch's details.
+ *
+ * Renders an inline row containing an avatar icon, species name, weight, length, lake, and a right-aligned date badge.
+ *
+ * @param item - The catch to render; expected to include `species`, `weight`, `length`, `lake`, and `date`
+ * @returns A React element representing the catch card
+ */
 export default function CatchRow({ item }: { item: CatchItem }) {
   return (
     <View style={styles.catchCard}>

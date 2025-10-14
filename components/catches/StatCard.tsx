@@ -6,6 +6,13 @@ type Props = {
   label: string;
 };
 
+/**
+ * Renders a compact card displaying a prominent value with a descriptive label beneath it.
+ *
+ * @param value - The text shown prominently as the statistic or metric.
+ * @param label - A short descriptor displayed below the value.
+ * @returns A React element that displays the value and label inside a styled card.
+ */
 export default function StatCard({ value, label }: Props) {
   return (
     <View style={[styles.card]}>

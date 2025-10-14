@@ -8,6 +8,15 @@ type Props = {
   title?: string;
 };
 
+/**
+ * Renders a titled, non-scrollable list of catch items.
+ *
+ * Displays a header with the provided `title` and a FlatList of `data` where each item is rendered via `CatchRow`.
+ *
+ * @param data - The array of catch items to display.
+ * @param title - Optional header text shown above the list; defaults to "All Catches".
+ * @returns A React element containing the header and a non-scrollable list of catches.
+ */
 export default function CatchesList({ data, title = "All Catches" }: Props) {
   return (
     <>
