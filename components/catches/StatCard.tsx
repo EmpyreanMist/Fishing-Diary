@@ -9,7 +9,7 @@ type Props = {
 export default function StatCard({ value, label }: Props) {
   return (
     <View style={[styles.card]}>
-      <Text style={[styles.value]}>{value}</Text>
+      <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
     </View>
   );
