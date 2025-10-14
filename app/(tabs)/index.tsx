@@ -1,70 +1,57 @@
-import { StyleSheet, Text, View } from "react-native";
+import { HeroSection } from "@/components/home/HeroSection";
+import StatsGrid from "@/components/home/StatsGrid";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View, StyleSheet } from "react-native";
 import ActionButton from "@/components/ui/ActionButton";
-import CatchForm from "@/components/addCatch/CatchForm";
+import RecentCatches from "@/components/home/RecentCatches";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Supabase URL:</Text>
-        <Text>{process.env.EXPO_PUBLIC_SUPABASE_URL || "❌ Not loaded"}</Text>
-        <Text>Supabase Key:</Text>
-        <Text>
-          {process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-            ? "✅ Exists"
-            : "❌ Not found"}
-        </Text>
-      </View>
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <HeroSection />
+        <StatsGrid />
 
-      <CatchForm stmt={true} />
-
-      <Text style={styles.title}>🏠 Home</Text>
-
-      <View style={styles.buttonContainer}>
-        <ActionButton
-          label="Add Catch"
-          color="green"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log("Add Catch pressed")}
-        />
-        <ActionButton
-          label="Add Trip"
-          color="blue"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log("Add trip pressed")}
-        />
-      </View>
-
-      <Text style={styles.subtitle}>Fishing app!</Text>
-    </View>
+        <View style={styles.buttonsContainer}>
+          <ActionButton
+            label="Find Spots"
+            color="blue"
+            width={"90%"}
+            icon={"location-outline"}
+          />
+          <ActionButton
+            label="Quick Photo"
+            color="green"
+            width={"90%"}
+            icon={"camera-outline"}
+          />
+          <ActionButton
+            label="Statistics"
+            color="black"
+            width={"90%"}
+            icon={"stats-chart-outline"}
+          />
+        </View>
+        <RecentCatches />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#0A121A",
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  buttonsContainer: {
+    marginTop: 20,
     alignItems: "center",
-    paddingTop: "20%",
-  },
-  buttonContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingTop: "20%",
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
+    gap: 14,
   },
 });
