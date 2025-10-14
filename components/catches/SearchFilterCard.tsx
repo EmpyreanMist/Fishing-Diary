@@ -22,7 +22,7 @@ export default function SearchFilterCard() {
       </View>
 
       <View style={{ padding: 16 }}>
-        {/* Sökfält */}
+
         <View style={{ marginBottom: 12 }}>
           <Input
             style={{
@@ -41,7 +41,7 @@ export default function SearchFilterCard() {
           </Input>
         </View>
 
-        {/* Filter-pills */}
+  
         <View style={styles.pillsRow}>
           <TouchableOpacity style={styles.pill}>
             <Text style={styles.pillText}>All Species</Text>

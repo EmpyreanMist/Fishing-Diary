@@ -4,5 +4,5 @@ export type CatchItem = {
   weight: string;
   length: string;
   lake: string;
-  date: string; // visningsformat
+  date: string; 
 };
