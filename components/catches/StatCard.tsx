@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from "react-native";
 type Props = {
   value: string;
   label: string;
-//   highlighted?: boolean;
 };
 
 export default function StatCard({ value, label }: Props) {
@@ -27,17 +26,13 @@ const styles = StyleSheet.create({
     borderColor: "#1F2937",
     backgroundColor: "#121B22",
   },
-//   highlight: {
-//     backgroundColor: "#0E1620",
-//   },
+
   value: {
-    color: "#E5E7EB",
+    color: "#5ACCF2",
     fontSize: 18,
     fontWeight: "700",
   },
-//   valueHighlight: {
-//     color: "#5ACCF2",
-//   },
+
   label: {
     color: "#9CA3AF",
     fontSize: 12,
