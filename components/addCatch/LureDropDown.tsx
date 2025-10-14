@@ -11,13 +11,23 @@ import {
   SelectPortal,
   SelectTrigger,
 } from '@/components/ui/select';
+import { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-//TODO: This needs to be adjusted with configurations in RootLayout
+//TODO: DropDown needs to be fixed
 
 export default function LureDropDown() {
+  const [focused, setFocused] = useState<boolean | null>(false);
   return (
     <Select className="w-full">
-      <SelectTrigger variant="outline" size="lg">
+      <SelectTrigger
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        // använder Tailwind-arbitrary color #5ACCF2 när focused
+        className={`w-full rounded-lg border px-2 py-2 ${focused ? 'border-[#5ACCF2]' : 'border-slate-600'}`}
+        variant="outline"
+        size="lg"
+      >
         <SelectInput placeholder="Select lure type" />
         <SelectIcon className="mr-3" as={ChevronDownIcon} />
       </SelectTrigger>
@@ -38,4 +48,13 @@ export default function LureDropDown() {
   );
 }
 
-// TODO: Make DropDown into on file and take info from api.
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#475569', // grå
+    borderRadius: 8,
+  },
+  inputFocused: {
+    borderColor: '#5ACCF2',
+  },
+});
