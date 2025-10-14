@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import MapView from "react-native-maps";
+
 export default function MapScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -15,7 +17,7 @@ export default function MapScreen() {
         <MapHeader />
 
         {/* Map component here */}
-
+        <MapView style={styles.map} />
         <MapPopularSpots />
       </ScrollView>
     </SafeAreaView>
@@ -32,5 +34,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 40,
+  },
+  map: {
+    width: "100%",
+    height: "40%",
   },
 });
