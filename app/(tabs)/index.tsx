@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     alignItems: 'center',
-    justifyContent: 'center', // 👈 placerar CatchForm längst ner
-    /* paddingBottom: 20, */
+    justifyContent: 'center',
   },
   buttonContainer: {
     display: 'flex',
