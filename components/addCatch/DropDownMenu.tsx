@@ -25,9 +25,6 @@ export default function DropDownMenu() {
       inputStyles={styles.input}
       dropdownStyles={styles.dropdown}
       dropdownTextStyles={styles.dropdownText}
-      // Om din version stödjer den här, låt bli att sätta den – default räcker
-      // dropdownShown={undefined}
-      maxHeight={220}
     />
   );
 }

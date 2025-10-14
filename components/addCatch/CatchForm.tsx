@@ -117,7 +117,6 @@ export default function CatchForm({ stmt }: CatchBoolean) {
 
 const styles = StyleSheet.create({
   screen: {
-    /* flex: 1, */
     backgroundColor: '#0A121A',
   },
   button: {
