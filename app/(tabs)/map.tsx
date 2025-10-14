@@ -48,14 +48,9 @@ export default function MapScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <MapHeader />
-
-        {/* Map component here */}
+      <MapHeader />
+      {/* Map component here */}
+      <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           provider={PROVIDER_GOOGLE}
@@ -64,11 +59,17 @@ export default function MapScreen() {
           showsMyLocationButton
           ref={mapRef}
         >
-          {places.map((marker, index) => {
-            return <Marker key={index} coordinate={marker} />;
-          })}
+          {places.map((marker, index) => (
+            <Marker key={index} coordinate={marker} />
+          ))}
         </MapView>
+      </View>
 
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <MapPopularSpots />
 
         {/* <MapView
@@ -86,6 +87,13 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
+  mapContainer: {
+    marginTop: 40,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    overflow: "hidden",
+    height: "50%",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#0A121A",
@@ -97,8 +105,11 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   map: {
+    /* marginTop: 40, */
+    /*     borderRadius: 6, */
+    /* marginHorizontal: 16, */
+    height: "100%",
     width: "100%",
-    height: "40%",
   },
 });
 
