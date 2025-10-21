@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     color: "#98A6B3",
-    fontSize: 16,
+    fontSize: 1,
     height: 48,
     width: "100%",
   },

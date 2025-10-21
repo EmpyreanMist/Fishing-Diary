@@ -82,6 +82,7 @@ export default function HomeScreen() {
         animationType="slide"
         transparent={false}
         onRequestClose={() => setShowCatchForm(false)}
+        style={styles.catchFormContainer}
       >
         <CatchForm
           //@ts-ignore
@@ -129,5 +130,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: "center",
     gap: 14,
+  },
+  catchFormContainer: {
+    width: "100%",
   },
 });

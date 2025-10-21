@@ -8,8 +8,7 @@ import { Box } from "@/components/ui/box";
 import { Divider } from "@/components/ui/divider";
 import { Camera, MapPinPlus } from "lucide-react-native";
 import { Button, ButtonIcon, ButtonText } from "../ui/button";
-import LureDropDown from "./LureDropDown";
-import SpeciesDropDown from "./SpeciesDropDown";
+
 import ActionButton from "../ui/ActionButton";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { useState } from "react";
@@ -24,20 +23,20 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   return (
     <View style={styles.screen}>
-      <VStack space="$md">
+      <HStack className="w-full" reversed="true" space="$md">
         {/* Header med stängknapp */}
-        <Box className="w-full h-20 p-4 pr-5 items-end">
+        <Box className="h-20 py-5 items-end">
           <Pressable onPress={onClose}>
-            <Text style={{ color: "white", fontSize: 22 }}>✕</Text>
+            <Text style={{ color: "white", fontSize: 22 }}></Text>
           </Pressable>
         </Box>
 
-        <Box className="px-5 w-[80%]">
+        <Box className="mx-auto py-5 " style={{ justifyContent: "center" }}>
           <Heading size="lg">Add New Catch</Heading>
           <Divider className="my-2" style={styles.divider} />
           <Heading size="sm">Record your latest fishing trip</Heading>
         </Box>
-      </VStack>
+      </HStack>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
         <Heading className="pb-2" size="lg">
