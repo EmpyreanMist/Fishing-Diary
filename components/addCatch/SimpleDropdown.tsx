@@ -22,19 +22,28 @@ interface SimpleDropdownProps {
 export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
   const [selectedValue, setSelectedValue] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [focused, setFocused] = useState(false);
+
+  const handleSelect = (val: string) => {
+    setSelectedValue(val);
+    if (Platform.OS === "ios") setIsVisible(false);
+  };
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.dropdownLabel}>{label}</Text>
 
-      {/* Android: riktig dropdown */}
       {Platform.OS === "android" ? (
-        <View style={styles.dropdownContainer}>
+        <View
+          style={[styles.dropdownContainer, focused && styles.inputFocused]}
+        >
           <Picker
             selectedValue={selectedValue}
-            onValueChange={(val) => setSelectedValue(val)}
+            onValueChange={handleSelect}
             style={styles.picker}
             dropdownIconColor="#fff"
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
           >
             {items.map((item) => (
               <Picker.Item
@@ -46,15 +55,16 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
           </Picker>
         </View>
       ) : (
-        /* iOS: Fake input + modal */
         <>
           <TouchableOpacity
-            style={styles.fakeInput}
             activeOpacity={0.8}
+            style={[styles.fakeInput, focused && styles.inputFocused]}
             onPress={() => setIsVisible(true)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
           >
             <Text style={styles.fakeInputText}>
-              {selectedValue ? selectedValue : items[0]?.label || "Select..."}
+              {selectedValue || items[0]?.label || "Select..."}
             </Text>
           </TouchableOpacity>
 
@@ -69,7 +79,7 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
 
                 <Picker
                   selectedValue={selectedValue}
-                  onValueChange={(val) => setSelectedValue(val)}
+                  onValueChange={handleSelect}
                   style={styles.iosPicker}
                 >
                   {items.map((item) => (
@@ -85,10 +95,6 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
           </Modal>
         </>
       )}
-
-      {selectedValue ? (
-        <Text style={styles.result}>Selected: {selectedValue}</Text>
-      ) : null}
     </View>
   );
 }
@@ -96,42 +102,41 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    alignItems: "center",
-    marginVertical: 10,
+    marginTop: 10,
   },
-  label: {
+  dropdownLabel: {
     color: "#fff",
-    fontSize: 18,
-    marginBottom: 8,
-    alignSelf: "flex-start",
-    marginLeft: "10%",
+    fontSize: 16,
+    marginBottom: 6,
   },
   dropdownContainer: {
-    width: "80%",
-    backgroundColor: "#1E293B",
-    borderRadius: 10,
     borderWidth: 1,
     borderColor: "#475569",
-    overflow: "hidden",
+    borderRadius: 8,
+    backgroundColor: "#0A121A",
+    height: 48,
+    justifyContent: "center",
   },
   picker: {
-    color: "#fff",
-    fontSize: 18,
-    height: 60,
+    color: "#98A6B3",
+    fontSize: 16,
+    height: 48,
     width: "100%",
   },
   fakeInput: {
-    width: "80%",
-    backgroundColor: "#1E293B",
-    borderRadius: 10,
     borderWidth: 1,
     borderColor: "#475569",
-    paddingVertical: 18,
-    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: "#0A121A",
+    paddingVertical: 14,
+    paddingHorizontal: 10,
   },
   fakeInputText: {
-    color: "#fff",
-    fontSize: 18,
+    color: "#98A6B3",
+    fontSize: 16,
+  },
+  inputFocused: {
+    borderColor: "#5ACCF2",
   },
   modalBackdrop: {
     flex: 1,
@@ -154,10 +159,5 @@ const styles = StyleSheet.create({
   iosPicker: {
     color: "#fff",
     height: 180,
-  },
-  result: {
-    color: "#5ACCF2",
-    marginTop: 20,
-    fontSize: 16,
   },
 });

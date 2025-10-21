@@ -45,25 +45,14 @@ export default function CatchForm({ onClose }: CatchFormProps) {
         </Heading>
         {/* <SpeciesDropDown /> */}
         <SimpleDropdown
-          label="Select lure type:"
+          label="Select fish species:"
           items={[
-            { label: "-- Choose lure --", value: "" },
-            { label: "Spinner", value: "Spinner" },
-            { label: "Jerkbait", value: "Jerkbait" },
-            { label: "Softbait", value: "Softbait" },
-            { label: "Wobbler", value: "Wobbler" },
+            { label: "Choose lure", value: "" },
+            { label: "Pike", value: "Pike" },
+            { label: "Zander", value: "Zander" },
+            { label: "Perch", value: "Perch" },
           ]}
         />
-
-        {/*         <SimpleDropdown
-          label="Select species:"
-          items={[
-            { label: "-- Choose species --", value: "" },
-            { label: "Pike", value: "Pike" },
-            { label: "Perch", value: "Perch" },
-            { label: "Zander", value: "Zander" },
-          ]}
-        /> */}
 
         <HStack className="w-full py-4" space="4xl">
           <Box className="flex-1">
@@ -120,12 +109,12 @@ export default function CatchForm({ onClose }: CatchFormProps) {
         </Input>
 
         <SimpleDropdown
-          label="Select species:"
+          label="Lure Used:"
           items={[
-            { label: "-- Choose species --", value: "" },
-            { label: "Pike", value: "Pike" },
-            { label: "Perch", value: "Perch" },
-            { label: "Zander", value: "Zander" },
+            { label: "Select lure type", value: "" },
+            { label: "Spinner", value: "Spinner" },
+            { label: "Jig", value: "Jig" },
+            { label: "Custom", value: "Custom" },
           ]}
         />
 
