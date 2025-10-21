@@ -13,6 +13,7 @@ import SpeciesDropDown from "./SpeciesDropDown";
 import ActionButton from "../ui/ActionButton";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { useState } from "react";
+import SimpleDropdown from "./SimpleDropdown";
 
 interface CatchFormProps {
   onClose: () => void;
@@ -42,7 +43,27 @@ export default function CatchForm({ onClose }: CatchFormProps) {
         <Heading className="pb-2" size="lg">
           Species
         </Heading>
-        <SpeciesDropDown />
+        {/* <SpeciesDropDown /> */}
+        <SimpleDropdown
+          label="Select lure type:"
+          items={[
+            { label: "-- Choose lure --", value: "" },
+            { label: "Spinner", value: "Spinner" },
+            { label: "Jerkbait", value: "Jerkbait" },
+            { label: "Softbait", value: "Softbait" },
+            { label: "Wobbler", value: "Wobbler" },
+          ]}
+        />
+
+        {/*         <SimpleDropdown
+          label="Select species:"
+          items={[
+            { label: "-- Choose species --", value: "" },
+            { label: "Pike", value: "Pike" },
+            { label: "Perch", value: "Perch" },
+            { label: "Zander", value: "Zander" },
+          ]}
+        /> */}
 
         <HStack className="w-full py-4" space="4xl">
           <Box className="flex-1">
@@ -98,10 +119,15 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           />
         </Input>
 
-        <Heading className="pt-4 pb-2" size="md">
-          Lure Used
-        </Heading>
-        <LureDropDown />
+        <SimpleDropdown
+          label="Select species:"
+          items={[
+            { label: "-- Choose species --", value: "" },
+            { label: "Pike", value: "Pike" },
+            { label: "Perch", value: "Perch" },
+            { label: "Zander", value: "Zander" },
+          ]}
+        />
 
         <Heading className="pt-4">Notes</Heading>
         <Textarea
