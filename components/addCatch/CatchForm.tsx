@@ -23,20 +23,20 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   return (
     <View style={styles.screen}>
-      <HStack className="w-full" reversed="true" space="$md">
+      <VStack space="$md">
         {/* Header med stängknapp */}
-        <Box className="h-20 py-5 items-end">
+        <Box className="w-full h-20 p-4 pr-5 items-end">
           <Pressable onPress={onClose}>
-            <Text style={{ color: "white", fontSize: 22 }}></Text>
+            <Text style={{ color: "white", fontSize: 22 }}>✕</Text>
           </Pressable>
         </Box>
 
-        <Box className="mx-auto py-5 " style={{ justifyContent: "center" }}>
+        <Box className="px-5 w-[80%]">
           <Heading size="lg">Add New Catch</Heading>
           <Divider className="my-2" style={styles.divider} />
           <Heading size="sm">Record your latest fishing trip</Heading>
         </Box>
-      </HStack>
+      </VStack>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
         <Heading className="pb-2" size="lg">
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1, // ⬅️ viktigt för fullskärm
     backgroundColor: "#0A121A", // mörk bakgrund
-    paddingTop: 40,
+    paddingTop: 20,
     paddingBottom: 60,
   },
   button: {
