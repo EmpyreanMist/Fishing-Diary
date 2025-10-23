@@ -1,18 +1,14 @@
 'use client';
 import React from 'react';
 import { createToastHook } from '@gluestack-ui/core/toast/creator';
-import { AccessibilityInfo, Text, View, ViewStyle } from 'react-native';
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
+import { AccessibilityInfo, Platform, Text, View, ViewStyle } from 'react-native';
+import { tva, withStyleContext, useStyleContext } from '@gluestack-ui/utils/nativewind-utils';
 import { cssInterop } from 'nativewind';
 import {
   Motion,
   AnimatePresence,
   MotionComponentProps,
 } from '@legendapp/motion';
-import {
-  withStyleContext,
-  useStyleContext,
-} from '@gluestack-ui/utils/nativewind-utils';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 
 type IMotionViewProps = React.ComponentProps<typeof View> &
@@ -183,9 +179,9 @@ const ToastTitle = React.forwardRef<
   const { variant: parentVariant, action: parentAction } =
     useStyleContext(SCOPE);
   React.useEffect(() => {
-    // Issue from react-native side
-    // Hack for now, will fix this later
-    AccessibilityInfo.announceForAccessibility(children as string);
+    if (Platform.OS !== 'web' && typeof children === 'string' && children.trim()) {
+      AccessibilityInfo.announceForAccessibility(children);
+    }
   }, [children]);
 
   return (
