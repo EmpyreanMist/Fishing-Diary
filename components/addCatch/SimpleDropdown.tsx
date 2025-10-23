@@ -27,10 +27,10 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.dropdownLabel}>{label}</Text>
+      <Text style={styles.dropdownLabel}>{label} </Text>
 
       {Platform.OS === 'android' ? (
-        <View style={[styles.input, focused && styles.inputFocused]}>
+        <View accessible={true} accessibilityLabel={label} style={[styles.input, focused && styles.inputFocused]}>
           <Picker
             selectedValue={selectedValue}
             onValueChange={handleSelect}
@@ -38,6 +38,10 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
             dropdownIconColor="#fff"
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
+            accessible={true}
+            accessibilityLabel={label}
+            accessibilityRole="button"
+            accessibilityHint="Double tap to open picker"
           >
             {items.map((item) => (
               <Picker.Item key={item.value} label={item.label} value={item.value} />
@@ -53,6 +57,10 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
               setIsVisible(true);
               setFocused(true);
             }}
+            accessible={true}
+            accessibilityLabel={label}
+            accessibilityRole="button"
+            accessibilityHint="Double tap to open picker"
           >
             <Text style={styles.fakeInputText}>
               {selectedValue ? items.find((i) => i.value === selectedValue)?.label : items[0]?.label || 'Select...'}
