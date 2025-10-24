@@ -7,7 +7,8 @@ import Account from "@/components/Account";
 import Auth from "@/components/Auth";
 import Header from "@/components/profile/Header";
 import ProfileCard from "@/components/profile/ProfileCard";
-import SettingsCard from "@/components/home/SettingsCard";
+import SettingsCard from "@/components/profile/SettingsCard";
+import AccountCard from "@/components/profile/AccountCard";
 
 export default function ProfileScreen() {
   const [session, setSession] = useState<Session | null>(null);
@@ -45,6 +46,7 @@ export default function ProfileScreen() {
               <Account session={session} />
               <ProfileCard />
               <SettingsCard />
+              <AccountCard />
             </>
           ) : (
             <>
