@@ -5,8 +5,13 @@ import { supabase } from "@/lib/supabase";
 
 export default function AccountCard() {
   async function handleSignOut() {
-    await supabase.auth.signOut();
-  }
++  try {
++    await supabase.auth.signOut();
++  } catch (error) {
++    if (error instanceof Error) {
++      Alert.alert("Sign Out Error", error.message);
++    }
++  }  }
 
   return (
     <View style={styles.card}>
