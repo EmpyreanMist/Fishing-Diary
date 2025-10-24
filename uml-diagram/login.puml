@@ -1,0 +1,29 @@
+@startuml login
+left to right direction
+actor "Användare" as User
+
+rectangle "Fishing Diary App" {
+  usecase "Logga in" as UC_Login
+  usecase "Validera inloggningsuppgifter" as UC_Validate
+  usecase "Visa användardata" as UC_ShowData
+}
+
+User --> UC_Login
+UC_Login --> UC_Validate : <<include>>
+UC_Validate --> UC_ShowData : <<include>>
+
+note right of UC_Login
+  Huvudflöde:
+  1. Användaren öppnar appen
+  2. Skriver in e-post och lösenord
+  3. Systemet validerar mot Supabase
+  4. Om godkänd → användardata visas
+end note
+
+note bottom of UC_Validate
+  Alternativflöde:
+  - Felaktigt lösenord → felmeddelande
+  - Nätverksfel → "Försök igen"
+end note
+
+@enduml
