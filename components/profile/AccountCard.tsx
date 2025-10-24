@@ -1,18 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase";
 
 export default function AccountCard() {
   async function handleSignOut() {
-+  try {
-+    await supabase.auth.signOut();
-+  } catch (error) {
-+    if (error instanceof Error) {
-+      Alert.alert("Sign Out Error", error.message);
-+    }
-+  }  }
-
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("Sign Out Error", error.message);
+      }
+    }
+  }
   return (
     <View style={styles.card}>
       <Text style={styles.headerTitle}>Account</Text>
