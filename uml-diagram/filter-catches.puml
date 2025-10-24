@@ -1,0 +1,46 @@
+@startuml filter catches
+left to right direction
+actor "Användare" as User
+
+rectangle "Fishing Diary App" {
+  usecase "Öppna 'My Catches'-sidan" as UC_OpenPage
+  usecase "Hämta användarens fångster från Supabase" as UC_FetchCatches
+  usecase "Filtrera efter art, datum eller plats" as UC_FilterCatches
+  usecase "Visa filtrerade resultat" as UC_DisplayResults
+  usecase "Visa detaljer om vald fångst" as UC_ViewCatchDetails
+}
+
+User --> UC_OpenPage
+UC_OpenPage --> UC_FetchCatches : <<include>>
+UC_FetchCatches --> UC_FilterCatches : <<include>>
+User --> UC_FilterCatches
+UC_FilterCatches --> UC_DisplayResults : <<include>>
+User --> UC_ViewCatchDetails
+
+note right of UC_OpenPage
+  Huvudflöde:
+  
+Användaren går in på "My Catches"
+Appen hämtar alla fångster för inloggad användare från Supabase
+Resultaten visas i en lista
+Användaren söker t.ex. "Pike"
+Filtrering körs lokalt eller via Supabase query
+Filtrerade resultat visas direkt
+end note
+
+note bottom of UC_FilterCatches
+  Alternativflöden:
+  
+Inga resultat → visa "No catches found"
+Nätverksfel → visa "Kunde inte hämta data"
+Felaktigt filter → återställ standardvy
+end note
+
+note right of UC_ViewCatchDetails
+  Utökning:
+  
+Användaren trycker på en fångst i listan
+Detaljvy öppnas med plats, art, datum, vikt, bete och bild
+end note
+
+@enduml

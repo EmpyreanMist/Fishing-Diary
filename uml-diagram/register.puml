@@ -1,0 +1,36 @@
+@startuml register
+left to right direction
+actor "Användare" as User
+
+rectangle "Fishing Diary App" {
+  usecase "Registrera konto" as UC_Register
+  usecase "Validera indata" as UC_ValidateInput
+  usecase "Skapa användare i Supabase" as UC_CreateUser
+  usecase "Skicka bekräftelse / logga in" as UC_Confirm
+  usecase "Visa startsida / profil" as UC_ShowProfile
+}
+
+User --> UC_Register
+UC_Register --> UC_ValidateInput : <<include>>
+UC_ValidateInput --> UC_CreateUser : <<include>>
+UC_CreateUser --> UC_Confirm : <<include>>
+UC_Confirm --> UC_ShowProfile : <<include>>
+
+note right of UC_Register
+  Huvudflöde:
+  1. Användaren väljer "Skapa konto"
+  2. Skriver in e-post och lösenord
+  3. Appen validerar indata
+  4. Supabase skapar användaren
+  5. Användaren loggas in automatiskt
+  6. Profil / startsida visas
+end note
+
+note bottom of UC_ValidateInput
+  Alternativflöden:
+  - Ogiltig e-post → felmeddelande
+  - För svagt lösenord → uppmaning om starkare lösenord
+  - Kontot finns redan → visa länk till "Logga in"
+end note
+
+@enduml

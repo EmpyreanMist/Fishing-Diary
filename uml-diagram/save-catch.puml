@@ -1,0 +1,36 @@
+@startuml save catch
+left to right direction
+actor "Användare" as User
+
+rectangle "Fishing Diary App" {
+  usecase "Spara Fångst" as UC_SaveCatch
+  usecase "Validera formulärdata" as UC_ValidateForm
+  usecase "Spara till Supabase" as UC_SaveToSupabase
+  usecase "Lagra platsdata på karta" as UC_SaveMap
+  usecase "Visa bekräftelse och uppdatera UI" as UC_UpdateUI
+}
+
+User --> UC_SaveCatch
+UC_SaveCatch --> UC_ValidateForm : <<include>>
+UC_ValidateForm --> UC_SaveToSupabase : <<include>>
+UC_SaveToSupabase --> UC_SaveMap : <<include>>
+UC_SaveMap --> UC_UpdateUI : <<include>>
+
+note right of UC_SaveCatch
+  Huvudflöde:
+  1. Användaren fyller i fångstformuläret (art, vikt, bete, plats, bild)
+  2. Trycker på "Save Catch"
+  3. Appen validerar formuläret
+  4. Datan skickas till Supabase (tabell: catches)
+  5. Platsen sparas och renderas på kartan
+  6. UI uppdateras och visar bekräftelse
+end note
+
+note bottom of UC_SaveToSupabase
+  Alternativflöden:
+  - Misslyckad anslutning → spara till lokal cache
+  - Fel i datavalidering → visa felmeddelande
+  - Supabase returnerar error → logga händelse
+end note
+
+@enduml
