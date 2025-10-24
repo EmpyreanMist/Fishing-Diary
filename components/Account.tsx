@@ -88,7 +88,7 @@ export default function Account({ session }: { session: Session }) {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Text style={styles.label}>Email</Text>
         <TextInput
-          style={[styles.input, { backgroundColor: "#eee" }]}
+          style={[styles.input, { backgroundColor: "#0A121A" }]}
           value={session?.user?.email ?? ""}
           editable={false}
         />
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 40,
     padding: 12,
-    color: "black",
+    color: "white",
   },
   verticallySpaced: {
     paddingTop: 4,
@@ -158,5 +158,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 10,
     fontSize: 16,
+    color: "white",
   },
 });
