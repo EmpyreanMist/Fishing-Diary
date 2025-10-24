@@ -11,7 +11,6 @@ import { Ionicons } from "@expo/vector-icons";
 export default function ProfileCard() {
   return (
     <View style={styles.card}>
-      {/* Header */}
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>Profile Information</Text>
         <TouchableOpacity style={styles.editButton}>
@@ -20,11 +19,10 @@ export default function ProfileCard() {
         </TouchableOpacity>
       </View>
 
-      {/* Profile photo and name */}
       <View style={styles.profileSection}>
         <Image
-          /*           source={require("@/assets/images/avatar-placeholder.png")}
-           */ style={styles.avatar}
+          source={require("@/assets/images/user-placeholder.png")}
+          style={styles.avatar}
         />
         <View style={styles.nameContainer}>
           <Text style={styles.name}>John Anderson</Text>
@@ -37,7 +35,6 @@ export default function ProfileCard() {
         <Text style={styles.changePhotoText}>Change Photo</Text>
       </TouchableOpacity>
 
-      {/* Inputs */}
       <View style={styles.formGroup}>
         <Text style={styles.label}>Name</Text>
         <TextInput

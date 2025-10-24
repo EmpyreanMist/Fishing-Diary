@@ -8,13 +8,11 @@ export default function SettingsCard() {
 
   return (
     <View style={styles.card}>
-      {/* Header */}
       <View style={styles.headerRow}>
         <Ionicons name="settings-outline" size={20} color="#f1f5f9" />
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
 
-      {/* Dark Mode */}
       <View style={styles.settingRow}>
         <View style={styles.textContainer}>
           <Text style={styles.settingTitle}>Dark Mode</Text>
@@ -28,10 +26,8 @@ export default function SettingsCard() {
         />
       </View>
 
-      {/* Divider */}
       <View style={styles.divider} />
 
-      {/* Notifications */}
       <View style={styles.settingRow}>
         <View style={styles.textContainer}>
           <Text style={styles.settingTitle}>Notifications</Text>
@@ -47,10 +43,8 @@ export default function SettingsCard() {
         />
       </View>
 
-      {/* Divider */}
       <View style={styles.divider} />
 
-      {/* Privacy Button */}
       <TouchableOpacity style={styles.privacyButton} activeOpacity={0.8}>
         <Ionicons name="shield-checkmark-outline" size={18} color="#f1f5f9" />
         <Text style={styles.privacyText}>Privacy & Security</Text>

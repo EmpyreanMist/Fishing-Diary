@@ -10,10 +10,8 @@ export default function AccountCard() {
 
   return (
     <View style={styles.card}>
-      {/* Header */}
       <Text style={styles.headerTitle}>Account</Text>
 
-      {/* Sign Out Button */}
       <TouchableOpacity
         style={styles.signOutButton}
         onPress={handleSignOut}
