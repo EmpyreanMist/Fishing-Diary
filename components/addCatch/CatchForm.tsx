@@ -7,6 +7,7 @@ import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import SimpleDropdown from "./SimpleDropdown";
+import FishDropdown from "./FishDropdown";
 
 interface CatchFormProps {
   onClose: () => void;
@@ -22,15 +23,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       </SafeAreaView>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
-        <SimpleDropdown
-          label="Species:"
-          items={[
-            { label: "Choose species", value: "" },
-            { label: "Pike", value: "Pike" },
-            { label: "Zander", value: "Zander" },
-            { label: "Perch", value: "Perch" },
-          ]}
-        />
+        <FishDropdown />
+
         <CatchFormInputs
           focusedField={focusedField}
           setFocusedField={setFocusedField}
