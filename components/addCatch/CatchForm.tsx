@@ -25,7 +25,7 @@ interface Lure {
   name: string;
   brand: string;
   type: string;
-  weight: number;
+  weight_gram: number;
   color: string;
   image_url?: string | null;
   created_at?: string;
@@ -36,7 +36,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [lures, setLures] = useState<Lure[]>([]);
 
   const lureOptions = lures.map((lure) => ({
-    label: `${lure.name} (${lure.brand})`,
+    label: `${lure.name} (${lure.brand}) ${lure.weight_gram}g`,
     value: lure.id.toString(),
     image: lure.image_url ?? undefined,
   }));
