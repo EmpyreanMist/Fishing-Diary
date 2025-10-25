@@ -34,6 +34,8 @@ export default function LureDropdown() {
     <SimpleDropdown
       label="Lure Used:"
       items={[{ label: "Select lure", value: "" }, ...lureOptions]}
+      enableSearch={true}
+      placeholder="Search or select lure..."
     />
   );
 }

@@ -7,6 +7,7 @@ import {
   Modal,
   FlatList,
   Image,
+  TextInput,
 } from "react-native";
 
 interface DropdownItem {
@@ -18,17 +19,30 @@ interface DropdownItem {
 interface SimpleDropdownProps {
   label: string;
   items: DropdownItem[];
+  enableSearch?: boolean;
+  placeholder?: string;
 }
 
-export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
+export default function SimpleDropdown({
+  label,
+  items,
+  enableSearch = false,
+  placeholder = "Select...",
+}: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = enableSearch
+    ? items.filter((item) =>
+        item.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : items;
 
   const handleSelect = (item: DropdownItem) => {
     setSelectedItem(item);
     setIsVisible(false);
-    setFocused(false);
+    setSearchQuery("");
   };
 
   return (
@@ -37,15 +51,12 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
 
       <TouchableOpacity
         activeOpacity={0.8}
-        style={[styles.input, focused && styles.inputFocused]}
-        onPress={() => {
-          setIsVisible(true);
-          setFocused(true);
-        }}
+        style={styles.input}
+        onPress={() => setIsVisible(true)}
       >
         <View style={styles.fakeInputRow}>
           <Text style={styles.fakeInputText}>
-            {selectedItem ? selectedItem.label : items[0]?.label || "Select..."}
+            {selectedItem ? selectedItem.label : placeholder}
           </Text>
           {selectedItem?.image && (
             <Image
@@ -60,26 +71,28 @@ export default function SimpleDropdown({ label, items }: SimpleDropdownProps) {
         visible={isVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => {
-          setIsVisible(false);
-          setFocused(false);
-        }}
+        onRequestClose={() => setIsVisible(false)}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
             <View style={styles.doneRow}>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsVisible(false);
-                  setFocused(false);
-                }}
-              >
+              <TouchableOpacity onPress={() => setIsVisible(false)}>
                 <Text style={styles.doneText}>Close</Text>
               </TouchableOpacity>
             </View>
 
+            {enableSearch && (
+              <TextInput
+                placeholder="Search..."
+                placeholderTextColor="#94A3B8"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                style={styles.searchInput}
+              />
+            )}
+
             <FlatList
-              data={items}
+              data={filteredItems}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <TouchableOpacity
@@ -123,9 +136,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 12,
   },
-  inputFocused: {
-    borderColor: "#5ACCF2",
-  },
   fakeInputRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -161,6 +171,16 @@ const styles = StyleSheet.create({
     borderBottomColor: "#475569",
   },
   doneText: { color: "#5ACCF2", fontSize: 16, fontWeight: "600" },
+  searchInput: {
+    backgroundColor: "#0A121A",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#334155",
+    color: "#fff",
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    height: 40,
+  },
   optionRow: {
     flexDirection: "row",
     alignItems: "center",
