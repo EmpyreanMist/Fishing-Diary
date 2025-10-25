@@ -38,6 +38,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const lureOptions = lures.map((lure) => ({
     label: `${lure.name} (${lure.brand})`,
     value: lure.id.toString(),
+    image: lure.image_url ?? undefined,
   }));
 
   useEffect(() => {
@@ -74,10 +75,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       </SafeAreaView>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
-        {/* <Heading className="pb-2 color-white" size="lg">
-          Species
-        </Heading> */}
-        {/* <SpeciesDropDown /> */}
         <SimpleDropdown
           label="Species:"
           items={[
@@ -163,7 +160,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           />
         </Textarea>
 
-        {/* Foto + GPS-knappar */}
         <VStack className="my-5">
           <HStack className="w-full py-4" space="lg">
             <Button
@@ -186,7 +182,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
             </Button>
           </HStack>
 
-          {/* Cancel + Save */}
           <HStack className="w-full py-4" space="lg">
             <Box className="w-1/2 flex-1">
               <ActionButton
@@ -208,8 +203,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1, // ⬅️ viktigt för fullskärm
-    backgroundColor: "#0A121A", // mörk bakgrund
+    flex: 1,
+    backgroundColor: "#0A121A",
     paddingTop: 20,
     paddingBottom: 60,
   },
