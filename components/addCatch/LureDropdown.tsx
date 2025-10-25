@@ -7,6 +7,7 @@ interface Lure {
   name: string;
   brand: string;
   weight_gram: number;
+  color: string;
   image_url?: string | null;
 }
 
@@ -25,7 +26,7 @@ export default function LureDropdown() {
   }, []);
 
   const lureOptions = lures.map((lure) => ({
-    label: `${lure.name} (${lure.brand}) ${lure.weight_gram}g`,
+    label: `${lure.brand} - ${lure.name} – ${lure.weight_gram}g - ${lure.color}`,
     value: lure.id.toString(),
     image: lure.image_url ?? undefined,
   }));

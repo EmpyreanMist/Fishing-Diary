@@ -55,7 +55,11 @@ export default function SimpleDropdown({
         onPress={() => setIsVisible(true)}
       >
         <View style={styles.fakeInputRow}>
-          <Text style={styles.fakeInputText}>
+          <Text
+            style={[styles.fakeInputText, { flexShrink: 1, marginRight: 8 }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {selectedItem ? selectedItem.label : placeholder}
           </Text>
           {selectedItem?.image && (
