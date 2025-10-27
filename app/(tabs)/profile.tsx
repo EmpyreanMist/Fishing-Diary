@@ -1,10 +1,14 @@
-// app/(tabs)/profile.tsx
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Account from "@/components/Account";
 import Auth from "@/components/Auth";
-import { supabase } from "@/lib/supabase";
-import { Session } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import Header from "@/components/profile/Header";
+import ProfileCard from "@/components/profile/ProfileCard";
+import SettingsCard from "@/components/profile/SettingsCard";
+import AccountCard from "@/components/profile/AccountCard";
 
 export default function ProfileScreen() {
   const [session, setSession] = useState<Session | null>(null);
@@ -26,35 +30,58 @@ export default function ProfileScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {session && session.user ? (
-        <Account session={session} />
-      ) : (
-        <>
-          <Text style={styles.title}>Logga in för att se din profil</Text>
-          <Auth />
-        </>
-      )}
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <Header
+          title="Profile"
+          subtitle="Manage your account and preferences"
+        />
+
+        <View style={styles.content}>
+          {session && session.user ? (
+            <>
+              <Account session={session} />
+              <ProfileCard />
+              <SettingsCard />
+              <AccountCard />
+            </>
+          ) : (
+            <>
+              <Text style={styles.title}>Log in to see your profile</Text>
+              <Auth />
+            </>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#0A121A",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: "#0A121A",
+  },
+  content: {
+    flex: 1,
+    width: "100%",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    justifyContent: "flex-start",
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "gray",
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#f1f5f9",
+    marginTop: 32,
     textAlign: "center",
   },
 });

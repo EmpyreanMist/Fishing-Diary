@@ -1,4 +1,14 @@
-import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  AppState,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { supabase } from "../lib/supabase";
 import {
   FormControl,
   FormControlLabel,
@@ -6,10 +16,15 @@ import {
 } from "@/components/ui/form-control";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Lock, Mail } from "lucide-react-native";
-import React, { useState } from "react";
-import { AppState, StyleSheet, Text, View } from "react-native";
-import { supabase } from "../lib/supabase";
 
+const gradients: Record<string, [string, string]> = {
+  blue: ["#0072FF", "#00C6FF"],
+  green: ["#2E8B57", "#4CAF50"],
+  black: ["#1A1A1A", "#1A1A1A"],
+  transparent: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.15)"],
+};
+
+// Hantera Supabase auto-refresh av sessionen
 AppState.addEventListener("change", (state) => {
   if (state === "active") {
     supabase.auth.startAutoRefresh();
@@ -22,20 +37,16 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null); // 🔥 för feedback
+  const [message, setMessage] = useState<string | null>(null);
 
   async function signInWithEmail() {
     setMessage(null);
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
+      email,
+      password,
     });
-
-    if (error) {
-      setMessage(error.message);
-    }
-
+    if (error) setMessage(error.message);
     setLoading(false);
   }
 
@@ -45,10 +56,7 @@ export default function Auth() {
     const {
       data: { session },
       error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
+    } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       setMessage(error.message);
@@ -60,59 +68,87 @@ export default function Auth() {
   }
 
   return (
-    <View className="flex-1 justify-center px-6 bg-slate-900">
+    <View className="w-full bg-[#111827] p-5 rounded-2xl mt-6 border border-slate-800">
       {/* E-postfält */}
       <FormControl className="mb-5">
         <FormControlLabel>
-          <FormControlLabelText>Email</FormControlLabelText>
+          <FormControlLabelText className="text-slate-300 text-sm mb-2">
+            Email
+          </FormControlLabelText>
         </FormControlLabel>
-        <Input variant="outline" size="md">
+        <Input className="h-14 rounded-xl border border-slate-700 bg-slate-900">
           <InputSlot>
             <InputIcon as={Mail} className="text-slate-400" />
           </InputSlot>
           <InputField
             placeholder="email@address.com"
+            placeholderTextColor="#94a3b8"
             autoCapitalize="none"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
+            className="text-slate-100 text-base"
           />
         </Input>
       </FormControl>
 
-      {/* Lösenordsfält */}
+      {/* Lösenordfält */}
       <FormControl className="mb-6">
         <FormControlLabel>
-          <FormControlLabelText>Password</FormControlLabelText>
+          <FormControlLabelText className="text-slate-300 text-sm mb-2">
+            Password
+          </FormControlLabelText>
         </FormControlLabel>
-        <Input variant="outline" size="md">
+        <Input className="h-14 rounded-xl border border-slate-700 bg-slate-900">
           <InputSlot>
             <InputIcon as={Lock} className="text-slate-400" />
           </InputSlot>
           <InputField
             placeholder="Password"
+            placeholderTextColor="#94a3b8"
             secureTextEntry
             autoCapitalize="none"
             value={password}
             onChangeText={setPassword}
+            className="text-slate-100 text-base"
           />
         </Input>
       </FormControl>
 
       {/* Knappar */}
       {loading ? (
-        <Button className="bg-blue-600 mt-4" isDisabled>
-          <ButtonSpinner color="white" />
-        </Button>
+        <View className="h-14 mt-4 justify-center items-center rounded-xl bg-slate-700">
+          <ActivityIndicator color="white" />
+        </View>
       ) : (
         <>
-          <Button className="bg-blue-600 mt-4" onPress={signInWithEmail}>
-            <ButtonText>Sign In</ButtonText>
-          </Button>
+          {/* Sign In Button */}
+          <TouchableOpacity onPress={signInWithEmail} activeOpacity={0.9}>
+            <LinearGradient
+              colors={gradients.blue}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              className="h-14 rounded-xl mt-4 justify-center items-center shadow-lg shadow-blue-900/30"
+            >
+              <Text className="text-white text-base font-semibold">
+                Sign In
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
-          <Button className="bg-indigo-500 mt-3" onPress={signUpWithEmail}>
-            <ButtonText>Sign Up</ButtonText>
-          </Button>
+          {/* Sign Up Button */}
+          <TouchableOpacity onPress={signUpWithEmail} activeOpacity={0.9}>
+            <LinearGradient
+              colors={gradients.blue}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              className="h-14 rounded-xl mt-3 justify-center items-center shadow-lg shadow-blue-900/30"
+            >
+              <Text className="text-white text-base font-semibold">
+                Sign Up
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </>
       )}
 
@@ -126,17 +162,4 @@ export default function Auth() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
-  },
-});
+const styles = StyleSheet.create({});
