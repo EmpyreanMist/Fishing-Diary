@@ -47,7 +47,7 @@ export default function SearchFilterCard() {
             <SimpleDropdown
               label="Species"
               items={[
-                { label: "All species", value: "" },  //no vulue means no filter
+                { label: "All species", value: "" },  // no value means no filter
                 { label: "Pike", value: "pike" },
                 { label: "Perch", value: "perch" },
                 { label: "Trout", value: "trout" },
