@@ -1,0 +1,72 @@
+@startuml LoggaFångstFull
+title Logga en fångst
+
+!define RECTANGLE class
+skinparam backgroundColor #F8FAFC
+skinparam activity {
+  BackgroundColor<<Client>> #E3F2FD
+  BackgroundColor<<Server>> #E8F5E9
+  BackgroundColor<<Error>> #FFEBEE
+  BorderColor #333
+}
+
+start
+
+partition "📱 Klient (App)" <<Client>> {
+  :Användaren öppnar appen;
+  :Väljer "Ny fångst";
+
+  :Ta foto på fångsten;
+  note right:
+  if (Foto lyckades?) then (Nej)
+    :Visa alert "Kunde inte ta foto"; <<Error>>
+    stop
+  endif
+
+  :Ange vikt, längd och antal;
+
+  :Ange metod och drag;
+
+  :Begär GPS-position;
+  note right: (US4)
+  if (GPS tillåten?) then (Nej)
+    :Visa alert "Åtkomst till plats nekad"; <<Error>>
+    stop
+  else (Ja)
+    :Plats hämtas automatiskt;
+  endif
+
+  :Markera fångst som Catch & Release (C/R);
+
+  :Granska uppgifter och tryck "Spara fångst";
+  :Skicka data och foto till server;
+}
+
+partition "🖥️ Server (Backend / Supabase)" <<Server>> {
+  :Ta emot fångstdata och foto;
+  :Validera fält (vikt, längd, metod, GPS, C/R);
+  if (Validering godkänd?) then (Nej)
+    :Returnera felmeddelande "Ogiltiga värden"; <<Error>>
+  else (Ja)
+    :Spara data i databasen;
+    :Ladda upp foto till lagring (Storage);
+    if (Uppladdning lyckades?) then (Nej)
+      :Returnera felmeddelande "Uppladdning misslyckades"; <<Error>>
+    else (Ja)
+      :Returnera svar {status: OK};
+    endif
+  endif
+}
+
+partition "📱 Klient (App)" <<Client>> {
+  if (Svar = OK?) then (Ja)
+    :Visa bekräftelse "Fångst sparad!";
+    :Navigera till fångstlista / startsida;
+  else (Nej)
+    :Visa alert; <<Error>>
+  endif
+}
+
+stop
+
+@enduml

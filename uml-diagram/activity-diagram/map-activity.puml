@@ -1,0 +1,78 @@
+@startuml KartaActivity_PermissionCheck
+title Karta (Platsåtkomst begärs endast en gång)
+
+skinparam backgroundColor #F8FAFC
+skinparam activity {
+  BackgroundColor<<Client>> #E3F2FD
+  BackgroundColor<<OS>> #FFF8E1
+  BackgroundColor<<Server>> #E8F5E9
+  BackgroundColor<<Error>> #FFEBEE
+  BorderColor #333
+}
+skinparam partitionBorderColor #333
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #E0E0E0
+
+start
+
+partition "📱 Klient (Expo-app)" <<Client>> {
+  :Användaren öppnar kartvyn;
+  :Visa loading-indikator;
+  :Kontrollera platsåtkomst med `getForegroundPermissionsAsync()`;
+
+  if (Tillstånd redan beviljat?) then (Ja)
+    :Hämta aktuell position med `getCurrentPositionAsync()`;
+  else (Nej)
+    :Begär platsåtkomst via `requestForegroundPermissionsAsync()`;
+  endif
+}
+
+partition "🧩 OS (iOS / Android)" <<OS>> {
+  if (Begäran skickad?) then (Ja)
+    :Visa system-prompt "Tillåt Fishing Diary att använda din plats?";
+    if (Användaren nekar?) then (Ja)
+      :Returnera status = denied;
+    else (Nej)
+      :Returnera status = granted;
+    endif
+  endif
+}
+
+partition "📱 Klient (Expo-app)" <<Client>> {
+  if (status == denied) then (Ja)
+    :Visa alert "Platsåtkomst krävs för att visa karta"; <<Error>>
+    stop
+  else (Nej)
+    :Hämta position (GPS-data);
+    :Skicka position + användar-ID till servern;
+  endif
+}
+
+partition "🖥️ Server (Supabase)" <<Server>> {
+  :Verifiera användarsession;
+  :Hämta användarens fångster från databasen;
+  :Returnera lista med koordinater och metadata;
+}
+
+partition "📱 Klient (Expo-app)" <<Client>> {
+  :Dölj loading-indikator;
+  :Visa karta via `react-native-maps`;
+  :Placera markörer för alla fångster;
+
+  if (Användaren trycker på markör?) then (Ja)
+    :Visa detaljerad information i modal/panel;
+  endif
+
+  if (Användaren långtrycker på kartan?) then (Ja)
+    :Hämta vald koordinat;
+    :Fråga "Vill du lägga till en ny fångst här?";
+    if (Bekräftar?) then (Ja)
+      :Öppna formuläret "Ny fångst" med vald position;
+    endif
+  endif
+
+  :Användaren kan panorera, zooma, uppdatera kartan;
+}
+
+stop
+@enduml

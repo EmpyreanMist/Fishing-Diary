@@ -1,0 +1,48 @@
+@startuml LoginActivity
+title Logiskt flöde för inloggning (klient + server)
+
+start
+
+:Användaren öppnar appen / inloggningssidan;
+:Användaren anger e-post och lösenord;
+
+if (Är fälten ifyllda?) then (Nej)
+  :Visa felmeddelande;
+  stop
+else (Ja)
+  :Skicka inloggningsförfrågan till servern;
+endif
+
+partition Server {
+  :Ta emot inloggningsdata;
+  :Validera e-postformat;
+  :Kontrollera om användaren finns i databasen;
+
+  if (Användare hittad?) then (Nej)
+    :Returnera fel "Användare saknas";
+    stop
+  else (Ja)
+    :Verifiera lösenord mot hash;
+    if (Lösenord korrekt?) then (Nej)
+      :Returnera fel "Fel lösenord";
+      stop
+    else (Ja)
+      :Generera session/token (Supabase JWT token);
+      :Returnera svar {status: OK, session/token};
+    endif
+  endif
+}
+
+partition Klient {
+  :Ta emot svar från servern;
+  if (Inloggning lyckades?) then (Ja)
+    :Spara session/token lokalt (t.ex. SecureStore / Cookies);
+    :Redirect till dashboard;
+  else (Nej)
+    :Visa felmeddelande;
+  endif
+}
+
+stop
+
+@enduml
