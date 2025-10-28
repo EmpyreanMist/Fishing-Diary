@@ -47,8 +47,8 @@ export default function HomeScreen() {
               label="+ Add Catch"
               onPress={() => setShowCatchForm(true)}
             />
-            <ActionButton label="+ Add Trip" />
-          </View>
+            <ActionButton label="+ Add Trip"/>
+        </View>
         </View>
 
         <StatsGrid />
