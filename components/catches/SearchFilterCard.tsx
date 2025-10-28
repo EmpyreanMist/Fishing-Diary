@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Icon } from "@/components/ui/icon";
 import { Card } from "@/components/ui/card";
 import { Input, InputField } from "@/components/ui/input";
 import { Search } from "lucide-react-native";
+import SimpleDropdown from "../addCatch/SimpleDropdown";
 
 export default function SearchFilterCard() {
   return (
@@ -22,7 +23,6 @@ export default function SearchFilterCard() {
       </View>
 
       <View style={{ padding: 16 }}>
-
         <View style={{ marginBottom: 12 }}>
           <Input
             style={{
@@ -42,16 +42,30 @@ export default function SearchFilterCard() {
         </View>
 
   
-        <View style={styles.pillsRow}>
-          <TouchableOpacity style={styles.pill}>
-            <Text style={styles.pillText}>All Species</Text>
-            <Text style={styles.pillCaret}>▾</Text>
-          </TouchableOpacity>
+        <View style={styles.dropdownRow}>
+          <View style={{ flex: 1 }}>
+            <SimpleDropdown
+              label="Species"
+              items={[
+                { label: "All species", value: "" },  // no value means no filter
+                { label: "Pike", value: "pike" },
+                { label: "Perch", value: "perch" },
+                { label: "Trout", value: "trout" },
+              ]}
+            />
+          </View>
 
-          <TouchableOpacity style={styles.pill}>
-            <Text style={styles.pillText}>Date (newest)</Text>
-            <Text style={styles.pillCaret}>▾</Text>
-          </TouchableOpacity>
+          <View style={{ flex: 1 }}>
+            <SimpleDropdown
+              label="Sort by"
+              items={[
+                { label: "Date (newest)", value: "date_desc" },
+                { label: "Date (oldest)", value: "date_asc" },
+                { label: "Weight (heaviest)", value: "weight_desc" },
+                { label: "Weight (lightest)", value: "weight_asc" },
+              ]}
+            />
+          </View>
         </View>
       </View>
     </Card>
@@ -74,29 +88,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
   },
-  pillsRow: {
+  dropdownRow: {
     flexDirection: "row",
     gap: 12,
-  },
-  pill: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#1F2937",
-    backgroundColor: "#121B22",
-    flex: 1,
-  },
-  pillText: {
-    color: "#D1D5DB",
-    fontSize: 14,
-  },
-  pillCaret: {
-    color: "#9CA3AF",
-    marginLeft: 8,
-    fontSize: 12,
+    marginTop: 4,
   },
 });
