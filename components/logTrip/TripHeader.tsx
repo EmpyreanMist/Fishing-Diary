@@ -17,7 +17,9 @@ export default function TripHeader() {
           <Text style={styles.headerTitle}>New Fishing Trip</Text>
         </View>
         <Divider className="my-0.5" style={styles.divider} />
-        <Text className='pt-2' style={styles.headerSubtitle}>Plan and log your fishing trips</Text>
+        <Text className="pt-2" style={styles.headerSubtitle}>
+          Plan and log your fishing trips
+        </Text>
       </View>
     </LinearGradient>
   );
