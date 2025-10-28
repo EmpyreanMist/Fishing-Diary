@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form-control";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Lock, Mail } from "lucide-react-native";
+import  ActionButton  from "@/components/ui/ActionButton";
 
 const gradients: Record<string, [string, string]> = {
   blue: ["#0072FF", "#00C6FF"],
@@ -123,32 +124,12 @@ export default function Auth() {
       ) : (
         <>
           {/* Sign In Button */}
-          <TouchableOpacity onPress={signInWithEmail} activeOpacity={0.9}>
-            <LinearGradient
-              colors={gradients.blue}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="h-14 rounded-xl mt-4 justify-center items-center shadow-lg shadow-blue-900/30"
-            >
-              <Text className="text-white text-base font-semibold">
-                Sign In
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
+        <ActionButton label="Sign In" onPress={signInWithEmail}/>
 
-          {/* Sign Up Button */}
-          <TouchableOpacity onPress={signUpWithEmail} activeOpacity={0.9}>
-            <LinearGradient
-              colors={gradients.blue}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="h-14 rounded-xl mt-3 justify-center items-center shadow-lg shadow-blue-900/30"
-            >
-              <Text className="text-white text-base font-semibold">
-                Sign Up
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
+        <View className="py-2"/>
+        <ActionButton label="Sign Up" onPress={signUpWithEmail}/>
+
+
         </>
       )}
 
@@ -161,5 +142,3 @@ export default function Auth() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({});
