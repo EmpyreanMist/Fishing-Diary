@@ -75,10 +75,12 @@ export default function AddTripScreen() {
               {/* here date begins */}
               <Box>
                 <Pressable onPress={() => setShowPicker(true)}>
-                  <Input size="md" className="my-1">
-                    <InputField editable={false} placeholder="Välj datum" value={formatted} />
-                    <Icon as={Calendar} size="md" />
-                  </Input>
+                  <Box pointerEvents="none">
+                    <Input size="md">
+                      <Icon as={Calendar} />
+                      <InputField editable={false} placeholder="Välj datum" value={formatted} />
+                    </Input>
+                  </Box>
                 </Pressable>
 
                 {showPicker && (
@@ -87,7 +89,7 @@ export default function AddTripScreen() {
                     display={Platform.OS === 'ios' ? 'inline' : 'default'}
                     value={date || new Date()}
                     onChange={(event, selectedDate) => {
-                      setShowPicker(false);
+                      if (Platform.OS !== 'ios') setShowPicker(false);
                       if (selectedDate) setDate(selectedDate);
                     }}
                   />
