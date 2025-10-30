@@ -8,6 +8,7 @@ import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
 import { Box } from '@/components/ui/box';
 import FishingMethodDropdown from './FishingMethodDropdown';
+import { B } from '@expo/html-elements';
 
 interface TripFormProps {
   date: Date | null;
@@ -70,7 +71,6 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
           {/* Choose time row end */}
 
           <FishingMethodDropdown />
-          
 
           <Heading className="py-2" style={styles.heading} size="sm">
             Participants
@@ -95,15 +95,35 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
               Environmental Conditions During your Trip
             </Heading>
           </VStack>
+          <Heading className="py-2" style={styles.heading} size="sm">
+            Weather Condition
+          </Heading>
           <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-            <InputField placeholder="Enter Text here..." />
+            <InputField placeholder="Enter Weather Conditions..." />
           </Input>
-          <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-            <InputField placeholder="Enter Text here..." />
-          </Input>
-          <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-            <InputField placeholder="Enter Text here..." />
-          </Input>
+
+          <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+            <Box className="flex-1">
+              <Heading className="py-2" style={styles.heading} size="sm">
+                Temperature
+              </Heading>
+              <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
+                <InputField placeholder="Enter Text here..." />
+              </Input>
+            </Box>
+            <Box className="flex-1">
+              <Heading className="py-2" style={styles.heading} size="sm">
+                Wind Condition
+              </Heading>
+              <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
+                <InputField placeholder="Enter Text here..." />
+              </Input>
+            </Box>
+          </HStack>
+
+          <Heading className="py-2" style={styles.heading} size="sm">
+            Water Condition
+          </Heading>
           <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
             <InputField placeholder="Enter Text here..." />
           </Input>
