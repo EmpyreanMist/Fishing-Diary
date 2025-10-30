@@ -8,7 +8,6 @@ import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
 import { Box } from '@/components/ui/box';
 import FishingMethodDropdown from './FishingMethodDropdown';
-import { B } from '@expo/html-elements';
 
 interface TripFormProps {
   date: Date | null;
