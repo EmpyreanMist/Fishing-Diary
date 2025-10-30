@@ -6,7 +6,6 @@ import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
-import SimpleDropdown from "./SimpleDropdown";
 import FishDropdown from "./FishDropdown";
 
 interface CatchFormProps {

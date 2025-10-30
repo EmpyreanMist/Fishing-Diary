@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { Pressable } from '@/components/ui/pressable';
 import { Input, InputField } from '@/components/ui/input';
@@ -26,12 +26,14 @@ export default function DateInput({ date, setDate, focusedField, setFocusedField
 
   return (
     <Box>
-      <Pressable onPress={() => {
-        setShowPicker(true);
-        setFocusedField('date');
-      }}>
+      <Pressable
+        onPress={() => {
+          setShowPicker(true);
+          setFocusedField('date');
+        }}
+      >
         <Box pointerEvents="none">
-          <Input size="md">
+          <Input style={[styles.input, focusedField === 'date' && styles.inputFocused]} size="md">
             <Icon as={Calendar} />
             <InputField editable={false} placeholder="Välj datum" value={formatted} />
           </Input>
@@ -58,3 +60,14 @@ export default function DateInput({ date, setDate, focusedField, setFocusedField
     </Box>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#475569',
+    borderRadius: 8,
+  },
+  inputFocused: {
+    borderColor: '#5ACCF2',
+  },
+});

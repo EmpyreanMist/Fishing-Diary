@@ -17,12 +17,12 @@ export default function AddTripScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View className='mb-5'>
         <TripHeader />
       </View>
 
       <ScrollView keyboardShouldPersistTaps="handled">
-        <FormControl>
+        <FormControl className='mx-auto w-full p-2'>
           <LinearGradient
             colors={['#0f172a', '#1e293b', '#0f172a']}
             start={{ x: 0, y: 0 }}
@@ -51,5 +51,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.1)',
   },
-  heading: { color: '#fff' },
+  heading: {
+    color: '#fff',
+    padding: 10,
+  },
 });
