@@ -5,7 +5,7 @@ import TripHeader from '@/components/logTrip/TripHeader';
 
 export default function AddTripScreen() {
   return (
-    <SafeAreaView style={[styles.container]}>
+    <SafeAreaView style={styles.container}>
       <View>
         <TripHeader />
       </View>
@@ -19,10 +19,7 @@ export default function AddTripScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0A121A',
-  },
+  container: { flex: 1, backgroundColor: '#0A121A' },
   headerContainer: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.1)',
