@@ -1,6 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import Header from '@/components/profile/Header';
 import { FormControl } from '@/components/ui/form-control';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Heading } from '@/components/ui/heading';
@@ -19,9 +18,10 @@ export default function AddTripScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <TripHeader /* title="Add Trip" subtitle="Log your fishing trip details" */ />
+        <TripHeader />
       </View>
-      <ScrollView>
+
+      <ScrollView keyboardShouldPersistTaps="handled">
         <FormControl>
           <LinearGradient
             colors={['#0f172a', '#1e293b', '#0f172a']}
@@ -30,7 +30,14 @@ export default function AddTripScreen() {
             style={styles.headerContainer}
           >
             <Heading style={styles.heading}>Add Trip</Heading>
-            <TripForm date={date} setDate={setDate} handleFocus={handleFocus} />
+
+            <TripForm
+              date={date}
+              setDate={setDate}
+              focusedField={focusedField}
+              setFocusedField={setFocusedField}
+              handleFocus={handleFocus}
+            />
           </LinearGradient>
         </FormControl>
       </ScrollView>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { Pressable } from '@/components/ui/pressable';
@@ -7,14 +7,29 @@ import { Icon } from '@/components/ui/icon';
 import { Calendar } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function DateInput({ date, setDate }: { date: Date | null; setDate: (d: Date) => void }) {
-  const [showPicker, setShowPicker] = useState(false);
+interface DateInputProps {
+    date: Date | null;
+    setDate: (d: Date) => void;
+    focusedField: string | null;
+    setFocusedField: (field: string | null) => void;
+}
+export default function DateInput({ date, setDate, focusedField, setFocusedField }: DateInputProps) {
+  const [showPicker, setShowPicker] = useState<boolean>(false);
 
   const formatted = date ? date.toLocaleDateString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '';
 
+  useEffect(() => {
+    if (focusedField !== 'date' && showPicker) {
+      setShowPicker(false);
+    }
+  }, [focusedField]);
+
   return (
     <Box>
-      <Pressable onPress={() => setShowPicker(true)}>
+      <Pressable onPress={() => {
+        setShowPicker(true);
+        setFocusedField('date');
+      }}>
         <Box pointerEvents="none">
           <Input size="md">
             <Icon as={Calendar} />
@@ -31,10 +46,12 @@ export default function DateInput({ date, setDate }: { date: Date | null; setDat
           onChange={(event, selectedDate) => {
             if (event.type === 'dismissed') {
               setShowPicker(false);
+              setFocusedField(null);
               return;
             }
             if (selectedDate) setDate(selectedDate);
             setShowPicker(false);
+            setFocusedField(null);
           }}
         />
       )}
