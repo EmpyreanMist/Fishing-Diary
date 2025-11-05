@@ -48,3 +48,54 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Database Schemas
+
+### catches
+
+| Column          | Type        | Notes                               |
+| --------------- | ----------- | ----------------------------------- |
+| id              | int8 (PK)   | Auto-increment                      |
+| user_id         | uuid        | FK → `profiles.id`                  |
+| created_at      | timestamptz | default `now()`                     |
+| caught_at       | timestamptz | optional catch date                 |
+| fish_species_id | int8        | FK → `fish_species.id` _(optional)_ |
+| lure_id         | int8        | FK → `lures.id` _(optional)_        |
+| latitude        | numeric     | optional                            |
+| longitude       | numeric     | optional                            |
+| weight_kg       | numeric     | required                            |
+| length_cm       | numeric     | optional                            |
+| notes           | text        | optional                            |
+| location_name   | text        | optional                            |
+
+## catch_photos
+
+| Column     | Type        | Notes                      |
+| ---------- | ----------- | -------------------------- |
+| id         | int8 (PK)   | Auto-increment             |
+| created_at | timestamptz | default `now()`            |
+| catch_id   | int8        | FK → `catches.id`          |
+| image_url  | text        | stored in Supabase Storage |
+
+## fish_species
+
+| Column       | Type        | Notes                   |
+| ------------ | ----------- | ----------------------- |
+| id           | int8 (PK)   | Auto-increment          |
+| created_at   | timestamptz | default `now()`         |
+| english_name | text        |                         |
+| swedish_name | text        |                         |
+| image_url    | text        | icon/photo _(optional)_ |
+
+## lures
+
+| Column      | Type        | Notes                                |
+| ----------- | ----------- | ------------------------------------ |
+| id          | int8 (PK)   | Auto-increment                       |
+| created_at  | timestamptz | default `now()`                      |
+| name        | text        |                                      |
+| brand       | text        | optional                             |
+| type        | text        | category (spoon, jig, crankbait etc) |
+| weight_gram | numeric     | optional                             |
+| color       | text        | optional                             |
+| image_url   | text        | optional image                       |
