@@ -22,6 +22,7 @@ interface SimpleDropdownProps {
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
+  onSelect?: (value: string) => void;
 }
 
 export default function SimpleDropdown({
