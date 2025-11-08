@@ -141,7 +141,13 @@ export default function CatchFormActions({
           <ActionButton label="Cancel" color="black" size="md" onPress={onClose} />
         </Box>
         <Box className="w-1/2">
-          <ActionButton label="Save catch" color="blue" size="md" />
+          <ActionButton
+            label={loading ? "Saving..." : "Save catch"}
+            color="blue"
+            size="md"
+            disabled={loading}
+            onPress={onSave}
+          />
         </Box>
       </HStack>
     </VStack>
