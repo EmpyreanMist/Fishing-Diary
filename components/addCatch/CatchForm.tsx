@@ -1,12 +1,12 @@
-import { View, StyleSheet } from "react-native";
-import { FormControl } from "@gluestack-ui/themed";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
-import CatchFormHeader from "./CatchFormHeader";
-import CatchFormInputs from "./CatchFormInputs";
-import LureDropdown from "./LureDropdown";
-import CatchFormActions from "./CatchFormActions";
-import FishDropdown from "./FishDropdown";
+import { View, StyleSheet } from 'react-native';
+import { FormControl } from '@gluestack-ui/themed';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
+import CatchFormHeader from './CatchFormHeader';
+import CatchFormInputs from './CatchFormInputs';
+import LureDropdown from './LureDropdown';
+import CatchFormActions from './CatchFormActions';
+import FishDropdown from './FishDropdown';
 
 interface CatchFormProps {
   onClose: () => void;
@@ -17,17 +17,14 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   return (
     <View style={styles.screen}>
-      <SafeAreaView edges={["top"]} style={{ backgroundColor: "#0A121A" }}>
+      <SafeAreaView edges={['top']} style={{ backgroundColor: '#0A121A' }}>
         <CatchFormHeader onClose={onClose} />
       </SafeAreaView>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
         <FishDropdown />
 
-        <CatchFormInputs
-          focusedField={focusedField}
-          setFocusedField={setFocusedField}
-        />
+        <CatchFormInputs focusedField={focusedField} setFocusedField={setFocusedField} />
         <LureDropdown />
         <CatchFormActions onClose={onClose} />
       </FormControl>
@@ -38,7 +35,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#0A121A",
+    backgroundColor: '#0A121A',
     paddingTop: 20,
     paddingBottom: 60,
   },
