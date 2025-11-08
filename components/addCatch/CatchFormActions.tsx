@@ -3,31 +3,54 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Camera, MapPinPlus } from "lucide-react-native";
 import ActionButton from "../ui/ActionButton";
-import { StyleSheet } from "react-native";
 import { VStack } from "@gluestack-ui/themed";
+import { StyleSheet } from "react-native";
 
 interface CatchFormActionsProps {
   onClose: () => void;
+  onSave: () => void;
+  onAddPhoto: () => void;
+  onGetLocation: () => void;
+  loading?: boolean;
 }
 
-export default function CatchFormActions({ onClose }: CatchFormActionsProps) {
+export default function CatchFormActions({
+  onClose,
+  onSave,
+  onAddPhoto,
+  onGetLocation,
+  loading = false,
+}: CatchFormActionsProps) {
   return (
     <VStack className="my-5">
       <HStack className="w-full py-4" space="lg">
         <Button
           className="w-1/2 flex-1"
           variant="outline"
-          style={styles.button}
+          action="primary"
+          style={{
+            backgroundColor: "#1A1A1A",
+            borderColor: "#333",
+            borderWidth: 1,
+            borderRadius: 12,
+          }}
+          onPress={onAddPhoto}
         >
           <ButtonIcon as={Camera} size="sm" color="white" />
           <ButtonText>Add Photo</ButtonText>
         </Button>
 
         <Button
-          style={styles.button}
-          className="w-1/2"
+          className="w-1/2 flex-1"
           variant="outline"
           action="primary"
+          style={{
+            backgroundColor: "#1A1A1A",
+            borderColor: "#333",
+            borderWidth: 1,
+            borderRadius: 12,
+          }}
+          onPress={onGetLocation}
         >
           <ButtonIcon as={MapPinPlus} size="sm" color="white" />
           <ButtonText>GPS Location</ButtonText>
@@ -44,22 +67,17 @@ export default function CatchFormActions({ onClose }: CatchFormActionsProps) {
           />
         </Box>
         <Box className="w-1/2">
-          <ActionButton label="Save catch" color="blue" size="md" />
+          <ActionButton
+            label={loading ? "Saving..." : "Save catch"}
+            color="blue"
+            size="md"
+            disabled={loading}
+            onPress={onSave}
+          />
         </Box>
       </HStack>
     </VStack>
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#1A1A1A",
-    borderColor: "#333",
-    borderWidth: 1,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-});
+const styles = StyleSheet.create({});

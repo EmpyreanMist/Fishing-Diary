@@ -1,13 +1,19 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
-import SimpleDropdown from "./SimpleDropdown";
 import FishDropdown from "./FishDropdown";
+import { supabase } from "../../lib/supabase";
+
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import * as Location from "expo-location";
+import { decode } from "base64-arraybuffer";
+import { sortRoutes } from "expo-router/build/sortRoutes";
 
 interface CatchFormProps {
   onClose: () => void;
@@ -16,6 +22,148 @@ interface CatchFormProps {
 export default function CatchForm({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
+  // Form state
+  const [speciesId, setSpeciesId] = useState<string>("");
+  const [lureId, setLureId] = useState<string>("");
+  const [weightKg, setWeightKg] = useState<string>("");
+  const [lengthCm, setLengthCm] = useState<string>("");
+  const [locationName, setLocationName] = useState<string>("");
+  const [notes, setNotes] = useState<string>("");
+
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+
+  const [userId, setUserId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUserId(data.session?.user?.id ?? null);
+    };
+    loadSession();
+  }, []);
+
+  // 📸 Upload photo to Supabase bucket as WebP
+  const handleAddPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission denied", "We need access to your photos.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (result.canceled || !result.assets.length) return;
+    const image = result.assets[0];
+
+    try {
+      const manipulated = await ImageManipulator.manipulateAsync(
+        image.uri,
+        [],
+        {
+          compress: 0.7,
+          format: ImageManipulator.SaveFormat.WEBP,
+          base64: true,
+        }
+      );
+
+      const fileName = `catch_${Date.now()}.webp`;
+      const { error } = await supabase.storage
+        .from("catch_photos")
+        .upload(fileName, decode(manipulated.base64!), {
+          contentType: "image/webp",
+        });
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabase.storage
+        .from("catch_photos")
+        .getPublicUrl(fileName);
+
+      const publicUrl = publicUrlData.publicUrl;
+      setPhotoUrl(publicUrl);
+      Alert.alert("Photo uploaded", "Saved as WebP!");
+    } catch (err: any) {
+      console.error("Upload error:", err.message);
+      Alert.alert("Upload failed", err.message);
+    }
+  };
+
+  // 📍 Get GPS location
+  const handleGetLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("Location permission status:", status);
+    if (status !== "granted") {
+      Alert.alert("Permission denied", "We need access to your location.");
+      return;
+    }
+
+    const pos = await Location.getCurrentPositionAsync({});
+    setLatitude(pos.coords.latitude);
+    setLongitude(pos.coords.longitude);
+
+    Alert.alert("Location saved", "GPS coordinates added.");
+  };
+
+  // 💾 Save catch
+  const handleSaveCatch = async () => {
+    if (!userId) {
+      Alert.alert("Not signed in", "Logga in först.");
+      return;
+    }
+
+    const weight = Number(weightKg);
+    if (!weightKg || Number.isNaN(weight) || weight <= 0) {
+      Alert.alert("Invalid weight", "Ange vikt i kg (> 0).");
+      return;
+    }
+
+    setSaving(true);
+    const payload = {
+      user_id: userId,
+      fish_species_id: speciesId ? Number(speciesId) : null,
+      lure_id: lureId ? Number(lureId) : null,
+      weight_kg: weight,
+      length_cm: lengthCm ? Number(lengthCm) : null,
+      location_name: locationName || null,
+      notes: notes || null,
+      latitude,
+      longitude,
+    };
+
+    const { data, error } = await supabase
+      .from("catches")
+      .insert([payload])
+      .select()
+      .single();
+
+    if (error) {
+      setSaving(false);
+      console.error(error);
+      Alert.alert("Save failed", error.message);
+      return;
+    }
+
+    if (photoUrl) {
+      await supabase.from("catch_photos").insert([
+        {
+          catch_id: data.id,
+          image_url: photoUrl,
+        },
+      ]);
+    }
+
+    setSaving(false);
+    Alert.alert("Success", "Catch saved!");
+    onClose();
+  };
+
   return (
     <View style={styles.screen}>
       <SafeAreaView edges={["top"]} style={{ backgroundColor: "#0A121A" }}>
@@ -23,14 +171,30 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       </SafeAreaView>
 
       <FormControl className="px-5 py-4 rounded-lg w-full">
-        <FishDropdown />
+        <FishDropdown onSelect={setSpeciesId} />
 
         <CatchFormInputs
           focusedField={focusedField}
           setFocusedField={setFocusedField}
+          weightKg={weightKg}
+          setWeightKg={setWeightKg}
+          lengthCm={lengthCm}
+          setLengthCm={setLengthCm}
+          locationName={locationName}
+          setLocationName={setLocationName}
+          notes={notes}
+          setNotes={setNotes}
         />
-        <LureDropdown />
-        <CatchFormActions onClose={onClose} />
+
+        <LureDropdown onSelect={setLureId} />
+
+        <CatchFormActions
+          onClose={onClose}
+          onSave={handleSaveCatch}
+          onAddPhoto={handleAddPhoto}
+          onGetLocation={handleGetLocation}
+          loading={saving}
+        />
       </FormControl>
     </View>
   );
