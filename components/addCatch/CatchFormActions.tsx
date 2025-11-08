@@ -156,8 +156,8 @@ export default function CatchFormActions({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#1A1A1A",
-    borderColor: "#333",
+    backgroundColor: '#1A1A1A',
+    borderColor: '#333',
     borderWidth: 1,
     borderRadius: 12,
   },
