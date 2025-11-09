@@ -1,4 +1,11 @@
-import { View, StyleSheet, Alert } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Alert,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
@@ -10,10 +17,7 @@ import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
 import * as Location from "expo-location";
-import { decode } from "base64-arraybuffer";
-import { sortRoutes } from "expo-router/build/sortRoutes";
 
 interface CatchFormProps {
   onClose: () => void;
@@ -21,8 +25,6 @@ interface CatchFormProps {
 
 export default function CatchForm({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  // Form state
   const [speciesId, setSpeciesId] = useState<string>("");
   const [lureId, setLureId] = useState<string>("");
   const [weightKg, setWeightKg] = useState<string>("");
@@ -30,11 +32,9 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [locationName, setLocationName] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
 
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [localPhoto, setLocalPhoto] = useState<string | null>(null);
-
+  const [localPhotos, setLocalPhotos] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -54,18 +54,17 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.image, // ✅ ny och korrekt syntax
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.8,
+      selectionLimit: 0,
     });
 
-    if (result.canceled || !result.assets.length) return;
-    const image = result.assets[0];
-
-    setLocalPhoto(image.uri); // ✅ preview innan upload
+    if (result.canceled || !result.assets?.length) return;
+    const newUris = result.assets.map((asset) => asset.uri);
+    setLocalPhotos((prev) => [...prev, ...newUris]);
   };
 
-  // 📍 Get GPS location
   const handleGetLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -76,11 +75,9 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     const pos = await Location.getCurrentPositionAsync({});
     setLatitude(pos.coords.latitude);
     setLongitude(pos.coords.longitude);
-
     Alert.alert("Location saved", "GPS coordinates added.");
   };
 
-  // 💾 Save catch
   const handleSaveCatch = async () => {
     if (!userId) {
       Alert.alert("Not signed in", "Logga in först.");
@@ -119,61 +116,72 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       return;
     }
 
-    if (photoUrl) {
-      await supabase.from("catch_photos").insert([
-        {
-          catch_id: data.id,
-          image_url: photoUrl,
-        },
-      ]);
-    }
-
     setSaving(false);
     Alert.alert("Success", "Catch saved!");
     onClose();
   };
 
   return (
-    <View style={styles.screen}>
-      <SafeAreaView edges={["top"]} style={{ backgroundColor: "#0A121A" }}>
-        <CatchFormHeader onClose={onClose} />
-      </SafeAreaView>
+    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <CatchFormHeader onClose={onClose} />
 
-      <FormControl className="px-5 py-4 rounded-lg w-full">
-        <FishDropdown onSelect={setSpeciesId} />
+          <View style={styles.inner}>
+            <FormControl className="px-5 py-4 rounded-lg w-full">
+              <FishDropdown onSelect={setSpeciesId} />
 
-        <CatchFormInputs
-          focusedField={focusedField}
-          setFocusedField={setFocusedField}
-          weightKg={weightKg}
-          setWeightKg={setWeightKg}
-          lengthCm={lengthCm}
-          setLengthCm={setLengthCm}
-          locationName={locationName}
-          setLocationName={setLocationName}
-          notes={notes}
-          setNotes={setNotes}
-        />
+              <CatchFormInputs
+                focusedField={focusedField}
+                setFocusedField={setFocusedField}
+                weightKg={weightKg}
+                setWeightKg={setWeightKg}
+                lengthCm={lengthCm}
+                setLengthCm={setLengthCm}
+                locationName={locationName}
+                setLocationName={setLocationName}
+                notes={notes}
+                setNotes={setNotes}
+              />
 
-        <LureDropdown onSelect={setLureId} />
+              <LureDropdown onSelect={setLureId} />
 
-        <CatchFormActions
-          onClose={onClose}
-          onSave={handleSaveCatch}
-          onAddPhoto={handleAddPhoto}
-          onGetLocation={handleGetLocation}
-          loading={saving}
-        />
-      </FormControl>
-    </View>
+              <CatchFormActions
+                onClose={onClose}
+                onSave={handleSaveCatch}
+                onAddPhoto={handleAddPhoto}
+                onGetLocation={handleGetLocation}
+                loading={saving}
+                photos={localPhotos}
+                onRemovePhoto={(index) =>
+                  setLocalPhotos((prev) => prev.filter((_, i) => i !== index))
+                }
+              />
+            </FormControl>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#0A121A",
-    paddingTop: 20,
-    paddingBottom: 60,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 200, // 👈 säker plats under
+  },
+  inner: {
+    flexGrow: 1,
   },
 });
