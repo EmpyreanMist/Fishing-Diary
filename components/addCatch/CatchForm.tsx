@@ -30,6 +30,9 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [weightKg, setWeightKg] = useState<string>("");
   const [lengthCm, setLengthCm] = useState<string>("");
   const [locationName, setLocationName] = useState<string>("");
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [gpsSaved, setGpsSaved] = useState(false);
+
   const [notes, setNotes] = useState<string>("");
 
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -72,10 +75,17 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       return;
     }
 
-    const pos = await Location.getCurrentPositionAsync({});
-    setLatitude(pos.coords.latitude);
-    setLongitude(pos.coords.longitude);
-    Alert.alert("Location saved", "GPS coordinates added.");
+    try {
+      const pos = await Location.getCurrentPositionAsync({});
+      setLatitude(pos.coords.latitude);
+      setLongitude(pos.coords.longitude);
+
+      setLocationStatus("📍 GPS saved!");
+      setGpsSaved(true);
+    } catch (err) {
+      setLocationStatus("Failed to get location");
+      setGpsSaved(false);
+    }
   };
 
   const handleSaveCatch = async () => {
@@ -84,8 +94,13 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       return;
     }
 
-    const weight = Number(weightKg);
-    if (!weightKg || Number.isNaN(weight) || weight <= 0) {
+    const rawWeight =
+      typeof weightKg === "string"
+        ? weightKg
+        : String((weightKg as any)?.nativeEvent?.text ?? "");
+
+    const weight = parseFloat(rawWeight.trim().replace(",", "."));
+    if (isNaN(weight) || weight <= 0) {
       Alert.alert("Invalid weight", "Ange vikt i kg (> 0).");
       return;
     }
@@ -160,6 +175,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
                 onGetLocation={handleGetLocation}
                 loading={saving}
                 photos={localPhotos}
+                locationStatus={locationStatus}
                 onRemovePhoto={(index) =>
                   setLocalPhotos((prev) => prev.filter((_, i) => i !== index))
                 }
@@ -179,7 +195,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 200, // 👈 säker plats under
+    paddingBottom: 200,
   },
   inner: {
     flexGrow: 1,

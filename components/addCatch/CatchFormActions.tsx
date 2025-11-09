@@ -14,6 +14,7 @@ interface CatchFormActionsProps {
   loading?: boolean;
   photos?: string[];
   onRemovePhoto?: (index: number) => void;
+  locationStatus?: string | null;
 }
 
 export default function CatchFormActions({
@@ -24,6 +25,7 @@ export default function CatchFormActions({
   loading = false,
   photos = [],
   onRemovePhoto,
+  locationStatus,
 }: CatchFormActionsProps) {
   return (
     <VStack className="my-5">
@@ -118,6 +120,19 @@ export default function CatchFormActions({
           <ButtonIcon as={MapPinPlus} size="sm" color="white" />
           <ButtonText>GPS Location</ButtonText>
         </Button>
+        {locationStatus && (
+          <Text
+            style={{
+              color: "#00FFAA",
+              fontSize: 13,
+              marginTop: 8,
+              textAlign: "center",
+              opacity: 0.8,
+            }}
+          >
+            {locationStatus}
+          </Text>
+        )}
       </HStack>
 
       <HStack className="w-full py-4" space="lg">

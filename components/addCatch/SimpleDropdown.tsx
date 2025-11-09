@@ -29,6 +29,7 @@ export default function SimpleDropdown({
   items,
   enableSearch = false,
   placeholder = "Select...",
+  onSelect,
 }: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -44,7 +45,7 @@ export default function SimpleDropdown({
     setSelectedItem(item);
     setIsVisible(false);
     setSearchQuery("");
-    onSelect?.(item.value); // ✅ anropa callback om den finns
+    onSelect?.(item.value);
   };
 
   return (

@@ -8,11 +8,27 @@ import { StyleSheet } from "react-native";
 interface CatchFormInputsProps {
   focusedField: string | null;
   setFocusedField: (field: string | null) => void;
+  weightKg: string;
+  setWeightKg: React.Dispatch<React.SetStateAction<string>>;
+  lengthCm: string;
+  setLengthCm: React.Dispatch<React.SetStateAction<string>>;
+  locationName: string;
+  setLocationName: React.Dispatch<React.SetStateAction<string>>;
+  notes: string;
+  setNotes: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function CatchFormInputs({
   focusedField,
   setFocusedField,
+  weightKg,
+  setWeightKg,
+  lengthCm,
+  setLengthCm,
+  locationName,
+  setLocationName,
+  notes,
+  setNotes,
 }: CatchFormInputsProps) {
   return (
     <>
@@ -28,7 +44,10 @@ export default function CatchFormInputs({
             ]}
           >
             <InputField
+              value={weightKg} // ✅ binder värdet
+              onChangeText={setWeightKg} // ✅ uppdaterar state direkt
               placeholder="Enter weight..."
+              keyboardType="decimal-pad" // ✅ numeriskt tangentbord
               onFocus={() => setFocusedField("weight")}
               onBlur={() => setFocusedField(null)}
             />
@@ -46,7 +65,10 @@ export default function CatchFormInputs({
             ]}
           >
             <InputField
+              value={lengthCm}
+              onChangeText={setLengthCm}
               placeholder="Enter length..."
+              keyboardType="decimal-pad"
               onFocus={() => setFocusedField("length")}
               onBlur={() => setFocusedField(null)}
             />
@@ -64,6 +86,8 @@ export default function CatchFormInputs({
         ]}
       >
         <InputField
+          value={locationName}
+          onChangeText={setLocationName}
           placeholder="Where did you catch it?"
           onFocus={() => setFocusedField("location")}
           onBlur={() => setFocusedField(null)}
@@ -77,6 +101,8 @@ export default function CatchFormInputs({
         className="w-full"
       >
         <TextareaInput
+          value={notes}
+          onChangeText={setNotes}
           placeholder="Your text goes here..."
           onFocus={() => setFocusedField("notes")}
           onBlur={() => setFocusedField(null)}
