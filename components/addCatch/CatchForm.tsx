@@ -92,7 +92,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   const handleSaveCatch = async () => {
     if (!userId) {
-      Alert.alert("Not signed in", "Logga in först.");
+      Alert.alert("Not signed in");
       return;
     }
 
@@ -103,13 +103,12 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
     const weight = parseFloat(rawWeight.trim().replace(",", "."));
     if (isNaN(weight) || weight <= 0) {
-      Alert.alert("Invalid weight", "Ange vikt i kg (> 0).");
+      Alert.alert("Invalid weight");
       return;
     }
 
     setSaving(true);
 
-    // 🟢 1. Spara själva fångsten
     const payload = {
       user_id: userId,
       fish_species_id: speciesId ? Number(speciesId) : null,
@@ -130,14 +129,13 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
     if (catchError || !catchData) {
       setSaving(false);
-      console.error("❌ Catch insert error:", catchError);
+      console.error("Catch insert error:", catchError);
       Alert.alert("Save failed", catchError?.message ?? "Unknown error");
       return;
     }
 
     console.log("✅ Catch saved:", catchData);
 
-    // 🟢 2. Ladda upp foton till Supabase Storage
     for (const [index, uri] of localPhotos.entries()) {
       try {
         const manipulated = await ImageManipulator.manipulateAsync(
@@ -162,7 +160,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           });
 
         if (uploadError) {
-          console.error("❌ Upload error:", uploadError);
+          console.error("Upload error:", uploadError);
           continue;
         }
 
@@ -177,10 +175,10 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           },
         ]);
 
-        if (dbError) console.error("❌ DB insert error:", dbError);
-        else console.log("✅ Image saved to DB:", publicUrl.publicUrl);
+        if (dbError) console.error("DB insert error:", dbError);
+        else console.log("Image saved to DB:", publicUrl.publicUrl);
       } catch (err) {
-        console.error("❌ Image processing error:", err);
+        console.error("Image processing error:", err);
       }
     }
 
