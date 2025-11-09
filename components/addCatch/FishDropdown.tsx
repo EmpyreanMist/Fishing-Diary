@@ -13,6 +13,11 @@ interface FishDropdownProps {
 }
 
 export default function FishDropdown({ onSelect }: FishDropdownProps) {
+interface FishDropdownProps {
+  onSelect: (id: string) => void;
+}
+
+export default function FishDropdown({ onSelect }: FishDropdownProps) {
   const [species, setSpecies] = useState<FishSpecies[]>([]);
 
   useEffect(() => {
