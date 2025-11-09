@@ -33,6 +33,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [localPhoto, setLocalPhoto] = useState<string | null>(null);
 
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -45,7 +46,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     loadSession();
   }, []);
 
-  // 📸 Upload photo to Supabase bucket as WebP
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -54,7 +54,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaType.image, // ✅ ny och korrekt syntax
       allowsEditing: true,
       quality: 0.8,
     });
@@ -62,43 +62,12 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     if (result.canceled || !result.assets.length) return;
     const image = result.assets[0];
 
-    try {
-      const manipulated = await ImageManipulator.manipulateAsync(
-        image.uri,
-        [],
-        {
-          compress: 0.7,
-          format: ImageManipulator.SaveFormat.WEBP,
-          base64: true,
-        }
-      );
-
-      const fileName = `catch_${Date.now()}.webp`;
-      const { error } = await supabase.storage
-        .from("catch_photos")
-        .upload(fileName, decode(manipulated.base64!), {
-          contentType: "image/webp",
-        });
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabase.storage
-        .from("catch_photos")
-        .getPublicUrl(fileName);
-
-      const publicUrl = publicUrlData.publicUrl;
-      setPhotoUrl(publicUrl);
-      Alert.alert("Photo uploaded", "Saved as WebP!");
-    } catch (err: any) {
-      console.error("Upload error:", err.message);
-      Alert.alert("Upload failed", err.message);
-    }
+    setLocalPhoto(image.uri); // ✅ preview innan upload
   };
 
   // 📍 Get GPS location
   const handleGetLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    console.log("Location permission status:", status);
     if (status !== "granted") {
       Alert.alert("Permission denied", "We need access to your location.");
       return;
