@@ -17,6 +17,8 @@ import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 
 import * as ImagePicker from "expo-image-picker";
+import { MediaType } from "expo-image-picker";
+
 import * as ImageManipulator from "expo-image-manipulator";
 import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
@@ -59,7 +61,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 0.8,
       selectionLimit: 0,
