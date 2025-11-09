@@ -17,6 +17,8 @@ import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
 
 interface CatchFormProps {
@@ -106,6 +108,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     setSaving(true);
+
+    // 🟢 1. Spara själva fångsten
     const payload = {
       user_id: userId,
       fish_species_id: speciesId ? Number(speciesId) : null,
@@ -118,21 +122,70 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       longitude,
     };
 
-    const { data, error } = await supabase
+    const { data: catchData, error: catchError } = await supabase
       .from("catches")
       .insert([payload])
       .select()
       .single();
 
-    if (error) {
+    if (catchError || !catchData) {
       setSaving(false);
-      console.error(error);
-      Alert.alert("Save failed", error.message);
+      console.error("❌ Catch insert error:", catchError);
+      Alert.alert("Save failed", catchError?.message ?? "Unknown error");
       return;
     }
 
+    console.log("✅ Catch saved:", catchData);
+
+    // 🟢 2. Ladda upp foton till Supabase Storage
+    for (const [index, uri] of localPhotos.entries()) {
+      try {
+        const manipulated = await ImageManipulator.manipulateAsync(
+          uri,
+          [{ resize: { width: 1080 } }],
+          {
+            compress: 0.8,
+            format: ImageManipulator.SaveFormat.WEBP,
+            base64: true,
+          }
+        );
+
+        if (!manipulated.base64) continue;
+
+        const filename = `${userId}_${catchData.id}_${index}.webp`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("catch_photos")
+          .upload(filename, decode(manipulated.base64), {
+            contentType: "image/webp",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("❌ Upload error:", uploadError);
+          continue;
+        }
+
+        const { data: publicUrl } = supabase.storage
+          .from("catch_photos")
+          .getPublicUrl(filename);
+
+        const { error: dbError } = await supabase.from("catch_photos").insert([
+          {
+            catch_id: catchData.id,
+            image_url: publicUrl.publicUrl,
+          },
+        ]);
+
+        if (dbError) console.error("❌ DB insert error:", dbError);
+        else console.log("✅ Image saved to DB:", publicUrl.publicUrl);
+      } catch (err) {
+        console.error("❌ Image processing error:", err);
+      }
+    }
+
     setSaving(false);
-    Alert.alert("Success", "Catch saved!");
+    Alert.alert("Success", "Catch and photos saved!");
     onClose();
   };
 
