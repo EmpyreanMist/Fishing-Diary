@@ -57,7 +57,10 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // NOTE: Using MediaTypeOptions for compatibility with current Expo SDK.
+      // MediaType is the new API but not fully supported in our version yet.
+      // TODO: Replace with [ImagePicker.MediaType.Images] after upgrading Expo SDK (≥55).
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.8,
       selectionLimit: 0,
@@ -126,7 +129,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
           <View style={styles.inner}>
             <FormControl className="px-5 py-4 rounded-lg w-full">
-        <FishDropdown />
+              <FishDropdown onSelect={(id) => setField('speciesId', id)} />
 
               <CatchFormInputs
                 focusedField={focusedField}
