@@ -44,10 +44,10 @@ export default function CatchFormInputs({
             ]}
           >
             <InputField
-              value={weightKg} // ✅ binder värdet
-              onChangeText={setWeightKg} // ✅ uppdaterar state direkt
+              value={weightKg} 
+              onChangeText={setWeightKg} 
               placeholder="Enter weight..."
-              keyboardType="decimal-pad" // ✅ numeriskt tangentbord
+              keyboardType="decimal-pad" 
               onFocus={() => setFocusedField("weight")}
               onBlur={() => setFocusedField(null)}
             />
