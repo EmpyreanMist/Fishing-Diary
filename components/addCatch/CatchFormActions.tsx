@@ -120,19 +120,6 @@ export default function CatchFormActions({
           <ButtonIcon as={MapPinPlus} size="sm" color="white" />
           <ButtonText>GPS Location</ButtonText>
         </Button>
-        {locationStatus && (
-          <Text
-            style={{
-              color: "#00FFAA",
-              fontSize: 13,
-              marginTop: 8,
-              textAlign: "center",
-              opacity: 0.8,
-            }}
-          >
-            {locationStatus}
-          </Text>
-        )}
       </HStack>
 
       {locationStatus && (
