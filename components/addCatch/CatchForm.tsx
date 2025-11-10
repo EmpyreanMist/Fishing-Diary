@@ -18,7 +18,6 @@ import { supabase } from "../../lib/supabase";
 
 import * as ImagePicker from "expo-image-picker";
 import { MediaType } from "expo-image-picker";
-
 import * as ImageManipulator from "expo-image-manipulator";
 import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
@@ -36,7 +35,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [locationName, setLocationName] = useState<string>("");
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [gpsSaved, setGpsSaved] = useState(false);
-
   const [notes, setNotes] = useState<string>("");
 
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -84,7 +82,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       setLatitude(pos.coords.latitude);
       setLongitude(pos.coords.longitude);
 
-      setLocationStatus("📍 GPS saved!");
+      setLocationStatus("GPS saved!");
       setGpsSaved(true);
     } catch (err) {
       setLocationStatus("Failed to get location");
@@ -136,7 +134,9 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       return;
     }
 
-    console.log("✅ Catch saved:", catchData);
+    console.log("Catch saved:", catchData);
+
+    let failedUploads = 0;
 
     for (const [index, uri] of localPhotos.entries()) {
       try {
@@ -162,6 +162,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           });
 
         if (uploadError) {
+          failedUploads += 1;
           console.error("Upload error:", uploadError);
           continue;
         }
@@ -177,14 +178,30 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           },
         ]);
 
-        if (dbError) console.error("DB insert error:", dbError);
-        else console.log("Image saved to DB:", publicUrl.publicUrl);
+        if (dbError) {
+          failedUploads += 1;
+          console.error("DB insert error:", dbError);
+        } else {
+          console.log("Image saved to DB:", publicUrl.publicUrl);
+        }
       } catch (err) {
+        failedUploads += 1;
         console.error("Image processing error:", err);
       }
     }
 
     setSaving(false);
+
+    if (failedUploads > 0) {
+      Alert.alert(
+        "Partial success",
+        failedUploads === localPhotos.length
+          ? "Catch saved but no photos were uploaded. Please retry."
+          : "Catch saved but some photos failed to upload. Try adding them again."
+      );
+      return;
+    }
+
     Alert.alert("Success", "Catch and photos saved!");
     onClose();
   };
