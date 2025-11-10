@@ -12,7 +12,7 @@ interface Lure {
 }
 
 interface LureDropdownProps {
-  onSelect: (id: string) => void; // ✅ accept callback
+  onSelect: (id: string) => void; 
 }
 
 export default function LureDropdown({ onSelect }: LureDropdownProps) {

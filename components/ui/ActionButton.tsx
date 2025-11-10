@@ -18,6 +18,7 @@ type Props = {
   onPress?: () => void;
   width?: DimensionValue;
   height?: DimensionValue;
+  disabled?: boolean;
 };
 
 export default function ActionButton({
@@ -28,6 +29,7 @@ export default function ActionButton({
   onPress,
   width,
   height,
+  disabled,
 }: Props) {
   const gradients: Record<string, [string, string]> = {
     blue: ["#0072FF", "#00C6FF"],
