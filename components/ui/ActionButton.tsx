@@ -19,7 +19,6 @@ type Props = {
   width?: DimensionValue;
   height?: DimensionValue;
   disabled?: boolean;
-  disabled?: boolean;
 };
 
 export default function ActionButton({
