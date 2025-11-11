@@ -5,7 +5,6 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  Button,
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -38,7 +37,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [gpsSaved, setGpsSaved] = useState(false);
   const [notes, setNotes] = useState<string>("");
   const [caughtAt, setCaughtAt] = useState<Date>(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -215,11 +213,6 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
     Alert.alert("Success", "Catch and photos saved!");
     onClose();
-  };
-
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) setCaughtAt(selectedDate);
   };
 
   return (
