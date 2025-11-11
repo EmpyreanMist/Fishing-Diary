@@ -5,6 +5,7 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  Button,
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,6 +16,7 @@ import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
+import CatchDateTimePicker from "./CatchDateTimePicker";
 
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
@@ -35,6 +37,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [gpsSaved, setGpsSaved] = useState(false);
   const [notes, setNotes] = useState<string>("");
+  const [caughtAt, setCaughtAt] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -122,6 +126,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       notes: notes || null,
       latitude,
       longitude,
+      caught_at: caughtAt.toISOString(),
     };
 
     const { data: catchData, error: catchError } = await supabase
@@ -212,6 +217,11 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     onClose();
   };
 
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) setCaughtAt(selectedDate);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
       <KeyboardAvoidingView
@@ -243,6 +253,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
               />
 
               <LureDropdown onSelect={setLureId} />
+
+              <CatchDateTimePicker value={caughtAt} onChange={setCaughtAt} />
 
               <CatchFormActions
                 onClose={onClose}
