@@ -160,7 +160,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           .from("catch_photos")
           .upload(filename, decode(manipulated.base64), {
             contentType: "image/webp",
-            upsert: false,
+            upsert: true,
           });
 
         if (uploadError) {
