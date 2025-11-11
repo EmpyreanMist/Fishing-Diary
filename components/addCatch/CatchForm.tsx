@@ -53,6 +53,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
+      setLocationStatus(null);
       Alert.alert("Permission denied", "We need access to your photos.");
       return;
     }
