@@ -152,8 +152,11 @@ export default function CatchForm({ onClose }: CatchFormProps) {
           }
         );
 
-        if (!manipulated.base64) continue;
-
+        if (!manipulated.base64) {
+          failedUploads += 1;
+          console.error("Image manipulation did not produce base64");
+          continue;
+        }
         const filename = `${userId}_${catchData.id}_${index}.webp`;
 
         const { error: uploadError } = await supabase.storage
