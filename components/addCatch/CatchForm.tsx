@@ -17,7 +17,6 @@ import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 
 import * as ImagePicker from "expo-image-picker";
-import { MediaType } from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
@@ -59,7 +58,10 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      // NOTE: Using MediaTypeOptions for compatibility with current Expo SDK.
+      // MediaType is the new API but not fully supported in our version yet.
+      // TODO: Replace with [ImagePicker.MediaType.Images] after upgrading Expo SDK (≥55).
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.8,
       selectionLimit: 0,
