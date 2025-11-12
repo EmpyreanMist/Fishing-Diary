@@ -16,28 +16,15 @@ import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 import CatchDateTimePicker from "./CatchDateTimePicker";
+import type { CatchFormProps, FormState } from "./types/types";
 
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
 
-interface CatchFormProps {
-  onClose: () => void;
-}
-
 export default function CatchForm({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  interface FormState {
-    speciesId: string;
-    lureId: string;
-    weightKg: string;
-    lengthCm: string;
-    locationName: string;
-    notes: string;
-    caughtAt: Date;
-  }
 
   const [form, setForm] = useState<FormState>({
     speciesId: "",
