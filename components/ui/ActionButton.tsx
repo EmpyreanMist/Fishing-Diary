@@ -18,6 +18,7 @@ type Props = {
   onPress?: () => void;
   width?: DimensionValue;
   height?: DimensionValue;
+  disabled?: boolean;
 };
 
 export default function ActionButton({
@@ -28,6 +29,7 @@ export default function ActionButton({
   onPress,
   width,
   height,
+  disabled = false,
 }: Props) {
   const gradients: Record<string, [string, string]> = {
     blue: ["#0072FF", "#00C6FF"],
@@ -44,17 +46,18 @@ export default function ActionButton({
 
   const current = sizes[size] || sizes.md;
   const colors = gradients[color] || gradients.blue;
-
   const isDark = color === "black";
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
+      disabled={disabled}
       style={[
         styles.button,
         width !== undefined && { width },
         height !== undefined && { height },
+        disabled && { opacity: 0.5 },
       ]}
     >
       {isDark ? (

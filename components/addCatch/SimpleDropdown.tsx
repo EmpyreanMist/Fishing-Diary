@@ -21,6 +21,7 @@ interface SimpleDropdownProps {
   items: DropdownItem[];
   enableSearch?: boolean;
   placeholder?: string;
+  onSelect?: (value: string) => void;
 }
 
 export default function SimpleDropdown({
@@ -28,6 +29,7 @@ export default function SimpleDropdown({
   items,
   enableSearch = false,
   placeholder = "Select...",
+  onSelect,
 }: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -43,6 +45,7 @@ export default function SimpleDropdown({
     setSelectedItem(item);
     setIsVisible(false);
     setSearchQuery("");
+    onSelect?.(item.value);
   };
 
   return (

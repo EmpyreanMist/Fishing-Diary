@@ -8,7 +8,11 @@ interface FishSpecies {
   image_url?: string | null;
 }
 
-export default function FishDropdown() {
+interface FishDropdownProps {
+  onSelect: (id: string) => void;
+}
+
+export default function FishDropdown({ onSelect }: FishDropdownProps) {
   const [species, setSpecies] = useState<FishSpecies[]>([]);
 
   useEffect(() => {
@@ -35,8 +39,9 @@ export default function FishDropdown() {
     <SimpleDropdown
       label="Species:"
       items={[{ label: "Select species", value: "" }, ...speciesOptions]}
-      enableSearch={true}
+      enableSearch
       placeholder="Search or select fish..."
+      onSelect={onSelect}
     />
   );
 }
