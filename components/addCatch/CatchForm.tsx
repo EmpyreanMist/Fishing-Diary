@@ -28,16 +28,28 @@ interface CatchFormProps {
 
 export default function CatchForm({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [speciesId, setSpeciesId] = useState<string>("");
-  const [lureId, setLureId] = useState<string>("");
-  const [weightKg, setWeightKg] = useState<string>("");
-  const [lengthCm, setLengthCm] = useState<string>("");
-  const [locationName, setLocationName] = useState<string>("");
-  const [locationStatus, setLocationStatus] = useState<string | null>(null);
-  const [gpsSaved, setGpsSaved] = useState(false);
-  const [notes, setNotes] = useState<string>("");
-  const [caughtAt, setCaughtAt] = useState<Date>(new Date());
 
+  interface FormState {
+    speciesId: string;
+    lureId: string;
+    weightKg: string;
+    lengthCm: string;
+    locationName: string;
+    notes: string;
+    caughtAt: Date;
+  }
+
+  const [form, setForm] = useState<FormState>({
+    speciesId: "",
+    lureId: "",
+    weightKg: "",
+    lengthCm: "",
+    locationName: "",
+    notes: "",
+    caughtAt: new Date(),
+  });
+
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [localPhotos, setLocalPhotos] = useState<string[]>([]);
@@ -51,6 +63,10 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     };
     loadSession();
   }, []);
+
+  const setField = (key: keyof typeof form, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -88,10 +104,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       setLongitude(pos.coords.longitude);
 
       setLocationStatus("GPS saved!");
-      setGpsSaved(true);
     } catch (err) {
       setLocationStatus("Failed to get location");
-      setGpsSaved(false);
     }
   };
 
@@ -101,10 +115,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       return;
     }
 
-    const rawWeight =
-      typeof weightKg === "string"
-        ? weightKg
-        : String((weightKg as any)?.nativeEvent?.text ?? "");
+    const rawWeight = form.weightKg;
 
     const weight = parseFloat(rawWeight.trim().replace(",", "."));
     if (isNaN(weight) || weight <= 0) {
@@ -116,15 +127,15 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
     const payload = {
       user_id: userId,
-      fish_species_id: speciesId ? Number(speciesId) : null,
-      lure_id: lureId ? Number(lureId) : null,
-      weight_kg: weight,
-      length_cm: lengthCm ? Number(lengthCm) : null,
-      location_name: locationName || null,
-      notes: notes || null,
+      fish_species_id: form.speciesId ? Number(form.speciesId) : null,
+      lure_id: form.lureId ? Number(form.lureId) : null,
+      weight_kg: parseFloat(form.weightKg.replace(",", ".")) || null,
+      length_cm: form.lengthCm ? Number(form.lengthCm) : null,
+      location_name: form.locationName || null,
+      notes: form.notes || null,
       latitude,
       longitude,
-      caught_at: caughtAt.toISOString(),
+      caught_at: form.caughtAt.toISOString(),
     };
 
     const { data: catchData, error: catchError } = await supabase
@@ -235,24 +246,27 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
           <View style={styles.inner}>
             <FormControl className="px-5 py-4 rounded-lg w-full">
-              <FishDropdown onSelect={setSpeciesId} />
+              <FishDropdown onSelect={(id) => setField("speciesId", id)} />
 
               <CatchFormInputs
                 focusedField={focusedField}
                 setFocusedField={setFocusedField}
-                weightKg={weightKg}
-                setWeightKg={setWeightKg}
-                lengthCm={lengthCm}
-                setLengthCm={setLengthCm}
-                locationName={locationName}
-                setLocationName={setLocationName}
-                notes={notes}
-                setNotes={setNotes}
+                weightKg={form.weightKg}
+                setWeightKg={(val) => setField("weightKg", val)}
+                lengthCm={form.lengthCm}
+                setLengthCm={(val) => setField("lengthCm", val)}
+                locationName={form.locationName}
+                setLocationName={(val) => setField("locationName", val)}
+                notes={form.notes}
+                setNotes={(val) => setField("notes", val)}
               />
 
-              <LureDropdown onSelect={setLureId} />
+              <LureDropdown onSelect={(id) => setField("lureId", id)} />
 
-              <CatchDateTimePicker value={caughtAt} onChange={setCaughtAt} />
+              <CatchDateTimePicker
+                value={form.caughtAt}
+                onChange={(date) => setField("caughtAt", date)}
+              />
 
               <CatchFormActions
                 onClose={onClose}
