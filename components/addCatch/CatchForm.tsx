@@ -143,6 +143,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
     console.log("Catch saved:", catchData);
 
     let failedUploads = 0;
+    const failedPhotoUris: string[] = [];
 
     for (const [index, uri] of localPhotos.entries()) {
       try {
@@ -158,6 +159,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
         if (!manipulated.base64) {
           failedUploads += 1;
+          failedPhotoUris.push(uri);
           console.error("Image manipulation did not produce base64");
           continue;
         }
@@ -172,6 +174,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
         if (uploadError) {
           failedUploads += 1;
+          failedPhotoUris.push(uri);
           console.error("Upload error:", uploadError);
           continue;
         }
@@ -189,16 +192,18 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
         if (dbError) {
           failedUploads += 1;
+          failedPhotoUris.push(uri);
           console.error("DB insert error:", dbError);
         } else {
           console.log("Image saved to DB:", publicUrl.publicUrl);
         }
       } catch (err) {
         failedUploads += 1;
+        failedPhotoUris.push(uri);
         console.error("Image processing error:", err);
       }
     }
-
+    setLocalPhotos(failedPhotoUris);
     setSaving(false);
 
     if (failedUploads > 0) {
