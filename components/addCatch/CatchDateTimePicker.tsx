@@ -19,6 +19,7 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  /* When user picks a date, we only update the date part then open the time picker instead */
   const handleDateChange = (_: any, selectedDate?: Date) => {
     if (!selectedDate) {
       setShowDatePicker(false);
@@ -32,9 +33,11 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
     onChange(newDate);
 
     setShowDatePicker(false);
+    // Seems like we need a small delay before opening the time picker on Android, otherwise it becomes a bad loop
     setTimeout(() => setShowTimePicker(true), 150);
   };
 
+  /* When user picks a time we update the hours and minutes part */
   const handleTimeChange = (_: any, selectedTime?: Date) => {
     setShowTimePicker(false);
     if (!selectedTime) return;
@@ -45,6 +48,7 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
     onChange(newDate);
   };
 
+  /* This is where we set the catch time to "now" */
   const handleUseNow = () => {
     const now = new Date();
     onChange(now);
@@ -58,7 +62,7 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
         activeOpacity={0.8}
         onPress={() => setShowDatePicker(true)}
       >
-        <Ionicons name="calendar-outline" size={18} color="#3B82F6" />
+        <Ionicons name="calendar-outline" size={18} color="white" />
         <Text style={styles.inputText}>
           {value.toLocaleDateString()}{" "}
           {value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -106,9 +110,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1E293B",
     borderWidth: 1,
-    borderColor: "#3B82F6",
+    borderColor: "#475569",
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderRadius: 10,
