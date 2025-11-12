@@ -17,10 +17,10 @@ import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
 import CatchDateTimePicker from "./CatchDateTimePicker";
 import type { CatchFormProps, FormState } from "./types/types";
+import { createCatch } from "../../lib/catches/createCatch";
+import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
-import { decode } from "base64-arraybuffer";
 import * as Location from "expo-location";
 
 export default function CatchForm({ onClose }: CatchFormProps) {
@@ -95,127 +95,37 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       setLocationStatus("Failed to get location");
     }
   };
-
   const handleSaveCatch = async () => {
-    if (!userId) {
-      Alert.alert("Not signed in");
-      return;
-    }
-
-    const rawWeight = form.weightKg;
-
-    const weight = parseFloat(rawWeight.trim().replace(",", "."));
-    if (isNaN(weight) || weight <= 0) {
-      Alert.alert("Invalid weight");
-      return;
-    }
+    if (!userId) return Alert.alert("Not signed in");
 
     setSaving(true);
 
-    const payload = {
-      user_id: userId,
-      fish_species_id: form.speciesId ? Number(form.speciesId) : null,
-      lure_id: form.lureId ? Number(form.lureId) : null,
-      weight_kg: parseFloat(form.weightKg.replace(",", ".")) || null,
-      length_cm: form.lengthCm ? Number(form.lengthCm) : null,
-      location_name: form.locationName || null,
-      notes: form.notes || null,
-      latitude,
-      longitude,
-      caught_at: form.caughtAt.toISOString(),
-    };
-
-    const { data: catchData, error: catchError } = await supabase
-      .from("catches")
-      .insert([payload])
-      .select()
-      .single();
-
-    if (catchError || !catchData) {
+    const catchData = await createCatch(form, userId, latitude, longitude);
+    if (!catchData) {
       setSaving(false);
-      console.error("Catch insert error:", catchError);
-      Alert.alert("Save failed", catchError?.message ?? "Unknown error");
+      Alert.alert("Save failed", "Could not create catch.");
       return;
     }
 
-    console.log("Catch saved:", catchData);
-
-    let failedUploads = 0;
-    const failedPhotoUris: string[] = [];
-
-    for (const [index, uri] of localPhotos.entries()) {
-      try {
-        const manipulated = await ImageManipulator.manipulateAsync(
-          uri,
-          [{ resize: { width: 1080 } }],
-          {
-            compress: 0.8,
-            format: ImageManipulator.SaveFormat.WEBP,
-            base64: true,
-          }
-        );
-
-        if (!manipulated.base64) {
-          failedUploads += 1;
-          failedPhotoUris.push(uri);
-          console.error("Image manipulation did not produce base64");
-          continue;
-        }
-        const filename = `${userId}_${catchData.id}_${index}.webp`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("catch_photos")
-          .upload(filename, decode(manipulated.base64), {
-            contentType: "image/webp",
-            upsert: true,
-          });
-
-        if (uploadError) {
-          failedUploads += 1;
-          failedPhotoUris.push(uri);
-          console.error("Upload error:", uploadError);
-          continue;
-        }
-
-        const { data: publicUrl } = supabase.storage
-          .from("catch_photos")
-          .getPublicUrl(filename);
-
-        const { error: dbError } = await supabase.from("catch_photos").insert([
-          {
-            catch_id: catchData.id,
-            image_url: publicUrl.publicUrl,
-          },
-        ]);
-
-        if (dbError) {
-          failedUploads += 1;
-          failedPhotoUris.push(uri);
-          console.error("DB insert error:", dbError);
-        } else {
-          console.log("Image saved to DB:", publicUrl.publicUrl);
-        }
-      } catch (err) {
-        failedUploads += 1;
-        failedPhotoUris.push(uri);
-        console.error("Image processing error:", err);
-      }
-    }
-    setLocalPhotos(failedPhotoUris);
+    const failedPhotos = await uploadCatchPhotos(
+      localPhotos,
+      userId,
+      catchData.id
+    );
+    setLocalPhotos(failedPhotos);
     setSaving(false);
 
-    if (failedUploads > 0) {
+    if (failedPhotos.length > 0) {
       Alert.alert(
         "Partial success",
-        failedUploads === localPhotos.length
-          ? "Catch saved but no photos were uploaded. Please retry."
-          : "Catch saved but some photos failed to upload. Try adding them again."
+        failedPhotos.length === localPhotos.length
+          ? "Catch saved but no photos were uploaded."
+          : "Catch saved but some photos failed to upload."
       );
-      return;
+    } else {
+      Alert.alert("Success", "Catch and photos saved!");
+      onClose();
     }
-
-    Alert.alert("Success", "Catch and photos saved!");
-    onClose();
   };
 
   return (
