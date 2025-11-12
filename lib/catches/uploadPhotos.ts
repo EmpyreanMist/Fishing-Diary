@@ -59,6 +59,7 @@ export async function uploadCatchPhotos(
 
       if (dbError) {
         console.error("DB insert error:", dbError);
+        await supabase.storage.from("catch_photos").remove([filename]);
         failedPhotoUris.push(uri);
       }
     } catch (err) {
