@@ -13,10 +13,59 @@ type StatItem = {
 
 export default function StatsGrid() {
   const [totalCatches, setTotalCatches] = useState<number>(0);
+  const [favoriteSpecies, setFavoriteSpecies] = useState<string>("");
 
   useEffect(() => {
     fetchTotalCatches();
+    fetchFavoriteSpecies();
   }, []);
+
+  async function fetchFavoriteSpecies() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    // 1. Fetch species IDs
+    const { data, error } = await supabase
+      .from("catches")
+      .select("fish_species_id")
+      .eq("user_id", user.id);
+
+    if (error || !data) {
+      console.error("Error fetching species:", error);
+      return;
+    }
+
+    // 2. Count occurrences
+    const counts: Record<number, number> = {};
+
+    for (const row of data) {
+      const id = row.fish_species_id;
+      if (id == null) continue;
+      counts[id] = (counts[id] || 0) + 1;
+    }
+
+    if (Object.keys(counts).length === 0) {
+      setFavoriteSpecies("—");
+      return;
+    }
+
+    // 3. Find the most common species ID
+    const favoriteSpeciesId = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([id]) => Number(id))[0];
+
+    // 4. Fetch species name
+    const { data: species } = await supabase
+      .from("fish_species")
+      .select("english_name")
+      .eq("id", favoriteSpeciesId)
+      .single();
+
+    setFavoriteSpecies(species?.english_name ?? "—");
+  }
 
   async function fetchTotalCatches() {
     const {
@@ -56,7 +105,7 @@ export default function StatsGrid() {
     },
     {
       icon: "trending-up-outline",
-      value: "Pike",
+      value: favoriteSpecies.toString(),
       label: "Favorite Species",
       sub: "Most caught",
     },
