@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { supabase } from "../../lib/supabase";
+import { useEffect, useState } from "react";
 
 type StatItem = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -10,10 +12,39 @@ type StatItem = {
 };
 
 export default function StatsGrid() {
+  const [totalCatches, setTotalCatches] = useState<number>(0);
+
+  useEffect(() => {
+    fetchTotalCatches();
+  }, []);
+
+  async function fetchTotalCatches() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+
+    const { count, error } = await supabase
+      .from("catches")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error counting catches:", error);
+      return;
+    }
+
+    setTotalCatches(count ?? 0);
+  }
+
   const stats: StatItem[] = [
     {
       icon: "fish-outline",
-      value: "47",
+      value: totalCatches.toString(),
       label: "Total Catches",
       sub: "This season",
     },
