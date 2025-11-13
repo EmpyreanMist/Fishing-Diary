@@ -13,7 +13,7 @@ type StatItem = {
 
 export default function StatsGrid() {
   const [totalCatches, setTotalCatches] = useState<number>(0);
-  const [favoriteSpecies, setFavoriteSpecies] = useState<string>("");
+  const [favoriteSpecies, setFavoriteSpecies] = useState<string>("—");
 
   useEffect(() => {
     fetchTotalCatches();
@@ -27,37 +27,72 @@ export default function StatsGrid() {
 
     if (!user) return;
 
-    // 1. Fetch species IDs
+    // 1. Fetch species IDs + caught_at
     const { data, error } = await supabase
       .from("catches")
-      .select("fish_species_id")
-      .eq("user_id", user.id);
+      .select("fish_species_id, caught_at")
+      .eq("user_id", user.id)
+      .order("caught_at", { ascending: false });
 
     if (error || !data) {
       console.error("Error fetching species:", error);
       return;
     }
 
-    // 2. Count occurrences
-    const counts: Record<number, number> = {};
+    // 2. Count occurrences AND track latest caught_at
+    const stats: Record<number, { count: number; latest: string | null }> = {};
 
     for (const row of data) {
       const id = row.fish_species_id;
-      if (id == null) continue;
-      counts[id] = (counts[id] || 0) + 1;
+      if (!id) continue;
+
+      if (!stats[id]) {
+        stats[id] = {
+          count: 0,
+          latest: row.caught_at ?? null,
+        };
+      }
+
+      stats[id].count++;
+
+      // If this fish has a caught_at AND the stored latest is null, update
+      if (
+        row.caught_at &&
+        (!stats[id].latest || row.caught_at > stats[id].latest)
+      ) {
+        stats[id].latest = row.caught_at;
+      }
     }
 
-    if (Object.keys(counts).length === 0) {
+    // If user has no catches
+    if (Object.keys(stats).length === 0) {
       setFavoriteSpecies("—");
       return;
     }
 
-    // 3. Find the most common species ID
-    const favoriteSpeciesId = Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
+    // 3. Sort by:
+    //    1. highest count
+    //    2. latest date (null counts as oldest)
+    const favoriteSpeciesId = Object.entries(stats)
+      .sort((a, b) => {
+        const [, statA] = a;
+        const [, statB] = b;
+
+        // Sort by count first
+        if (statB.count !== statA.count) {
+          return statB.count - statA.count;
+        }
+
+        // Tiebreak: sort by latest date
+        const dateA = statA.latest ?? ""; // null-safe
+        const dateB = statB.latest ?? "";
+
+        // Newer date wins. Empty string = oldest.
+        return dateB.localeCompare(dateA);
+      })
       .map(([id]) => Number(id))[0];
 
-    // 4. Fetch species name
+    // 4. Fetch the name of the species
     const { data: species } = await supabase
       .from("fish_species")
       .select("english_name")
