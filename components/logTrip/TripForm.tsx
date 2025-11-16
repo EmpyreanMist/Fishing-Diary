@@ -2,12 +2,16 @@ import { VStack } from '@/components/ui/vstack';
 import { Input, InputField } from '@/components/ui/input';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateInput from './DateInput';
-import { StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { Heading } from '../ui/heading';
 import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
 import { Box } from '@/components/ui/box';
 import FishingMethodDropdown from './FishingMethodDropdown';
+import { Fish } from 'lucide-react-native';
+import ActionButton from '../ui/ActionButton';
+import { useState } from 'react';
+import { Textarea, TextareaInput } from '@/components/ui/textarea';
 
 interface TripFormProps {
   date: Date | null;
@@ -18,6 +22,7 @@ interface TripFormProps {
 }
 
 export default function TripForm({ date, setDate, focusedField, setFocusedField, handleFocus }: TripFormProps) {
+  const [catchesLogged, setCatchesLogged] = useState<boolean>(false);
   return (
     <>
       <VStack className="gap-4">
@@ -128,6 +133,57 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
           </Input>
         </LinearGradient>
       </VStack>
+
+      <VStack className="my-5 mx-auto w-full">
+        <LinearGradient
+          colors={['#0f172a', '#1e293b', '#0f172a']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerContainer}
+        >
+          <HStack className="gap-10">
+            <Box className="flex-1 pl-2">
+              <HStack className="items-center space-x-2">
+                <Fish size={20} color="#5ACCF2" />
+                <Heading style={styles.heading} className="text-xl font-bold">
+                  Catches
+                </Heading>
+              </HStack>
+              <TripDivider />
+              <Text className="text-gray-400 text-sm mt-1">Log all fish caught during this trip</Text>
+            </Box>
+            <Box className="justify-center pr-2">
+              <ActionButton
+                label="Add Catch"
+                icon="add"
+                color="blue"
+                size="sm"
+                onPress={() => setCatchesLogged(false)}
+              />
+              {/* This should change depending on catches logged or not */}
+            </Box>
+          </HStack>
+          {!catchesLogged ? (
+            <VStack className="items-center justify-center py-10 mx-auto space-y-2">
+              <Fish size={40} color="#6B7280" /> {/* Grå ikon */}
+              <Text style={{ color: '#6B7280', fontSize: 16, fontWeight: '600' }}>No catches logged yet</Text>
+              <Text style={{ color: '#9CA3AF', fontSize: 14 }}>Click &quot;Add Catch&quot; to record your fish</Text>
+            </VStack>
+          ) : (
+            <></>
+          )}
+        </LinearGradient>
+      </VStack>
+
+      <VStack className="py-2">
+        <Heading>Additional Notes</Heading>
+        <TripDivider />
+        <Text className="text-gray-400 text-md mt-1">Any other observations or memorable moments</Text>
+        <Textarea size="md" isReadOnly={false} isInvalid={false} isDisabled={false} className="w-full">
+          <TextareaInput placeholder="Your text goes here..." />
+        </Textarea>
+
+      </VStack>
     </>
   );
 }
@@ -148,5 +204,11 @@ const styles = StyleSheet.create({
   },
   inputFocused: {
     borderColor: '#5ACCF2',
+  },
+  fish: {
+    paddingLeft: 5,
+  },
+  catchHeading: {
+    padding: 10,
   },
 });
