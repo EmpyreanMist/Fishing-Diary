@@ -102,8 +102,15 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
           <Heading className="py-2" style={styles.heading} size="sm">
             Weather Condition
           </Heading>
-          <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-            <InputField placeholder="Enter Weather Conditions..." />
+          <Input
+            style={[styles.input, focusedField === 'weather' && styles.inputFocused]}
+            variant="outline"
+            size="md"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField placeholder="Enter Weather Conditions..." onFocus={() => handleFocus('weather')} />
           </Input>
 
           <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -111,16 +118,30 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
               <Heading className="py-2" style={styles.heading} size="sm">
                 Temperature
               </Heading>
-              <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-                <InputField placeholder="Enter Text here..." />
+              <Input
+                style={[styles.input, focusedField === 'temperature' && styles.inputFocused]}
+                variant="outline"
+                size="md"
+                isDisabled={false}
+                isInvalid={false}
+                isReadOnly={false}
+              >
+                <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('temperature')} />
               </Input>
             </Box>
             <Box className="flex-1">
               <Heading className="py-2" style={styles.heading} size="sm">
                 Wind Condition
               </Heading>
-              <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-                <InputField placeholder="Enter Text here..." />
+              <Input
+                style={[styles.input, focusedField === 'wind' && styles.inputFocused]}
+                variant="outline"
+                size="md"
+                isDisabled={false}
+                isInvalid={false}
+                isReadOnly={false}
+              >
+                <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('wind')} />
               </Input>
             </Box>
           </HStack>
@@ -128,8 +149,15 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
           <Heading className="py-2" style={styles.heading} size="sm">
             Water Condition
           </Heading>
-          <Input variant="outline" size="md" isDisabled={false} isInvalid={false} isReadOnly={false}>
-            <InputField placeholder="Enter Text here..." />
+          <Input
+            style={[styles.input, focusedField === 'water-conditions' && styles.inputFocused]}
+            variant="outline"
+            size="md"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('water-conditions')} />
           </Input>
         </LinearGradient>
       </VStack>
@@ -176,13 +204,26 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
       </VStack>
 
       <VStack className="py-2">
-        <Heading>Additional Notes</Heading>
-        <TripDivider />
-        <Text className="text-gray-400 text-md mt-1">Any other observations or memorable moments</Text>
-        <Textarea size="md" isReadOnly={false} isInvalid={false} isDisabled={false} className="w-full">
-          <TextareaInput placeholder="Your text goes here..." />
-        </Textarea>
-
+        <LinearGradient
+          colors={['#0f172a', '#1e293b', '#0f172a']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerContainer}
+        >
+          <Heading className="pl-2">Additional Notes</Heading>
+          <TripDivider />
+          <Text className="text-gray-400 text-md mt-1 pl-2">Any other observations or memorable moments</Text>
+          <Textarea
+            style={[styles.input, focusedField === 'other' && styles.inputFocused]}
+            className="mt-2 w-full px-2"
+            size="md"
+            isReadOnly={false}
+            isInvalid={false}
+            isDisabled={false}
+          >
+            <TextareaInput onFocus={() => handleFocus('other')} placeholder="Your text goes here..." />
+          </Textarea>
+        </LinearGradient>
       </VStack>
     </>
   );
