@@ -15,20 +15,25 @@ export default function AddTripScreen() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View className="mb-5">
           <TripHeader />
         </View>
 
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <FormControl className="mx-auto w-full p-2">
-              <TripForm
-                date={date}
-                setDate={setDate}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                handleFocus={handleFocus}
-              />
+            <TripForm
+              date={date}
+              setDate={setDate}
+              focusedField={focusedField}
+              setFocusedField={setFocusedField}
+              handleFocus={handleFocus}
+              onClose={() => setShowTrip(false)}
+            />
           </FormControl>
         </ScrollView>
       </SafeAreaView>
@@ -37,6 +42,13 @@ export default function AddTripScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0A121A',
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
   container: { flex: 1, backgroundColor: '#0A121A' },
   headerContainer: {
     borderBottomWidth: 1,
