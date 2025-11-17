@@ -3,6 +3,7 @@ import MapView from 'react-native-maps';
 export default function TripMapForm() {
   return (
     <MapView
+      className="rounded-md mx-3"
       style={{ width: '100%', height: 300 }}
       initialRegion={{
         latitude: 37.78825,

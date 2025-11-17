@@ -198,7 +198,7 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
         </Textarea>
       </VStack>
       {/* Map goes here */}
-      <View style={styles.container} className="py-2">
+      <View style={styles.container} className="mt-5">
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
         <Text className="text-gray-400 text-md mt-1 pl-2">Tap on the map to select your fishing spot</Text>
@@ -207,7 +207,7 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
         </Box>
       </View>
       {/* End of map */}
-      <HStack className="w-full py-4" space="lg">
+      <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
           <ActionButton
             label="Cancel"
