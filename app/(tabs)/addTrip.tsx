@@ -11,7 +11,7 @@ export default function AddTripScreen() {
       </View>
       <ScrollView>
         <Text style={{ color: 'white', padding: 20, fontSize: 16, lineHeight: 24 }}>
-          Here you can plan and log your fishing trips. Start by adding details about your trip, including location, date, and any notes you'd like to remember. Keep track of the fish you catch and the conditions you encounter to improve your fishing experience over time.
+          Here you can plan and log your fishing trips. Start by adding details about your trip, including location, date, and any notes you&apos;d like to remember. Keep track of the fish you catch and the conditions you encounter to improve your fishing experience over time.
         </Text>
       </ScrollView>
     </SafeAreaView>
