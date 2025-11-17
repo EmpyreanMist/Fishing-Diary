@@ -1,70 +1,137 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+  ScrollView,
+  View,
+  Modal,
+} from "react-native";
+import { Text } from "@gluestack-ui/themed";
+import { SafeAreaView } from "react-native-safe-area-context";
 import ActionButton from "@/components/ui/ActionButton";
+import StatsGrid from "@/components/home/StatsGrid";
+import RecentCatches from "@/components/home/RecentCatches";
 import CatchForm from "@/components/addCatch/CatchForm";
 
 export default function HomeScreen() {
+  const { width } = useWindowDimensions();
+  const isTablet = width > 700;
+
+  const [showCatchForm, setShowCatchForm] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Supabase URL:</Text>
-        <Text>{process.env.EXPO_PUBLIC_SUPABASE_URL || "❌ Not loaded"}</Text>
-        <Text>Supabase Key:</Text>
-        <Text>
-          {process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-            ? "✅ Exists"
-            : "❌ Not found"}
-        </Text>
-      </View>
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.heroContainer}>
+          <Image
+            style={[styles.image, { width, height: width * 0.6 }]}
+            source={require("@/assets/images/fishing.png")}
+            resizeMode="cover"
+          />
 
-      <CatchForm stmt={true} />
+          <View style={[styles.overlay, { top: (width * 0.6) / 2 - 40 }]}>
+            <Text style={[styles.title, { fontSize: isTablet ? 40 : 28 }]}>
+              Fishing Diary
+            </Text>
+            <Text style={[styles.subtitle, { fontSize: isTablet ? 22 : 18 }]}>
+              Your digital angler's log
+            </Text>
+          </View>
 
-      <Text style={styles.title}>🏠 Home</Text>
+          <View style={styles.heroButtons}>
+            <ActionButton
+              label="+ Add Catch"
+              onPress={() => setShowCatchForm(true)}
+            />
+            <ActionButton label="+ Add Trip" />
+          </View>
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <ActionButton
-          label="Add Catch"
-          color="green"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log("Add Catch pressed")}
+        <StatsGrid />
+
+        <View style={styles.buttonsContainer}>
+          <ActionButton
+            label="Find Spots"
+            color="blue"
+            width={"90%"}
+            icon={"location-outline"}
+          />
+          <ActionButton
+            label="Quick Photo"
+            color="green"
+            width={"90%"}
+            icon={"camera-outline"}
+          />
+          <ActionButton
+            label="Statistics"
+            color="black"
+            width={"90%"}
+            icon={"stats-chart-outline"}
+          />
+        </View>
+
+        <RecentCatches />
+      </ScrollView>
+
+      <Modal
+        visible={showCatchForm}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowCatchForm(false)}
+        style={styles.catchFormContainer}
+      >
+        <CatchForm
+          //@ts-ignore
+          onClose={() => setShowCatchForm(false)}
         />
-        <ActionButton
-          label="Add Trip"
-          color="blue"
-          icon="location-outline"
-          size="md"
-          onPress={() => console.log("Add trip pressed")}
-        />
-      </View>
-
-      <Text style={styles.subtitle}>Fishing app!</Text>
-    </View>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    paddingTop: "20%",
+    backgroundColor: "#0A121A",
   },
-  buttonContainer: {
-    display: "flex",
-    flexDirection: "row",
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  heroContainer: {
+    backgroundColor: "#0A121A",
     alignItems: "center",
-    gap: 5,
-    paddingTop: "20%",
-    backgroundColor: "#fff",
+  },
+  image: {
+    alignSelf: "stretch",
+  },
+  overlay: {
+    position: "absolute",
+    left: 20,
+    transform: [{ translateY: -20 }],
   },
   title: {
-    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
+    color: "#F5F5F5",
   },
   subtitle: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
+    color: "#F5F5F5",
+    marginTop: 4,
+  },
+  heroButtons: {
+    flexDirection: "row",
+    gap: 12,
+    bottom: 12,
+  },
+  buttonsContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    gap: 14,
+  },
+  catchFormContainer: {
+    width: "100%",
   },
 });

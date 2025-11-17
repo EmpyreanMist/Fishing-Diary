@@ -1,0 +1,25 @@
+@startuml add catch
+actor User
+
+usecase "Add New Catch" as UC0
+usecase "Choose species" as UC1
+usecase "Enter weight" as UC2
+usecase "Enter length" as UC3
+usecase "Enter location" as UC4
+usecase "Select lure type" as UC5
+usecase "Add notes" as UC6
+usecase "Add photo" as UC7
+usecase "Use GPS location" as UC8
+usecase "Save catch" as UC9
+
+User --> UC0
+UC0 --> UC1 : includes
+UC0 --> UC2 : includes
+UC0 --> UC3 : includes
+UC0 --> UC4 : includes
+UC0 --> UC5 : includes
+UC0 --> UC6 : includes
+UC0 --> UC7 : extends
+UC0 --> UC8 : extends
+UC0 --> UC9 : includes
+@enduml
