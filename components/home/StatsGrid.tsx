@@ -52,7 +52,7 @@ export default function StatsGrid() {
     }
 
     if (Object.keys(monthCounts).length === 0) {
-      return "-—";
+      return "—";
     }
 
     // Find best month
