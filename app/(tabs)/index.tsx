@@ -38,7 +38,7 @@ export default function HomeScreen() {
               Fishing Diary
             </Text>
             <Text style={[styles.subtitle, { fontSize: isTablet ? 22 : 18 }]}>
-              Your digital angler's log
+              Your digital angler&apos;s log
             </Text>
           </View>
 
