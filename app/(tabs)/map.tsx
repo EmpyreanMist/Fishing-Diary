@@ -4,11 +4,7 @@ import { MapPopularSpots } from "@/components/map/MapPopularSpots";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, {
-  Marker,
-  PROVIDER_GOOGLE,
-  MapPressEvent,
-} from "react-native-maps";
+import MapView, { Marker, MapPressEvent } from "react-native-maps";
 import { useNavigation } from "expo-router";
 import { places } from "../utils/places/places";
 
@@ -97,7 +93,6 @@ export default function MapScreen() {
         <View style={styles.mapContainer}>
           <MapView
             style={styles.map}
-            provider={PROVIDER_GOOGLE}
             initialRegion={INITIAL_REGION}
             showsUserLocation
             showsMyLocationButton
