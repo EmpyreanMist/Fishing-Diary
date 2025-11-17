@@ -32,7 +32,6 @@ export default function AddTripScreen() {
               focusedField={focusedField}
               setFocusedField={setFocusedField}
               handleFocus={handleFocus}
-              onClose={() => setShowTrip(false)}
             />
           </FormControl>
         </ScrollView>
