@@ -1,14 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-const topLocations = [
-  { name: "Lake Superior", catches: 15 },
-  { name: "Lake Michigan", catches: 12 },
-  { name: "Lake Erie", catches: 8 },
-  { name: "Lake Huron", catches: 6 },
-];
+type Location = {
+  name: string;
+  catches: number;
+};
 
-export function StatsTopLocations() {
+type Props = {
+  data: Location[];
+};
+export function StatsTopLocations({ data }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -19,7 +20,7 @@ export function StatsTopLocations() {
       <Text style={styles.subtitle}>Your most productive fishing spots</Text>
 
       <View>
-        {topLocations.map((location, index) => (
+        {data.map((location, index) => (
           <View style={styles.card} key={location.name}>
             <View style={styles.rankCircle}>
               <Text style={styles.rankText}>{index + 1}</Text>

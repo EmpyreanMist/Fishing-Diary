@@ -1,13 +1,19 @@
 import { StyleSheet, View } from "react-native";
 import { StatsCard } from "./StatsCard";
 
-export function StatsGrid() {
+type Props = {
+  total: number;
+  days: number;
+  average: number;
+  biggest: number | string;
+};
+export function StatsGrid({ total, days, average, biggest }: Props) {
   return (
     <View style={styles.grid}>
-      <StatsCard icon="fish-outline" value="67" label="Total Catches" />
-      <StatsCard icon="calendar-outline" value="23" label="Fishing Days" />
-      <StatsCard icon="disc-outline" value="2.9" label="Avg per Trip" />
-      <StatsCard icon="ribbon-outline" value="4.2kg" label="Biggest Catch" />
+      <StatsCard icon="fish-outline" value={String(total)} label="Total Catches" />
+      <StatsCard icon="calendar-outline" value={String(days)} label="Fishing Days" />
+      <StatsCard icon="disc-outline" value={String(average)} label="Avg per Trip" />
+      <StatsCard icon="ribbon-outline" value={`${biggest} kg`} label="Biggest Catch" />
     </View>
   );
 }

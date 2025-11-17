@@ -1,18 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-/* Dummy data, this will be replaced by data from user database */
-const fishData = [
-  { species: "Pike", count: 28 },
-  { species: "Perch", count: 19 },
-  { species: "Trout", count: 12 },
-  { species: "Roach", count: 7 },
-];
+type Species = {
+  species: string;
+  count: number;
+};
 
-export function StatsSpeciesBreakdown() {
+type Props = {
+  data: Species[];
+};
+
+
+export function StatsSpeciesBreakdown({ data }: Props) {
   // Calculations for max value and total count
-  const total = fishData.reduce((sum, item) => sum + item.count, 0);
-  const maxValue = Math.max(...fishData.map((i) => i.count));
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+  const maxValue = Math.max(...data.map((i) => i.count));
 
   return (
     <View style={styles.container}>
@@ -25,7 +27,7 @@ export function StatsSpeciesBreakdown() {
         Your most commonly caught fish species
       </Text>
 
-      {fishData.map((fish) => {
+      {data.map((fish) => {
         const percentage = Math.round((fish.count / total) * 100);
         const barWidth = (fish.count / maxValue) * 100;
 

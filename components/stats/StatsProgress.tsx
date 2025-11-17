@@ -1,20 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-/* This data will be replaced by information from user database */
-const progressData = [
-  { month: "Jan", progress: 3 },
-  { month: "Feb", progress: 5 },
-  { month: "Mar", progress: 8 },
-  { month: "Apr", progress: 12 },
-  { month: "May", progress: 15 },
-  { month: "Jun", progress: 18 },
-];
+type MonthProgress = {
+  month: string;
+  progress: number;
+};
 
-/* This will also be replaced by highest value from user database */
-const MAX_VALUE = 18; // Maximum value for scaling the bars
+type Props = {
+  data: MonthProgress[];
+};
 
-export function StatsProgress() {
+export function StatsProgress({ data }: Props) {
+  const maxValue = Math.max(...data.map((d) => d.progress), 1);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -26,8 +24,8 @@ export function StatsProgress() {
         Your fishing activity over the past 6 months
       </Text>
 
-      {progressData.map((item) => {
-        const progressWidth = (item.progress / MAX_VALUE) * 100;
+      {data.map((item) => {
+        const widthPercent = (item.progress / maxValue) * 100;
 
         return (
           <View key={item.month} style={styles.row}>
@@ -35,7 +33,7 @@ export function StatsProgress() {
 
             <View style={styles.progressContainer}>
               <View
-                style={[styles.progressFill, { width: `${progressWidth}%` }]}
+                style={[styles.progressFill, { width: `${widthPercent}%` }]}
               />
             </View>
 
@@ -46,6 +44,7 @@ export function StatsProgress() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
