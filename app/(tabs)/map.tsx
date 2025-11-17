@@ -89,54 +89,53 @@ export default function MapScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <MapHeader />
-
-      <View style={styles.mapContainer}>
-        <MapView
-          style={styles.map}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={INITIAL_REGION}
-          showsUserLocation
-          showsMyLocationButton
-          ref={mapRef}
-          // Välj gärna onLongPress om du vill undvika oavsiktliga klick
-          onPress={handleMapPress}
-        >
-          {/* Fördefinierade platser */}
-          {places.map((marker, index) => (
-            <Marker key={`place-${index}`} coordinate={marker} />
-          ))}
-
-          {/* EN tillfällig marker (byts ut vid nytt tryck) */}
-          {pendingMarker && (
-            <Marker
-              coordinate={pendingMarker}
-              title="Ej sparad"
-              description={`${pendingMarker.latitude.toFixed(
-                5
-              )}, ${pendingMarker.longitude.toFixed(5)}`}
-              pinColor={"orange"} // valfritt: särskilj tillfällig
-            />
-          )}
-
-          {/* Sparade markers (ligger kvar även efter ny pending) */}
-          {savedMarkers.map((m, i) => (
-            <Marker
-              key={`saved-${i}`}
-              coordinate={m}
-              title="Sparad plats"
-              description={`${m.latitude.toFixed(5)}, ${m.longitude.toFixed(
-                5
-              )}`}
-            />
-          ))}
-        </MapView>
-      </View>
-
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={INITIAL_REGION}
+            showsUserLocation
+            showsMyLocationButton
+            ref={mapRef}
+            // Välj gärna onLongPress om du vill undvika oavsiktliga klick
+            onPress={handleMapPress}
+          >
+            {/* Fördefinierade platser */}
+            {places.map((marker, index) => (
+              <Marker key={`place-${index}`} coordinate={marker} />
+            ))}
+
+            {/* EN tillfällig marker (byts ut vid nytt tryck) */}
+            {pendingMarker && (
+              <Marker
+                coordinate={pendingMarker}
+                title="Ej sparad"
+                description={`${pendingMarker.latitude.toFixed(
+                  5
+                )}, ${pendingMarker.longitude.toFixed(5)}`}
+                pinColor={"orange"} // valfritt: särskilj tillfällig
+              />
+            )}
+
+            {/* Sparade markers (ligger kvar även efter ny pending) */}
+            {savedMarkers.map((m, i) => (
+              <Marker
+                key={`saved-${i}`}
+                coordinate={m}
+                title="Sparad plats"
+                description={`${m.latitude.toFixed(5)}, ${m.longitude.toFixed(
+                  5
+                )}`}
+              />
+            ))}
+          </MapView>
+        </View>
+
         <MapPopularSpots />
       </ScrollView>
     </SafeAreaView>
@@ -149,6 +148,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 20,
     overflow: "hidden",
+    maxHeight: 300,
     height: "50%",
   },
   safeArea: {
