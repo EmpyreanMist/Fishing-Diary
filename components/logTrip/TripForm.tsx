@@ -202,7 +202,9 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
         <Text className="text-gray-400 text-md mt-1 pl-2">Tap on the map to select your fishing spot</Text>
-        <TripMapForm />
+        <Box className="pt-2 border-solid outline-2">
+          <TripMapForm />
+        </Box>
       </View>
       {/* End of map */}
       <HStack className="w-full py-4" space="lg">
