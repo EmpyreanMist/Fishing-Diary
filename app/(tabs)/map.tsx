@@ -9,10 +9,10 @@ import { useNavigation } from "expo-router";
 import { places } from "../utils/places/places";
 
 const INITIAL_REGION = {
-  latitude: 37.78825,
-  longitude: -122.4324,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
+  latitude: 60.1282,
+  longitude: 18.6435,
+  latitudeDelta: 10,
+  longitudeDelta: 10,
 };
 
 type LatLng = { latitude: number; longitude: number };
