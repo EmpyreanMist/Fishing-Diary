@@ -1,38 +1,31 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Alert,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { FormControl } from "@gluestack-ui/themed";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import CatchFormHeader from "./CatchFormHeader";
-import CatchFormInputs from "./CatchFormInputs";
-import LureDropdown from "./LureDropdown";
-import CatchFormActions from "./CatchFormActions";
-import FishDropdown from "./FishDropdown";
-import { supabase } from "../../lib/supabase";
-import CatchDateTimePicker from "./CatchDateTimePicker";
-import type { CatchFormProps, FormState } from "./types/types";
-import { createCatch } from "../../lib/catches/createCatch";
-import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
+import { ScrollView, StyleSheet, Alert, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { FormControl } from '@gluestack-ui/themed';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import CatchFormHeader from './CatchFormHeader';
+import CatchFormInputs from './CatchFormInputs';
+import LureDropdown from './LureDropdown';
+import CatchFormActions from './CatchFormActions';
+import FishDropdown from './FishDropdown';
+import { supabase } from '../../lib/supabase';
+import CatchDateTimePicker from './CatchDateTimePicker';
+import type { CatchFormProps, FormState } from './types/types';
+import { createCatch } from '../../lib/catches/createCatch';
+import { uploadCatchPhotos } from '../../lib/catches/uploadPhotos';
 
-import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
+import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 
 export default function CatchForm({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [form, setForm] = useState<FormState>({
-    speciesId: "",
-    lureId: "",
-    weightKg: "",
-    lengthCm: "",
-    locationName: "",
-    notes: "",
+    speciesId: '',
+    lureId: '',
+    weightKg: '',
+    lengthCm: '',
+    locationName: '',
+    notes: '',
     caughtAt: new Date(),
   });
 
@@ -57,9 +50,9 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
+    if (status !== 'granted') {
       setLocationStatus(null);
-      Alert.alert("Permission denied", "We need access to your photos.");
+      Alert.alert('Permission denied', 'We need access to your photos.');
       return;
     }
 
@@ -80,8 +73,8 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
   const handleGetLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission denied", "We need access to your location.");
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'We need access to your location.');
       return;
     }
 
@@ -90,50 +83,43 @@ export default function CatchForm({ onClose }: CatchFormProps) {
       setLatitude(pos.coords.latitude);
       setLongitude(pos.coords.longitude);
 
-      setLocationStatus("GPS saved!");
+      setLocationStatus('GPS saved!');
     } catch (err) {
-      setLocationStatus("Failed to get location");
+      setLocationStatus('Failed to get location');
     }
   };
   const handleSaveCatch = async () => {
-    if (!userId) return Alert.alert("Not signed in");
+    if (!userId) return Alert.alert('Not signed in');
 
     setSaving(true);
 
     const catchData = await createCatch(form, userId, latitude, longitude);
     if (!catchData) {
       setSaving(false);
-      Alert.alert("Save failed", "Could not create catch.");
+      Alert.alert('Save failed', 'Could not create catch.');
       return;
     }
 
-    const failedPhotos = await uploadCatchPhotos(
-      localPhotos,
-      userId,
-      catchData.id
-    );
+    const failedPhotos = await uploadCatchPhotos(localPhotos, userId, catchData.id);
     setLocalPhotos(failedPhotos);
     setSaving(false);
 
     if (failedPhotos.length > 0) {
       Alert.alert(
-        "Partial success",
+        'Partial success',
         failedPhotos.length === localPhotos.length
-          ? "Catch saved but no photos were uploaded."
-          : "Catch saved but some photos failed to upload."
+          ? 'Catch saved but no photos were uploaded.'
+          : 'Catch saved but some photos failed to upload.'
       );
     } else {
-      Alert.alert("Success", "Catch and photos saved!");
+      Alert.alert('Success', 'Catch and photos saved!');
       onClose();
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-      >
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -143,27 +129,24 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 
           <View style={styles.inner}>
             <FormControl className="px-5 py-4 rounded-lg w-full">
-              <FishDropdown onSelect={(id) => setField("speciesId", id)} />
+              <FishDropdown onSelect={(id) => setField('speciesId', id)} />
 
               <CatchFormInputs
                 focusedField={focusedField}
                 setFocusedField={setFocusedField}
                 weightKg={form.weightKg}
-                setWeightKg={(val) => setField("weightKg", val)}
+                setWeightKg={(val) => setField('weightKg', val)}
                 lengthCm={form.lengthCm}
-                setLengthCm={(val) => setField("lengthCm", val)}
+                setLengthCm={(val) => setField('lengthCm', val)}
                 locationName={form.locationName}
-                setLocationName={(val) => setField("locationName", val)}
+                setLocationName={(val) => setField('locationName', val)}
                 notes={form.notes}
-                setNotes={(val) => setField("notes", val)}
+                setNotes={(val) => setField('notes', val)}
               />
 
-              <LureDropdown onSelect={(id) => setField("lureId", id)} />
+              <LureDropdown onSelect={(id) => setField('lureId', id)} />
 
-              <CatchDateTimePicker
-                value={form.caughtAt}
-                onChange={(date) => setField("caughtAt", date)}
-              />
+              <CatchDateTimePicker value={form.caughtAt} onChange={(date) => setField('caughtAt', date)} />
 
               <CatchFormActions
                 onClose={onClose}
@@ -173,9 +156,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
                 loading={saving}
                 photos={localPhotos}
                 locationStatus={locationStatus}
-                onRemovePhoto={(index) =>
-                  setLocalPhotos((prev) => prev.filter((_, i) => i !== index))
-                }
+                onRemovePhoto={(index) => setLocalPhotos((prev) => prev.filter((_, i) => i !== index))}
               />
             </FormControl>
           </View>
@@ -188,7 +169,7 @@ export default function CatchForm({ onClose }: CatchFormProps) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A121A",
+    backgroundColor: '#0A121A',
   },
   scrollContent: {
     flexGrow: 1,

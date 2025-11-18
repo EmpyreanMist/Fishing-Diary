@@ -1,14 +1,8 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-} from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Ionicons } from "@expo/vector-icons";
-import ActionButton from "../ui/ActionButton";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons';
+import ActionButton from '../ui/ActionButton';
 
 interface Props {
   value: Date;
@@ -57,31 +51,20 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
   return (
     <View style={styles.container}>
       {/* Here we open the date picker */}
-      <TouchableOpacity
-        style={styles.inputButton}
-        activeOpacity={0.8}
-        onPress={() => setShowDatePicker(true)}
-      >
+      <TouchableOpacity style={styles.inputButton} activeOpacity={0.8} onPress={() => setShowDatePicker(true)}>
         <Ionicons name="calendar-outline" size={18} color="white" />
         <Text style={styles.inputText}>
-          {value.toLocaleDateString()}{" "}
-          {value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          {value.toLocaleDateString()} {value.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </Text>
       </TouchableOpacity>
 
-      <ActionButton
-        label="Now"
-        icon="time-outline"
-        color="blue"
-        size="lg"
-        onPress={handleUseNow}
-      />
+      <ActionButton label="Now" icon="time-outline" color="blue" size="lg" onPress={handleUseNow} />
 
       {showDatePicker && (
         <DateTimePicker
           value={value}
           mode="date"
-          display={Platform.OS === "ios" ? "inline" : "default"}
+          display={Platform.OS === 'ios' ? 'inline' : 'default'}
           onChange={handleDateChange}
         />
       )}
@@ -90,7 +73,7 @@ export default function CatchDateTimePicker({ value, onChange }: Props) {
         <DateTimePicker
           value={value}
           mode="time"
-          display={Platform.OS === "ios" ? "spinner" : "default"}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleTimeChange}
         />
       )}
@@ -102,22 +85,22 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 16,
     marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   inputButton: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: "#475569",
+    borderColor: '#475569',
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderRadius: 10,
   },
   inputText: {
-    color: "#E5E7EB",
+    color: '#E5E7EB',
     fontSize: 14,
     marginLeft: 8,
   },
