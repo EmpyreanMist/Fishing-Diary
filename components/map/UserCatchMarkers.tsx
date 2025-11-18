@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 type CatchMarker = {
   latitude: number;
   longitude: number;
+  weight_kg: number | null;
   fish: {
     english_name: string;
   } | null;
@@ -32,6 +33,7 @@ export function UserCatchMarkers() {
         `
         latitude,
         longitude,
+        weight_kg,
         fish_species ( english_name )
       `
       )
@@ -44,6 +46,7 @@ export function UserCatchMarkers() {
     const formatted = data.map((row: any) => ({
       latitude: Number(row.latitude),
       longitude: Number(row.longitude),
+      weight_kg: row.weight_kg,
       fish: row.fish_species,
     }));
 
@@ -57,6 +60,7 @@ export function UserCatchMarkers() {
           key={`catch-${i}`}
           coordinate={{ latitude: m.latitude, longitude: m.longitude }}
           title={m.fish?.english_name ?? "Catch"}
+          description={`${m.weight_kg ?? "?"} kg`}
         >
           <View
             style={{
