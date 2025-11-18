@@ -12,7 +12,6 @@ type Props = {
 
 
 export function StatsSpeciesBreakdown({ data }: Props) {
-  // Calculations for max value and total count
   const total = data.reduce((sum, item) => sum + item.count, 0);
   const maxValue = Math.max(...data.map((i) => i.count));
 

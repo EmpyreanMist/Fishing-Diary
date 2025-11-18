@@ -1,8 +1,8 @@
 import { supabase } from "../supabase";
 
-// Hämta användarens statistik
+
 export async function getUserStatistics(userId: string) {
-  // 1. Alla fångster för användaren
+
   const { data: catches, error } = await supabase
   .from("catches")
   .select(`
@@ -18,24 +18,21 @@ export async function getUserStatistics(userId: string) {
 
   if (error) throw new Error(error.message);
 
-  // Totalt antal fångster
+
   const totalCatches = catches.length;
 
-  // Antal fiskedagar (unika datum)
+
   const fishingDays = new Set(
     catches.map((c) => new Date(c.created_at).toDateString())
   ).size;
 
-  // Snitt per tur
   const averagePerTrip = fishingDays > 0 ? (totalCatches / fishingDays) : 0;
 
-  // Största fisken (efter vikt)
   const biggestCatch = catches.reduce(
     (max, c) => (c.weight_kg > max.weight_kg ? c : max),
     { weight_kg: 0 }
   );
 
-  // --- Species breakdown ---
   const speciesMap: Record<string, number> = {};
   catches.forEach((c) => {
     const fishSpecies = c.fish_species as any;
@@ -46,7 +43,7 @@ export async function getUserStatistics(userId: string) {
     ([species, count]) => ({ species, count })
   );
 
-  // --- Top lures ---
+
   const lureMap: Record<string, { count: number; totalWeight: number }> = {};
   catches.forEach((c) => {
     const lure = c.lure as any;
@@ -60,13 +57,13 @@ export async function getUserStatistics(userId: string) {
     name,
     catches: data.count,
     avgWeight: +(data.totalWeight / data.count).toFixed(1),
-    success: Math.min(100, data.count * 10), // Dummy success metric (kan anpassas)
+    success: Math.min(100, data.count * 10),
   }));
 
- // --- Top locations ---
+
 const lakeMap: Record<string, number> = {};
 catches.forEach((c) => {
-  const name = c.location_name ?? "Unknown"; // <-- korrekt
+  const name = c.location_name ?? "Unknown";
   lakeMap[name] = (lakeMap[name] || 0) + 1;
 });
 
@@ -75,7 +72,7 @@ const topLocations = Object.entries(lakeMap)
   .sort((a, b) => b.catches - a.catches)
   .slice(0, 5);
 
-  // --- Monthly Progress (senaste 6 månaderna) ---
+
   const now = new Date();
   const progress = [];
   for (let i = 5; i >= 0; i--) {
