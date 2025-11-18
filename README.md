@@ -1,6 +1,60 @@
-# Welcome to your Expo app 👋
+## Overview
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A fishing diary mobile app built with Expo React Native, Supabase, Gluestack UI and TypeScript.  
+Users can log catches, upload photos, store lure and species data, view statistics, browse popular fishing spots on a map and sync everything to the cloud.
+
+## Features
+
+- Secure login with Supabase Auth
+- Fishing trips
+  - Log complete fishing sessions
+  - Trip name, date, start time and end time
+  - Choose fishing method
+  - Add participants
+  - Record weather, wind, temperature and water conditions
+  - Add notes and observations
+  - Log multiple catches inside a trip
+  - Select trip location via interactive map
+- Create catches with:
+  - Species
+  - Lure
+  - Weight
+  - Length
+  - Notes
+  - GPS location
+  - Date and time
+  - Multiple photos (compressed & uploaded to Supabase Storage)
+- Browse catches in a Recent Catches view
+- Personal statistics dashboard (total catches, favourite species, best month, etc)
+- Map screen with:
+  - User location
+  - Markers for favourite spots
+  - Popular saved locations
+- Fully typed TypeScript codebase
+- Modern UI using Gluestack components and react native
+
+## Tech Stack
+
+- Expo React Native
+- TypeScript
+- Supabase (Auth, Database, Storage)
+- Gluestack UI
+- React Native Maps
+- Expo Image Manipulator
+- Expo Location
+
+## Screenshots
+
+To be added
+
+- Dashboard
+- Create Catch
+- Stats screen
+- Catches screen
+- Log Trip
+- Map Screen
+- Login screen
+- Signup screen
 
 ## Get started
 
@@ -10,44 +64,18 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Create a .env file in the root with:
+
+   ```bash
+   EXPO_PUBLIC_SUPABASE_URL=your_url
+   EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_key
+   ```
+
+3. Start the app
 
    ```bash
    npx expo start
    ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
 ## Database Schemas
 
@@ -99,3 +127,29 @@ Join our community of developers creating universal apps.
 | weight_gram | numeric     | optional                             |
 | color       | text        | optional                             |
 | image_url   | text        | optional image                       |
+
+<h2  style="text-align: center;">Authors</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">
+
+  <div style="text-align: center;">
+    <a href="https://github.com/EmpyreanMist">
+      <img src="https://avatars.githubusercontent.com/u/175473868?v=4" width="80" style="border-radius:50%;" />
+      <p><strong>Christian Fryksten</strong><br/><sub>EmpyreanMist</sub></p>
+    </a>
+  </div>
+
+  <div style="text-align: center;">
+    <a href="https://github.com/SpinalGlitter">
+      <img src="https://avatars.githubusercontent.com/u/180339467?v=4" width="80" style="border-radius:50%;" />
+      <p><strong>Johannes Persson</strong><br/><sub>SpinalGlitter</sub></p>
+    </a>
+  </div>
+
+  <div style="text-align: center;">
+    <a href="https://github.com/Marcusmoller97">
+      <img src="https://avatars.githubusercontent.com/u/56174711?v=4" width="80" style="border-radius:50%;" />
+      <p><strong>Marcus Möller</strong><br/><sub>Marcusmoller97</sub></p>
+    </a>
+  </div>
+
+</div>
