@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { Marker } from "react-native-maps";
+import { View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-type LatLng = { latitude: number; longitude: number };
+type CatchMarker = {
+  latitude: number;
+  longitude: number;
+  fish: {
+    english_name: string;
+  } | null;
+};
 
 export function UserCatchMarkers() {
-  const [markers, setMarkers] = useState<LatLng[]>([]);
+  const [markers, setMarkers] = useState<CatchMarker[]>([]);
 
   useEffect(() => {
     fetchMarkers();
@@ -20,28 +28,46 @@ export function UserCatchMarkers() {
 
     const { data, error } = await supabase
       .from("catches")
-      .select("latitude, longitude")
+      .select(
+        `
+        latitude,
+        longitude,
+        fish_species ( english_name )
+      `
+      )
       .eq("user_id", user.id)
       .not("latitude", "is", null)
       .not("longitude", "is", null);
 
-    if (error) {
-      console.log("Marker fetch error:", error);
-      return;
-    }
+    if (error) return console.log(error);
 
-    const coords = data.map((row) => ({
+    const formatted = data.map((row: any) => ({
       latitude: Number(row.latitude),
       longitude: Number(row.longitude),
+      fish: row.fish_species,
     }));
 
-    setMarkers(coords);
+    setMarkers(formatted);
   }
 
   return (
     <>
       {markers.map((m, i) => (
-        <Marker key={`catch-${i}`} coordinate={m} pinColor="red" title="Fish" />
+        <Marker
+          key={`catch-${i}`}
+          coordinate={{ latitude: m.latitude, longitude: m.longitude }}
+          title={m.fish?.english_name ?? "Catch"}
+        >
+          <View
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              padding: 6,
+              borderRadius: 20,
+            }}
+          >
+            <Ionicons name="fish" size={28} color="#4CC9F0" />
+          </View>
+        </Marker>
       ))}
     </>
   );
