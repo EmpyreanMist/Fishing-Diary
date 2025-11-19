@@ -35,7 +35,10 @@ export default function MapScreen() {
 
   // Tryck på kartan: ersätt/uppdatera ENDAST den tillfälliga markern
   const handleMapPress = (e: MapPressEvent) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
+    const coord = e.nativeEvent?.coordinate;
+    if (!coord) return;
+
+    const { latitude, longitude } = coord;
     setPendingMarker({ latitude, longitude });
   };
 
