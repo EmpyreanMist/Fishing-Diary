@@ -12,7 +12,6 @@ import ActionButton from '../ui/ActionButton';
 import { useState } from 'react';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import TripMapForm from './mapTrip';
-import { FormState } from '../addCatch/types/types';
 
 interface TripFormProps {
   date: Date | null;
