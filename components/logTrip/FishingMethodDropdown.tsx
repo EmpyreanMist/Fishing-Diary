@@ -37,9 +37,9 @@ export default function FishingMethodDropdown() {
   return (
     <SimpleDropdown
       label="Choose fishing method:"
-      items={[{ label: 'Choose fishing method...', value: '' }, ...methodOptions]}
+      items={[{ label: 'Choose fishing method:', value: '' }, ...methodOptions]}
       enableSearch={true}
-      placeholder="Search or select lure..."
+      placeholder="Search or select method..."
     />
   );
 }
