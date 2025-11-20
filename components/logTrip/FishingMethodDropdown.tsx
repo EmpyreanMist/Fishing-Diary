@@ -12,10 +12,8 @@ export default function FishingMethodDropdown() {
   useEffect(() => {
     // method to fetch fising methods
     const fetchMethods = async () => {
-      const { data, error } = await supabase
-        .from('fishing_methods')
-        .select('id, method_name, method_img');
-        /* .order('method_name', { ascending: true }); */
+      const { data, error } = await supabase.from('fishing_methods').select('id, method_name, method_img');
+      /* .order('method_name', { ascending: true }); */
 
       if (error) {
         console.error('Error fetching fishing methods:', error);
@@ -28,7 +26,6 @@ export default function FishingMethodDropdown() {
     fetchMethods();
   }, []);
 
-  console.log(fishMethods);
   const methodOptions = fishMethods.map((method) => {
     return {
       label: method.method_name,
