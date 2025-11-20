@@ -26,7 +26,6 @@ export async function getUserStatistics(userId: string) {
     catches.map((c) => new Date(c.created_at).toDateString())
   ).size;
 
-  const averagePerTrip = fishingDays > 0 ? (totalCatches / fishingDays) : 0;
 
   const biggestCatch = catches.reduce(
     (max, c) => (c.weight_kg > max.weight_kg ? c : max),
@@ -90,7 +89,6 @@ const topLocations = Object.entries(lakeMap)
   return {
     totalCatches,
     fishingDays,
-    averagePerTrip,
     biggestCatch,
     speciesBreakdown,
     topLures,
