@@ -21,8 +21,7 @@ import { createCatch } from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
-import CatchMapModal from "./CatchMapModal";
+import CatchMapModal from "./addCatchMapModal/CatchMapModal";
 
 export default function CatchForm({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
