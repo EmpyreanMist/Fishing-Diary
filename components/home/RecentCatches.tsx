@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { supabase } from "../../lib/supabase";
 
 type CatchItem = {
   id: string;
@@ -12,34 +13,80 @@ type CatchItem = {
   date: string;
 };
 
-const dummyData: CatchItem[] = [
-  {
-    id: "1",
-    species: "Pike",
-    weight: "2.3 kg",
-    length: "65 cm",
-    location: "Lake Superior",
-    date: "1/10/2024",
-  },
-  {
-    id: "2",
-    species: "Perch",
-    weight: "0.8 kg",
-    length: "28 cm",
-    location: "Lake Michigan",
-    date: "1/8/2024",
-  },
-  {
-    id: "3",
-    species: "Pike",
-    weight: "1.9 kg",
-    length: "58 cm",
-    location: "Lake Erie",
-    date: "1/5/2024",
-  },
-];
+type SpeciesRow = {
+  english_name: string;
+};
+
+type CatchRow = {
+  id: number;
+  weight_kg: number | null;
+  length_cm: number | null;
+  location_name: string | null;
+  caught_at: string | null;
+  fish_species: SpeciesRow | SpeciesRow[] | null;
+};
 
 export default function RecentCatches() {
+  const [recentCatches, setRecentCatches] = useState<CatchItem[]>([]);
+
+  useEffect(() => {
+    fetchRecentCatches();
+  }, []);
+
+  async function fetchRecentCatches() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("catches")
+      .select(
+        `
+      id,
+      weight_kg,
+      length_cm,
+      location_name,
+      caught_at,
+      fish_species (
+        english_name
+      )
+    `
+      )
+      .eq("user_id", user.id)
+      .order("caught_at", { ascending: false })
+      .limit(3);
+
+    console.log("RAW DATA:", JSON.stringify(data, null, 2));
+
+    if (error || !data) {
+      console.error("Error fetching recent catches:", error);
+      return;
+    }
+
+    const catches = data as CatchRow[];
+
+    const mapped = catches.map((c) => {
+      const species = Array.isArray(c.fish_species)
+        ? c.fish_species[0]?.english_name
+        : c.fish_species?.english_name;
+
+      return {
+        id: c.id.toString(),
+        species: species ?? "Unknown",
+        weight: c.weight_kg ? `${c.weight_kg} kg` : "—",
+        length: c.length_cm ? `${c.length_cm} cm` : "—",
+        location: c.location_name ?? "Unknown location",
+        date: c.caught_at
+          ? new Date(c.caught_at).toLocaleDateString("sv-SE")
+          : "—",
+      };
+    });
+
+    setRecentCatches(mapped);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -49,41 +96,45 @@ export default function RecentCatches() {
       <Text style={styles.subtitle}>Your latest fishing successes</Text>
 
       <View style={{ gap: 12, marginTop: 10 }}>
-        {dummyData.map((item) => (
-          <LinearGradient
-            key={item.id}
-            colors={["#1A2732", "#0E141B"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.card}
-          >
-            <View style={styles.cardHeader}>
-              <View style={styles.speciesContainer}>
-                <Ionicons name="fish-outline" size={18} color="#5ACCF2" />
-                <Text style={styles.species}>{item.species}</Text>
+        {recentCatches.length === 0 ? (
+          <Text style={{ color: "#A5B2C4" }}>No recent catches yet.</Text>
+        ) : (
+          recentCatches.map((item) => (
+            <LinearGradient
+              key={item.id}
+              colors={["#1A2732", "#0E141B"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.card}
+            >
+              <View style={styles.cardHeader}>
+                <View style={styles.speciesContainer}>
+                  <Ionicons name="fish-outline" size={18} color="#5ACCF2" />
+                  <Text style={styles.species}>{item.species}</Text>
+                </View>
+                <View style={styles.dateBadge}>
+                  <Text style={styles.dateText}>{item.date}</Text>
+                </View>
               </View>
-              <View style={styles.dateBadge}>
-                <Text style={styles.dateText}>{item.date}</Text>
-              </View>
-            </View>
 
-            <View style={styles.statsRow}>
-              <View style={styles.stat}>
-                <Ionicons name="barbell-outline" size={15} color="#98A6B3" />
-                <Text style={styles.statText}>{item.weight}</Text>
+              <View style={styles.statsRow}>
+                <View style={styles.stat}>
+                  <Ionicons name="barbell-outline" size={15} color="#98A6B3" />
+                  <Text style={styles.statText}>{item.weight}</Text>
+                </View>
+                <View style={styles.stat}>
+                  <Ionicons name="resize-outline" size={15} color="#98A6B3" />
+                  <Text style={styles.statText}>{item.length}</Text>
+                </View>
               </View>
-              <View style={styles.stat}>
-                <Ionicons name="resize-outline" size={15} color="#98A6B3" />
-                <Text style={styles.statText}>{item.length}</Text>
-              </View>
-            </View>
 
-            <View style={styles.locationRow}>
-              <Ionicons name="location-outline" size={15} color="#98A6B3" />
-              <Text style={styles.locationText}>{item.location}</Text>
-            </View>
-          </LinearGradient>
-        ))}
+              <View style={styles.locationRow}>
+                <Ionicons name="location-outline" size={15} color="#98A6B3" />
+                <Text style={styles.locationText}>{item.location}</Text>
+              </View>
+            </LinearGradient>
+          ))
+        )}
       </View>
     </View>
   );

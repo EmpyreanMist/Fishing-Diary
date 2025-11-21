@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import SimpleDropdown from "./SimpleDropdown";
-import { supabase } from "../../lib/supabase";
+import { useEffect, useState } from 'react';
+import SimpleDropdown from './SimpleDropdown';
+import { supabase } from '../../lib/supabase';
 
 interface FishSpecies {
   id: string;
@@ -18,11 +18,11 @@ export default function FishDropdown({ onSelect }: FishDropdownProps) {
   useEffect(() => {
     const fetchSpecies = async () => {
       const { data, error } = await supabase
-        .from("fish_species")
-        .select("*")
-        .order("english_name", { ascending: true });
+        .from('fish_species')
+        .select('*')
+        .order('english_name', { ascending: true });
 
-      if (error) console.error("Error fetching species:", error);
+      if (error) console.error('Error fetching species:', error);
       else setSpecies(data);
     };
 
@@ -38,7 +38,7 @@ export default function FishDropdown({ onSelect }: FishDropdownProps) {
   return (
     <SimpleDropdown
       label="Species:"
-      items={[{ label: "Select species", value: "" }, ...speciesOptions]}
+      items={[{ label: 'Select species', value: '' }, ...speciesOptions]}
       enableSearch
       placeholder="Search or select fish..."
       onSelect={onSelect}
