@@ -4,9 +4,9 @@ import { FormControl } from "@/components/ui/form-control";
 import TripForm from "@/components/logTrip/TripForm";
 import { useState } from "react";
 import TripHeader from "@/components/logTrip/TripHeader";
-import { CatchFormProps } from "../addCatch/types/types";
+import { ModalComponentProps } from "../common/types";
 
-export default function AddTrip({ onClose }: CatchFormProps) {
+export default function AddTrip({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
 

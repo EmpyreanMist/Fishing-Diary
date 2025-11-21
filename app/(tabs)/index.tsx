@@ -89,18 +89,13 @@ export default function HomeScreen() {
         onRequestClose={() => setShowCatchForm(false)}
         style={styles.catchFormContainer}
       >
-        <CatchForm
-          //@ts-ignore
-          onClose={() => setShowCatchForm(false)}
-        />
+        <CatchForm onClose={() => setShowCatchForm(false)} />
       </Modal>
       <Modal
         visible={showTripScreen}
         animationType="slide"
         transparent={false}
         onRequestClose={() => setShowTripScreen(false)}
-        /*         style={styles.catchFormContainer}
-         */
       >
         <AddTrip
           //@ts-ignore
