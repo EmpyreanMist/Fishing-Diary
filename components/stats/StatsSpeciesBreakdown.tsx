@@ -13,7 +13,33 @@ type Props = {
 
 export function StatsSpeciesBreakdown({ data }: Props) {
   const total = data.reduce((sum, item) => sum + item.count, 0);
+  if (!data || data.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Ionicons name="fish-outline" size={20} color="#5ACCF2" />
+          <Text style={styles.title}>Species Breakdown</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          No species data available yet
+        </Text>
+      </View>
+    );
+ }
   const maxValue = Math.max(...data.map((i) => i.count));
+  if (total === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Ionicons name="fish-outline" size={20} color="#5ACCF2" />
+          <Text style={styles.title}>Species Breakdown</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          No catches recorded yet
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

@@ -18,22 +18,23 @@ export async function getUserStatistics(userId: string) {
 
   if (error) throw new Error(error.message);
 
+  const safeCatches = catches ?? [];
 
-  const totalCatches = catches.length;
+  const totalCatches = safeCatches.length;
 
 
   const fishingDays = new Set(
-    catches.map((c) => new Date(c.created_at).toDateString())
+    safeCatches.map((c) => new Date(c.created_at).toDateString())
   ).size;
 
 
-  const biggestCatch = catches.reduce(
+  const biggestCatch = safeCatches.reduce(
     (max, c) => (c.weight_kg > max.weight_kg ? c : max),
     { weight_kg: 0 }
   );
 
   const speciesMap: Record<string, number> = {};
-  catches.forEach((c) => {
+  safeCatches.forEach((c) => {
     const fishSpecies = c.fish_species as any;
     const name = Array.isArray(fishSpecies) ? fishSpecies[0]?.swedish_name ?? "Unknown" : fishSpecies?.swedish_name ?? "Unknown";
     speciesMap[name] = (speciesMap[name] || 0) + 1;
@@ -44,7 +45,7 @@ export async function getUserStatistics(userId: string) {
 
 
   const lureMap: Record<string, { count: number; totalWeight: number }> = {};
-  catches.forEach((c) => {
+  safeCatches.forEach((c) => {
     const lure = c.lure as any;
     const name = Array.isArray(lure) ? lure[0]?.name ?? "Unknown" : lure?.name ?? "Unknown";
     if (!lureMap[name]) lureMap[name] = { count: 0, totalWeight: 0 };
@@ -57,11 +58,12 @@ export async function getUserStatistics(userId: string) {
     catches: data.count,
     avgWeight: +(data.totalWeight / data.count).toFixed(1),
     success: Math.min(100, data.count * 10),
-  }));
+  }))
+    .sort((a, b) => b.catches - a.catches);
 
 
 const lakeMap: Record<string, number> = {};
-catches.forEach((c) => {
+safeCatches.forEach((c) => {
   const name = c.location_name ?? "Unknown";
   lakeMap[name] = (lakeMap[name] || 0) + 1;
 });
