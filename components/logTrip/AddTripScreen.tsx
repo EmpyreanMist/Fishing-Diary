@@ -1,11 +1,12 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { FormControl } from '@/components/ui/form-control';
-import TripForm from '@/components/logTrip/TripForm';
-import { useState } from 'react';
-import TripHeader from '@/components/logTrip/TripHeader';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { FormControl } from "@/components/ui/form-control";
+import TripForm from "@/components/logTrip/TripForm";
+import { useState } from "react";
+import TripHeader from "@/components/logTrip/TripHeader";
+import { CatchFormProps } from "../addCatch/types/types";
 
-export default function AddTripScreen() {
+export default function AddTrip({ onClose }: CatchFormProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
 
@@ -15,7 +16,7 @@ export default function AddTripScreen() {
 
   return (
     <>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View className="mb-5">
           <TripHeader />
         </View>
@@ -32,6 +33,7 @@ export default function AddTripScreen() {
               focusedField={focusedField}
               setFocusedField={setFocusedField}
               handleFocus={handleFocus}
+              onClose={onClose}
             />
           </FormControl>
         </ScrollView>
@@ -43,18 +45,18 @@ export default function AddTripScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#0A121A',
+    backgroundColor: "#0A121A",
   },
   scrollContent: {
     paddingBottom: 40,
   },
-  container: { flex: 1, backgroundColor: '#0A121A' },
+  container: { flex: 1, backgroundColor: "#0A121A" },
   headerContainer: {
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
   heading: {
-    color: '#fff',
+    color: "#fff",
     padding: 10,
   },
 });
