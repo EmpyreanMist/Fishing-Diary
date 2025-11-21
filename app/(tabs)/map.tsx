@@ -11,7 +11,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, MapPressEvent } from "react-native-maps";
 import { useNavigation } from "expo-router";
-import { places } from "../utils/places/places";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
 import { FishIcon } from "lucide-react-native";
 
@@ -114,10 +113,6 @@ export default function MapScreen() {
           >
             {/* Here we render pins from users catches in database */}
             <UserCatchMarkers />
-            {/* Fördefinierade platser */}
-            {places.map((marker, index) => (
-              <Marker key={`place-${index}`} coordinate={marker} />
-            ))}
             {/* EN tillfällig marker (byts ut vid nytt tryck) */}
             {pendingMarker && (
               <Marker
