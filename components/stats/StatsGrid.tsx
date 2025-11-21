@@ -1,15 +1,23 @@
 import { StyleSheet, View } from "react-native";
 import { StatsCard } from "./StatsCard";
+import { Fish, Ruler, Scale, Calendar } from "lucide-react-native";
 
-export function StatsGrid() {
+type Props = {
+  total: number;
+  days: number;
+  biggestWeight: number | string;
+  biggestLength: number | string;
+};
+export function StatsGrid({ total, days, biggestLength, biggestWeight }: Props) {
   return (
     <View style={styles.grid}>
-      <StatsCard icon="fish-outline" value="67" label="Total Catches" />
-      <StatsCard icon="calendar-outline" value="23" label="Fishing Days" />
-      <StatsCard icon="disc-outline" value="2.9" label="Avg per Trip" />
-      <StatsCard icon="ribbon-outline" value="4.2kg" label="Biggest Catch" />
+      <StatsCard icon={Fish} value={String(total)} label="Total Catches" />
+      <StatsCard icon={Calendar} value={String(days)} label="Fishing Days" />
+      <StatsCard icon={Ruler} value={`${biggestLength} cm`} label="Longest Fish" />
+      <StatsCard icon={Scale} value={`${biggestWeight} kg`} label="Heaviest Fish" />
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({

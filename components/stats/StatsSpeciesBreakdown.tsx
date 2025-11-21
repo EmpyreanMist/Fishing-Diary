@@ -1,18 +1,45 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-/* Dummy data, this will be replaced by data from user database */
-const fishData = [
-  { species: "Pike", count: 28 },
-  { species: "Perch", count: 19 },
-  { species: "Trout", count: 12 },
-  { species: "Roach", count: 7 },
-];
+type Species = {
+  species: string;
+  count: number;
+};
 
-export function StatsSpeciesBreakdown() {
-  // Calculations for max value and total count
-  const total = fishData.reduce((sum, item) => sum + item.count, 0);
-  const maxValue = Math.max(...fishData.map((i) => i.count));
+type Props = {
+  data: Species[];
+};
+
+
+export function StatsSpeciesBreakdown({ data }: Props) {
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+  if (!data || data.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Ionicons name="fish-outline" size={20} color="#5ACCF2" />
+          <Text style={styles.title}>Species Breakdown</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          No species data available yet
+        </Text>
+      </View>
+    );
+ }
+  const maxValue = Math.max(...data.map((i) => i.count));
+  if (total === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Ionicons name="fish-outline" size={20} color="#5ACCF2" />
+          <Text style={styles.title}>Species Breakdown</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          No catches recorded yet
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -25,7 +52,7 @@ export function StatsSpeciesBreakdown() {
         Your most commonly caught fish species
       </Text>
 
-      {fishData.map((fish) => {
+      {data.map((fish) => {
         const percentage = Math.round((fish.count / total) * 100);
         const barWidth = (fish.count / maxValue) * 100;
 

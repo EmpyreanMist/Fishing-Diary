@@ -1,16 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import type { ComponentType } from "react";
 
 type Props = {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: ComponentType<{ size?: number; color?: string }>;
   value: string;
   label: string;
 };
 
-export function StatsCard({ icon, value, label }: Props) {
+export function StatsCard({ icon: Icon, value, label }: Props) {
   return (
     <View style={styles.card}>
-      <Ionicons name={icon} size={28} color="#5ACCF2" />
+      <Icon size={28} color="#5ACCF2" />
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
     </View>

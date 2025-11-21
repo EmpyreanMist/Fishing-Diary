@@ -1,16 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-/* Dummy data, will be change by user database or from lure API maby */
-const lureData = [
-  { name: "Spinner", catches: 18, avgWeight: 2.3, success: 75 },
-  { name: "Crankbait", catches: 15, avgWeight: 2.8, success: 68 },
-  { name: "Jig", catches: 12, avgWeight: 1.9, success: 62 },
-  { name: "Soft Plastic", catches: 10, avgWeight: 2.1, success: 58 },
-  { name: "Spoon", catches: 8, avgWeight: 2.5, success: 55 },
-];
 
-export function StatsLures() {
+type Lure = {
+  name: string;
+  catches: number;
+  avgWeight: number;
+  success: number;
+};
+
+type Props = {
+  lures: Lure[];
+};
+
+export function StatsLures({ lures }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -22,7 +25,7 @@ export function StatsLures() {
         Your most successful lures ranked by catches and effectiveness
       </Text>
 
-      {lureData.map((lure, index) => (
+      {lures.map((lure, index) => (
         <View key={lure.name} style={styles.card}>
           <View style={styles.topRow}>
             <View style={styles.badge}>
