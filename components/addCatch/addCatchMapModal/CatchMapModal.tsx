@@ -1,8 +1,10 @@
 import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
 import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
 import { useState } from "react";
-import FishMarker from "./FishMarker";
+import { UserCatchMarkers } from "@/components/map/UserCatchMarkers";
 import ActionButton from "../../ui/ActionButton";
+
+const fishIcon = require("../../../assets/images/fish2.png");
 
 interface Props {
   visible: boolean;
@@ -20,12 +22,10 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
-        {/* CLOSE BUTTON */}
         <Pressable onPress={onClose} style={styles.closeButton}>
           <Text style={styles.closeText}>✕</Text>
         </Pressable>
 
-        {/* MAP */}
         <MapView
           style={StyleSheet.absoluteFill}
           initialRegion={{
@@ -39,13 +39,15 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
           onPress={handleMapPress}
         >
           {markerPosition && (
-            <Marker coordinate={markerPosition}>
-              <FishMarker />
-            </Marker>
+            <Marker
+              coordinate={markerPosition}
+              icon={fishIcon}
+              anchor={{ x: 0.5, y: 0.5 }}
+            />
           )}
+          <UserCatchMarkers />
         </MapView>
 
-        {/* SAVE BUTTON */}
         {markerPosition && (
           <View style={styles.saveWrapper}>
             <ActionButton

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { Marker } from "react-native-maps";
-import { View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+
+const fishIcon = require("../../assets/images/fish2.png");
 
 type CatchMarker = {
   latitude: number;
@@ -61,17 +61,9 @@ export function UserCatchMarkers() {
           coordinate={{ latitude: m.latitude, longitude: m.longitude }}
           title={m.fish?.english_name ?? "Catch"}
           description={`${m.weight_kg ?? "?"} kg`}
-        >
-          <View
-            style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
-              padding: 6,
-              borderRadius: 20,
-            }}
-          >
-            <Ionicons name="fish" size={25} color="#4CC9F0" />
-          </View>
-        </Marker>
+          image={fishIcon}
+          anchor={{ x: 0.5, y: 0.5 }}
+        />
       ))}
     </>
   );
