@@ -1,3 +1,7 @@
+export interface ModalComponentProps {
+  onClose: () => void;
+}
+
 export interface CatchFormProps {
   onClose: () => void;
 }

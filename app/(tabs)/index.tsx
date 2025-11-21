@@ -13,12 +13,14 @@ import ActionButton from "@/components/ui/ActionButton";
 import StatsGrid from "@/components/home/StatsGrid";
 import RecentCatches from "@/components/home/RecentCatches";
 import CatchForm from "@/components/addCatch/CatchForm";
+import AddTrip from "@/components/logTrip/AddTripScreen";
 
 export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const isTablet = width > 700;
 
   const [showCatchForm, setShowCatchForm] = useState(false);
+  const [showTripScreen, setShowTripScreen] = useState(false);
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
@@ -47,8 +49,11 @@ export default function HomeScreen() {
               label="+ Add Catch"
               onPress={() => setShowCatchForm(true)}
             />
-            <ActionButton label="+ Add Trip"/>
-        </View>
+            <ActionButton
+              label="+ Add Trip"
+              onPress={() => setShowTripScreen(true)}
+            />
+          </View>
         </View>
 
         <StatsGrid />
@@ -84,9 +89,17 @@ export default function HomeScreen() {
         onRequestClose={() => setShowCatchForm(false)}
         style={styles.catchFormContainer}
       >
-        <CatchForm
+        <CatchForm onClose={() => setShowCatchForm(false)} />
+      </Modal>
+      <Modal
+        visible={showTripScreen}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowTripScreen(false)}
+      >
+        <AddTrip
           //@ts-ignore
-          onClose={() => setShowCatchForm(false)}
+          onClose={() => setShowTripScreen(false)}
         />
       </Modal>
     </SafeAreaView>
