@@ -1,5 +1,7 @@
 import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
+import { useState } from "react";
+import FishMarker from "./FishMarker";
 
 interface Props {
   visible: boolean;
@@ -7,6 +9,12 @@ interface Props {
 }
 
 export default function CatchMapModal({ visible, onClose }: Props) {
+  const [markerPosition, setMarkerPosition] = useState<LatLng | null>(null);
+
+  function handleMapPress(e: MapPressEvent) {
+    setMarkerPosition(e.nativeEvent.coordinate);
+  }
+
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
@@ -22,7 +30,14 @@ export default function CatchMapModal({ visible, onClose }: Props) {
             latitudeDelta: 5,
             longitudeDelta: 5,
           }}
-        />
+          onPress={handleMapPress}
+        >
+          {markerPosition && (
+            <Marker coordinate={markerPosition}>
+              <FishMarker />
+            </Marker>
+          )}
+        </MapView>
       </View>
     </Modal>
   );
