@@ -1,4 +1,4 @@
-import { Modal, View, StyleSheet } from "react-native";
+import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
 import MapView from "react-native-maps";
 
 interface Props {
@@ -9,9 +9,13 @@ interface Props {
 export default function CatchMapModal({ visible, onClose }: Props) {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
+        <Pressable onPress={onClose} style={styles.closeButton}>
+          <Text style={styles.closeText}>✕</Text>
+        </Pressable>
+
         <MapView
-          style={styles.map}
+          style={StyleSheet.absoluteFill}
           initialRegion={{
             latitude: 60.1282,
             longitude: 18.6435,
@@ -25,6 +29,18 @@ export default function CatchMapModal({ visible, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    zIndex: 999,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    padding: 12,
+    borderRadius: 30,
+  },
+  closeText: {
+    color: "white",
+    fontSize: 22,
+    fontWeight: "600",
+  },
 });
