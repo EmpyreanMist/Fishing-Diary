@@ -21,10 +21,11 @@ import { createCatch } from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
+import CatchMapModal from "./addCatchMapModal/CatchMapModal";
 
 export default function CatchForm({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [showMap, setShowMap] = useState(false);
 
   const [form, setForm] = useState<FormState>({
     speciesId: "",
@@ -55,6 +56,11 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleGetLocation = () => {
+    setLocationStatus(null);
+    setShowMap(true);
+  };
+
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -78,23 +84,6 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
     setLocalPhotos((prev) => [...prev, ...newUris]);
   };
 
-  const handleGetLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission denied", "We need access to your location.");
-      return;
-    }
-
-    try {
-      const pos = await Location.getCurrentPositionAsync({});
-      setLatitude(pos.coords.latitude);
-      setLongitude(pos.coords.longitude);
-
-      setLocationStatus("GPS saved!");
-    } catch (err) {
-      setLocationStatus("Failed to get location");
-    }
-  };
   const handleSaveCatch = async () => {
     if (!userId) return Alert.alert("Not signed in");
 
@@ -181,6 +170,18 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <CatchMapModal
+        visible={showMap}
+        onClose={() => setShowMap(false)}
+        onSave={(coords) => {
+          if (coords) {
+            setLatitude(coords.latitude);
+            setLongitude(coords.longitude);
+            setLocationStatus("GPS location saved!");
+          }
+          setShowMap(false);
+        }}
+      />
     </SafeAreaView>
   );
 }

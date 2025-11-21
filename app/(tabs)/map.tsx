@@ -11,8 +11,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, MapPressEvent } from "react-native-maps";
 import { useNavigation } from "expo-router";
-import { places } from "../utils/places/places";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
+
+const fishIcon = require("../../assets/images/fish2.png");
 
 const INITIAL_REGION = {
   latitude: 60.1282,
@@ -111,19 +112,12 @@ export default function MapScreen() {
           >
             {/* Here we render pins from users catches in database */}
             <UserCatchMarkers />
-            {/* Fördefinierade platser */}
-            {places.map((marker, index) => (
-              <Marker key={`place-${index}`} coordinate={marker} />
-            ))}
             {/* EN tillfällig marker (byts ut vid nytt tryck) */}
             {pendingMarker && (
               <Marker
                 coordinate={pendingMarker}
-                title="Ej sparad"
-                description={`${pendingMarker.latitude.toFixed(
-                  5
-                )}, ${pendingMarker.longitude.toFixed(5)}`}
-                pinColor={"orange"} // valfritt: särskilj tillfällig
+                icon={fishIcon}
+                anchor={{ x: 0.5, y: 0.5 }}
               />
             )}
             {/* Sparade markers (ligger kvar även efter ny pending) */}
