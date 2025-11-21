@@ -28,10 +28,14 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
-        <Pressable onPress={onClose} style={styles.closeButton}>
+        <Pressable
+          onPress={onClose}
+          style={styles.closeButton}
+          accessibilityLabel="Close map"
+          accessibilityRole="button"
+        >
           <Text style={styles.closeText}>✕</Text>
         </Pressable>
-
         <MapView
           style={StyleSheet.absoluteFill}
           initialRegion={{
@@ -53,7 +57,6 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
           )}
           <UserCatchMarkers />
         </MapView>
-
         {markerPosition && (
           <View style={styles.saveWrapper}>
             <ActionButton
