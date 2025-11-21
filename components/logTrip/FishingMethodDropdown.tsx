@@ -2,46 +2,42 @@ import SimpleDropdown from '../addCatch/SimpleDropdown';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 interface FishingMethod {
-  id: number | string;
-  name: string | null;
+  id: string;
+  method_name: string;
+  method_img: string | null;
 }
 export default function FishingMethodDropdown() {
-  const [methods, setMethods] = useState<FishingMethod[]>([]);
+  const [fishMethods, setFishMethods] = useState<FishingMethod[]>([]);
+
   useEffect(() => {
+    // method to fetch fising methods
     const fetchMethods = async () => {
-      const { data, error } = await supabase
-        .from('fishing_methods')
-        .select('id, name')
-        .order('name', { ascending: true });
+      const { data, error } = await supabase.from('fishing_methods').select('id, method_name, method_img');
+      /* .order('method_name', { ascending: true }); */
+
       if (error) {
         console.error('Error fetching fishing methods:', error);
         return;
       }
-      setMethods(data ?? []);
+      setFishMethods(data ?? []);
     };
+
+    //call function
     fetchMethods();
   }, []);
-  const methodOptions = methods
-    .map((method) => {
-      const label = method.name?.trim();
-      if (!label) return null;
-      return {
-        label,
-        value: String(method.id),
-      };
-    })
-    .filter(
-      (
-        option
-      ): option is {
-        label: string;
-        value: string;
-      } => option !== null
-    );
+
+  const methodOptions = fishMethods.map((method) => {
+    return {
+      label: method.method_name,
+      value: method.id,
+      image: method.method_img ?? undefined,
+    };
+  });
+
   return (
     <SimpleDropdown
-      label="Fishing method:"
-      items={[{ label: 'Select method', value: '' }, ...methodOptions]}
+      label="Choose fishing method:"
+      items={[{ label: 'Choose fishing method:', value: '' }, ...methodOptions]}
       enableSearch={true}
       placeholder="Search or select method..."
     />

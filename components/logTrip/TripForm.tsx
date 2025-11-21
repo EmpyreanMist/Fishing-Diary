@@ -30,9 +30,7 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
         <VStack className="py-2 w-[90%]">
           <Heading style={styles.heading}>Trip Details</Heading>
           <TripDivider />
-          <Text className="text-gray-400 text-md mt-1 pl-2">
-            Basic information about your fishing trip
-          </Text>
+          <Text className="text-gray-400 text-md mt-1 pl-2">Basic information about your fishing trip</Text>
         </VStack>
         <Heading className="py-2" style={styles.heading} size="sm">
           Trip name
@@ -83,9 +81,7 @@ export default function TripForm({ date, setDate, focusedField, setFocusedField,
         <VStack className="py-2 w-[90%]">
           <Heading style={styles.heading}>Weather & Water Conditions</Heading>
           <TripDivider />
-          <Text className="text-gray-400 text-md mt-1 pl-2">
-            Environmental Conditions During your Trip
-          </Text>
+          <Text className="text-gray-400 text-md mt-1 pl-2">Environmental Conditions During your Trip</Text>
         </VStack>
         <Heading className="py-2" style={styles.heading} size="sm">
           Weather Condition
