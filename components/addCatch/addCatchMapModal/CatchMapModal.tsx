@@ -34,6 +34,8 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
             latitudeDelta: 5,
             longitudeDelta: 5,
           }}
+          showsUserLocation
+          showsMyLocationButton
           onPress={handleMapPress}
         >
           {markerPosition && (
@@ -63,8 +65,8 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
 const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
-    top: 40,
-    right: 20,
+    top: 10,
+    left: 20,
     zIndex: 2,
     backgroundColor: "rgba(0,0,0,0.6)",
     width: 50,
