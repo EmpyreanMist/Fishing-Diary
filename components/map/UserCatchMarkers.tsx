@@ -69,7 +69,7 @@ export function UserCatchMarkers() {
               borderRadius: 20,
             }}
           >
-            <Ionicons name="fish" size={28} color="#4CC9F0" />
+            <Ionicons name="fish" size={25} color="#4CC9F0" />
           </View>
         </Marker>
       ))}
