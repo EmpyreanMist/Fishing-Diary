@@ -1,6 +1,6 @@
 import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
 import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserCatchMarkers } from "@/components/map/UserCatchMarkers";
 import ActionButton from "../../ui/ActionButton";
 
@@ -18,6 +18,12 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
   function handleMapPress(e: MapPressEvent) {
     setMarkerPosition(e.nativeEvent.coordinate);
   }
+
+  useEffect(() => {
+    if (!visible) {
+      setMarkerPosition(null);
+    }
+  }, [visible]);
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
@@ -88,10 +94,5 @@ const styles = StyleSheet.create({
     left: "50%",
     transform: [{ translateX: -62.5 }],
     zIndex: 10,
-  },
-  saveText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "700",
   },
 });

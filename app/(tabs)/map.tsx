@@ -12,7 +12,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, MapPressEvent } from "react-native-maps";
 import { useNavigation } from "expo-router";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
-import { FishIcon } from "lucide-react-native";
 
 const fishIcon = require("../../assets/images/fish2.png");
 

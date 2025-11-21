@@ -57,6 +57,7 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
   };
 
   const handleGetLocation = () => {
+    setLocationStatus(null);
     setShowMap(true);
   };
 
