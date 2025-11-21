@@ -2,13 +2,15 @@ import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
 import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
 import { useState } from "react";
 import FishMarker from "./FishMarker";
+import ActionButton from "../../ui/ActionButton";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  onSave: (coords: LatLng | null) => void;
 }
 
-export default function CatchMapModal({ visible, onClose }: Props) {
+export default function CatchMapModal({ visible, onClose, onSave }: Props) {
   const [markerPosition, setMarkerPosition] = useState<LatLng | null>(null);
 
   function handleMapPress(e: MapPressEvent) {
@@ -18,10 +20,12 @@ export default function CatchMapModal({ visible, onClose }: Props) {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
+        {/* CLOSE BUTTON */}
         <Pressable onPress={onClose} style={styles.closeButton}>
           <Text style={styles.closeText}>✕</Text>
         </Pressable>
 
+        {/* MAP */}
         <MapView
           style={StyleSheet.absoluteFill}
           initialRegion={{
@@ -38,6 +42,19 @@ export default function CatchMapModal({ visible, onClose }: Props) {
             </Marker>
           )}
         </MapView>
+
+        {/* SAVE BUTTON */}
+        {markerPosition && (
+          <View style={styles.saveWrapper}>
+            <ActionButton
+              label="Save"
+              color="blue"
+              size="md"
+              width={125}
+              onPress={() => onSave(markerPosition)}
+            />
+          </View>
+        )}
       </View>
     </Modal>
   );
@@ -48,14 +65,29 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     right: 20,
-    zIndex: 999,
+    zIndex: 2,
     backgroundColor: "rgba(0,0,0,0.6)",
-    padding: 12,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   closeText: {
     color: "white",
     fontSize: 22,
-    fontWeight: "600",
+    fontWeight: "700",
+  },
+  saveWrapper: {
+    position: "absolute",
+    bottom: 10,
+    left: "50%",
+    transform: [{ translateX: -62.5 }],
+    zIndex: 10,
+  },
+  saveText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "700",
   },
 });

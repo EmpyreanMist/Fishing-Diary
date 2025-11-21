@@ -169,7 +169,18 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <CatchMapModal visible={showMap} onClose={() => setShowMap(false)} />
+      <CatchMapModal
+        visible={showMap}
+        onClose={() => setShowMap(false)}
+        onSave={(coords) => {
+          if (coords) {
+            setLatitude(coords.latitude);
+            setLongitude(coords.longitude);
+            setLocationStatus("GPS location saved!");
+          }
+          setShowMap(false);
+        }}
+      />
     </SafeAreaView>
   );
 }
