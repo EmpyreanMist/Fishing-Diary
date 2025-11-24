@@ -32,8 +32,22 @@ export default function TripForm({
   handleFocus,
   onClose,
 }: TripFormProps) {
+  //This should be made into a arrya of catches in the future
+  // Then it should render each catch logged from the array
   const [catchesLogged, setCatchesLogged] = useState<number>(0);
   console.log('Catches logged:', catchesLogged);
+
+  // static mock data for catches - to be replaced with dynamic data in the future
+  const [catches, setCatches] = useState([
+    { id: 1, species: 'Trout', weight: 2.5 },
+    { id: 2, species: 'Bass', weight: 3.0 },
+    {id: 3, species: 'Salmon', weight: 4.2},
+  ]);
+
+  // to handle removal of a catch - to be implemented in the future
+  const removeCatch = (id: number) => {
+    setCatches((prevCatches) => prevCatches.filter((catchItem) => catchItem.id !== id));
+  };
 
   return (
     <>
@@ -179,7 +193,7 @@ export default function TripForm({
             {/* This should change depending on catches logged or not */}
           </Box>
         </HStack>
-        {catchesLogged === 0 ? (
+        {catches.length === 0 ? (
           <VStack className="items-center justify-center py-10 mx-auto space-y-2">
             <Fish size={40} color="#6B7280" /> {/* Grå ikon */}
             <Text style={{ color: '#6B7280', fontSize: 16, fontWeight: '600' }}>No catches logged yet</Text>
@@ -189,8 +203,8 @@ export default function TripForm({
           /* TODO: Fix catches module */
           <>
             <>
-              {Array.from({ length: catchesLogged }).map((_, i) => (
-                <CatchAdded key={i} />
+              {catches.map((c) => (
+                <CatchAdded key={c.id} catchData={c} onDelete={() => removeCatch(c.id)} />
               ))}
             </>
           </>
