@@ -26,50 +26,48 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
     setShowCatchModal(false);
   };
 
+  // här ser man objekt i en array med catches datan || Ta bort sen
+  console.log("Catches in trip:", catches);
   return (
-    // här ser man objekt i en array med catches datan || Ta bort sen
-    console.log("Catches in trip:", catches),
-    (
-      <>
-        <SafeAreaView edges={["top"]} style={styles.safeArea}>
-          <View className="mb-5">
-            <TripHeader />
-          </View>
+    <>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
+        <View className="mb-5">
+          <TripHeader />
+        </View>
 
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            <FormControl className="mx-auto w-full p-2">
-              <TripForm
-                date={date}
-                setDate={setDate}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                handleFocus={handleFocus}
-                onClose={onClose}
-                // ---- NEW PROPS ----
-                catches={catches}
-                onAddCatch={() => setShowCatchModal(true)}
-              />
-            </FormControl>
-          </ScrollView>
-        </SafeAreaView>
-
-        {/* SIMPLE BUILT-IN MODAL */}
-        <Modal
-          visible={showCatchModal}
-          animationType="slide"
-          onRequestClose={() => setShowCatchModal(false)}
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
-          <CatchForm
-            onClose={() => setShowCatchModal(false)}
-            onSubmit={handleAddCatch}
-          />
-        </Modal>
-      </>
-    )
+          <FormControl className="mx-auto w-full p-2">
+            <TripForm
+              date={date}
+              setDate={setDate}
+              focusedField={focusedField}
+              setFocusedField={setFocusedField}
+              handleFocus={handleFocus}
+              onClose={onClose}
+              // ---- NEW PROPS ----
+              catches={catches}
+              onAddCatch={() => setShowCatchModal(true)}
+            />
+          </FormControl>
+        </ScrollView>
+      </SafeAreaView>
+
+      {/* SIMPLE BUILT-IN MODAL */}
+      <Modal
+        visible={showCatchModal}
+        animationType="slide"
+        onRequestClose={() => setShowCatchModal(false)}
+      >
+        <CatchForm
+          onClose={() => setShowCatchModal(false)}
+          onSubmit={handleAddCatch}
+        />
+      </Modal>
+    </>
   );
 }
 
