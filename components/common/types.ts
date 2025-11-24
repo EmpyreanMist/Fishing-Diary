@@ -15,3 +15,18 @@ export interface FormState {
   notes: string;
   caughtAt: Date;
 }
+
+export type CatchDraft = {
+  speciesId: string;
+  lureId: string;
+  weightKg: string;
+  lengthCm: string;
+  locationName: string;
+  notes: string;
+  caughtAt: Date;
+
+  latitude: number | null;
+  longitude: number | null;
+
+  photos: string[];
+};

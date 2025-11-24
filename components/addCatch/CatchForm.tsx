@@ -8,113 +8,86 @@ import {
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
-import { supabase } from "../../lib/supabase";
 import CatchDateTimePicker from "./CatchDateTimePicker";
-import type { ModalComponentProps, FormState } from "../common/types";
-import { createCatch } from "../../lib/catches/createCatch";
-import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
-
 import * as ImagePicker from "expo-image-picker";
 import CatchMapModal from "./addCatchMapModal/CatchMapModal";
+import { CatchDraft } from "../common/types";
 
-export default function CatchForm({ onClose }: ModalComponentProps) {
+type Props = {
+  onClose: () => void;
+  onSubmit: (draft: CatchDraft) => Promise<void> | void;
+  loading?: boolean;
+  initialValue?: Partial<CatchDraft>;
+};
+
+export default function CatchForm({
+  onClose,
+  onSubmit,
+  loading = false,
+  initialValue = {},
+}: Props) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
 
-  const [form, setForm] = useState<FormState>({
-    speciesId: "",
-    lureId: "",
-    weightKg: "",
-    lengthCm: "",
-    locationName: "",
-    notes: "",
-    caughtAt: new Date(),
+  const [form, setForm] = useState({
+    speciesId: initialValue.speciesId ?? "",
+    lureId: initialValue.lureId ?? "",
+    weightKg: initialValue.weightKg ?? "",
+    lengthCm: initialValue.lengthCm ?? "",
+    locationName: initialValue.locationName ?? "",
+    notes: initialValue.notes ?? "",
+    caughtAt: initialValue.caughtAt ?? new Date(),
   });
 
+  const [latitude, setLatitude] = useState<number | null>(
+    initialValue.latitude ?? null
+  );
+  const [longitude, setLongitude] = useState<number | null>(
+    initialValue.longitude ?? null
+  );
+  const [localPhotos, setLocalPhotos] = useState<string[]>(
+    initialValue.photos ?? []
+  );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-  const [localPhotos, setLocalPhotos] = useState<string[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUserId(data.session?.user?.id ?? null);
-    };
-    loadSession();
-  }, []);
 
   const setField = (key: keyof typeof form, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleGetLocation = () => {
-    setLocationStatus(null);
-    setShowMap(true);
-  };
-
   const handleAddPhoto = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      setLocationStatus(null);
-      Alert.alert("Permission denied", "We need access to your photos.");
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (perm.status !== "granted") {
+      Alert.alert("Permission denied");
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      // NOTE: Using MediaTypeOptions for compatibility with current Expo SDK.
-      // MediaType is the new API but not fully supported in our version yet.
-      // TODO: Replace with [ImagePicker.MediaType.Images] after upgrading Expo SDK (≥55).
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
       quality: 0.8,
       selectionLimit: 0,
     });
 
-    if (result.canceled || !result.assets?.length) return;
-    const newUris = result.assets.map((asset) => asset.uri);
-    setLocalPhotos((prev) => [...prev, ...newUris]);
+    if (!result.canceled) {
+      const uris = result.assets.map((a) => a.uri);
+      setLocalPhotos((prev) => [...prev, ...uris]);
+    }
   };
 
-  const handleSaveCatch = async () => {
-    if (!userId) return Alert.alert("Not signed in");
+  const handleSubmit = () => {
+    const draft: CatchDraft = {
+      ...form,
+      latitude,
+      longitude,
+      photos: localPhotos,
+    };
 
-    setSaving(true);
-
-    const catchData = await createCatch(form, userId, latitude, longitude);
-    if (!catchData) {
-      setSaving(false);
-      Alert.alert("Save failed", "Could not create catch.");
-      return;
-    }
-
-    const failedPhotos = await uploadCatchPhotos(
-      localPhotos,
-      userId,
-      catchData.id
-    );
-    setLocalPhotos(failedPhotos);
-    setSaving(false);
-
-    if (failedPhotos.length > 0) {
-      Alert.alert(
-        "Partial success",
-        failedPhotos.length === localPhotos.length
-          ? "Catch saved but no photos were uploaded."
-          : "Catch saved but some photos failed to upload."
-      );
-    } else {
-      Alert.alert("Success", "Catch and photos saved!");
-      onClose();
-    }
+    onSubmit(draft);
   };
 
   return (
@@ -123,11 +96,7 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           <CatchFormHeader onClose={onClose} />
 
           <View style={styles.inner}>
@@ -138,38 +107,39 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
                 focusedField={focusedField}
                 setFocusedField={setFocusedField}
                 weightKg={form.weightKg}
-                setWeightKg={(val) => setField("weightKg", val)}
+                setWeightKg={(v) => setField("weightKg", v)}
                 lengthCm={form.lengthCm}
-                setLengthCm={(val) => setField("lengthCm", val)}
+                setLengthCm={(v) => setField("lengthCm", v)}
                 locationName={form.locationName}
-                setLocationName={(val) => setField("locationName", val)}
+                setLocationName={(v) => setField("locationName", v)}
                 notes={form.notes}
-                setNotes={(val) => setField("notes", val)}
+                setNotes={(v) => setField("notes", v)}
               />
 
               <LureDropdown onSelect={(id) => setField("lureId", id)} />
 
               <CatchDateTimePicker
                 value={form.caughtAt}
-                onChange={(date) => setField("caughtAt", date)}
+                onChange={(d) => setField("caughtAt", d)}
               />
 
               <CatchFormActions
                 onClose={onClose}
-                onSave={handleSaveCatch}
+                onSave={handleSubmit}
                 onAddPhoto={handleAddPhoto}
-                onGetLocation={handleGetLocation}
-                loading={saving}
+                onGetLocation={() => setShowMap(true)}
+                loading={loading}
                 photos={localPhotos}
                 locationStatus={locationStatus}
-                onRemovePhoto={(index) =>
-                  setLocalPhotos((prev) => prev.filter((_, i) => i !== index))
+                onRemovePhoto={(i) =>
+                  setLocalPhotos((prev) => prev.filter((_, idx) => idx !== i))
                 }
               />
             </FormControl>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <CatchMapModal
         visible={showMap}
         onClose={() => setShowMap(false)}
@@ -187,15 +157,7 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#0A121A",
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 200,
-  },
-  inner: {
-    flexGrow: 1,
-  },
+  safeArea: { flex: 1, backgroundColor: "#0A121A" },
+  scrollContent: { flexGrow: 1, paddingBottom: 200 },
+  inner: { flexGrow: 1 },
 });

@@ -5,13 +5,24 @@ import TripForm from "@/components/logTrip/TripForm";
 import { useState } from "react";
 import TripHeader from "@/components/logTrip/TripHeader";
 import { ModalComponentProps } from "../common/types";
+import CatchForm from "@/components/addCatch/CatchForm";
+import { CatchDraft } from "../common/types";
 
 export default function AddTrip({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
 
+  // New state for catches inside a trip
+  const [catches, setCatches] = useState<CatchDraft[]>([]);
+  const [showCatchModal, setShowCatchModal] = useState(false);
+
   const handleFocus = (field: string) => {
     setFocusedField(field);
+  };
+
+  const handleAddCatch = (draft: CatchDraft) => {
+    setCatches((prev) => [...prev, draft]);
+    setShowCatchModal(false);
   };
 
   return (
@@ -34,10 +45,23 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
               setFocusedField={setFocusedField}
               handleFocus={handleFocus}
               onClose={onClose}
+              // NEW PROPS
+              catches={catches}
+              onAddCatch={() => setShowCatchModal(true)}
             />
           </FormControl>
         </ScrollView>
       </SafeAreaView>
+
+      {/* Catch modal for adding catches inside a trip */}
+      {showCatchModal && (
+        <YourModalComponent onClose={() => setShowCatchModal(false)}>
+          <CatchForm
+            onClose={() => setShowCatchModal(false)}
+            onSubmit={handleAddCatch}
+          />
+        </YourModalComponent>
+      )}
     </>
   );
 }
