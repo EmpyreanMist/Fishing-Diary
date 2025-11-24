@@ -44,6 +44,14 @@ export default function TripForm({
     {id: 3, species: 'Salmon', weight: 4.2},
   ]);
 
+  // mocked input to addTrip component
+  const mockedCatch = { id: catches.length + 1, species: 'Pike', weight: 5.1 };
+
+  // add catch to catches array
+  const addCatch = () => {
+    setCatches((prevCatches) => [...prevCatches, mockedCatch]);
+  }
+
   // to handle removal of a catch - to be implemented in the future
   const removeCatch = (id: number) => {
     setCatches((prevCatches) => prevCatches.filter((catchItem) => catchItem.id !== id));
@@ -188,7 +196,7 @@ export default function TripForm({
               icon="add"
               color="blue"
               size="sm"
-              onPress={() => setCatchesLogged(catchesLogged + 1)}
+              onPress={() => addCatch()}
             />
             {/* This should change depending on catches logged or not */}
           </Box>
