@@ -39,8 +39,6 @@ export default function TripForm({
   catches,
   onAddCatch,
 }: TripFormProps) {
-  const [catchesLogged, setCatchesLogged] = useState<boolean>(false);
-
   return (
     <>
       <VStack style={styles.container} className="gap-4">
