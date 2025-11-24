@@ -12,6 +12,7 @@ import ActionButton from "../ui/ActionButton";
 import { useState } from "react";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import TripMapForm from "./mapTrip";
+import { CatchDraft } from "../common/types";
 
 interface TripFormProps {
   date: Date | null;
@@ -20,6 +21,10 @@ interface TripFormProps {
   setFocusedField: (field: string | null) => void;
   handleFocus: (field: string) => void;
   onClose: () => void;
+
+  //  Ny props:
+  catches: CatchDraft[];
+  onAddCatch: () => void;
 }
 
 export default function TripForm({
@@ -29,6 +34,10 @@ export default function TripForm({
   setFocusedField,
   handleFocus,
   onClose,
+
+  // NY
+  catches,
+  onAddCatch,
 }: TripFormProps) {
   const [catchesLogged, setCatchesLogged] = useState<boolean>(false);
 
@@ -42,6 +51,7 @@ export default function TripForm({
             Basic information about your fishing trip
           </Text>
         </VStack>
+
         <Heading className="py-2" style={styles.heading} size="sm">
           Trip name
         </Heading>
@@ -65,8 +75,6 @@ export default function TripForm({
           setFocusedField={setFocusedField}
         />
 
-        {/* Choose time row start*/}
-        {/* TODO: Should maybe in the future be changed to a time picker */}
         <HStack
           className="w-full gap-4 py-2"
           style={{ alignItems: "flex-start", justifyContent: "space-between" }}
@@ -107,7 +115,6 @@ export default function TripForm({
             </Input>
           </Box>
         </HStack>
-        {/* Choose time row end */}
 
         <FishingMethodDropdown />
 
@@ -129,103 +136,6 @@ export default function TripForm({
       </VStack>
 
       <VStack style={styles.container} className="my-5 mx-auto w-full">
-        <VStack className="py-2 w-[90%]">
-          <Heading style={styles.heading}>Weather & Water Conditions</Heading>
-          <TripDivider />
-          <Text className="text-gray-400 text-md mt-1 pl-2">
-            Environmental Conditions During your Trip
-          </Text>
-        </VStack>
-        <Heading className="py-2" style={styles.heading} size="sm">
-          Weather Condition
-        </Heading>
-        <Input
-          style={[
-            styles.input,
-            focusedField === "weather" && styles.inputFocused,
-          ]}
-          variant="outline"
-          size="md"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
-          <InputField
-            placeholder="Enter Weather Conditions..."
-            onFocus={() => handleFocus("weather")}
-          />
-        </Input>
-
-        <HStack
-          className="w-full gap-4 py-2"
-          style={{ alignItems: "flex-start", justifyContent: "space-between" }}
-        >
-          <Box className="flex-1">
-            <Heading className="py-2" style={styles.heading} size="sm">
-              Temperature
-            </Heading>
-            <Input
-              style={[
-                styles.input,
-                focusedField === "temperature" && styles.inputFocused,
-              ]}
-              variant="outline"
-              size="md"
-              isDisabled={false}
-              isInvalid={false}
-              isReadOnly={false}
-            >
-              <InputField
-                placeholder="Enter Text here..."
-                onFocus={() => handleFocus("temperature")}
-              />
-            </Input>
-          </Box>
-          <Box className="flex-1">
-            <Heading className="py-2" style={styles.heading} size="sm">
-              Wind Condition
-            </Heading>
-            <Input
-              style={[
-                styles.input,
-                focusedField === "wind" && styles.inputFocused,
-              ]}
-              variant="outline"
-              size="md"
-              isDisabled={false}
-              isInvalid={false}
-              isReadOnly={false}
-            >
-              <InputField
-                placeholder="Enter Text here..."
-                onFocus={() => handleFocus("wind")}
-              />
-            </Input>
-          </Box>
-        </HStack>
-
-        <Heading className="py-2" style={styles.heading} size="sm">
-          Water Condition
-        </Heading>
-        <Input
-          style={[
-            styles.input,
-            focusedField === "water-conditions" && styles.inputFocused,
-          ]}
-          variant="outline"
-          size="md"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
-          <InputField
-            placeholder="Enter Text here..."
-            onFocus={() => handleFocus("water-conditions")}
-          />
-        </Input>
-      </VStack>
-
-      <VStack style={styles.container} className="my-5 mx-auto w-full">
         <HStack className="gap-10">
           <Box className="flex-1 pl-2">
             <HStack className="items-center space-x-2">
@@ -239,32 +149,33 @@ export default function TripForm({
               Log all fish caught during this trip
             </Text>
           </Box>
+
           <Box className="justify-center pr-2">
             <ActionButton
               label="Add Catch"
               icon="add"
               color="blue"
               size="sm"
-              onPress={() => setCatchesLogged(false)}
+              // MODAL ÖPPNAS NU HÄR
+              onPress={onAddCatch}
             />
-            {/* This should change depending on catches logged or not */}
           </Box>
         </HStack>
-        {!catchesLogged ? (
+
+        {catches.length === 0 ? (
           <VStack className="items-center justify-center py-10 mx-auto space-y-2">
-            <Fish size={40} color="#6B7280" /> {/* Grå ikon */}
+            <Fish size={40} color="#6B7280" />
             <Text style={{ color: "#6B7280", fontSize: 16, fontWeight: "600" }}>
               No catches logged yet
             </Text>
             <Text style={{ color: "#9CA3AF", fontSize: 14 }}>
-              Click &quot;Add Catch&quot; to record your fish
+              Click "Add Catch" to record your fish
             </Text>
           </VStack>
         ) : (
-          /* TODO: Fix catches module */
-          <>
-            <Text>Here should the catches be added</Text>
-          </>
+          <Text style={{ color: "white" }}>
+            {catches.length} catches logged
+          </Text>
         )}
       </VStack>
 
@@ -283,9 +194,6 @@ export default function TripForm({
           ]}
           className="mt-2 w-full px-2"
           size="md"
-          isReadOnly={false}
-          isInvalid={false}
-          isDisabled={false}
         >
           <TextareaInput
             onFocus={() => handleFocus("other")}
@@ -293,7 +201,7 @@ export default function TripForm({
           />
         </Textarea>
       </VStack>
-      {/* Map goes here */}
+
       <View style={styles.container} className="mt-5">
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
@@ -304,7 +212,7 @@ export default function TripForm({
           <TripMapForm />
         </Box>
       </View>
-      {/* End of map */}
+
       <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
           <ActionButton
@@ -312,10 +220,10 @@ export default function TripForm({
             color="black"
             size="md"
             onPress={onClose}
-          />{" "}
-          {/* TODO: THis needs to be fixed */}
+          />
         </Box>
         <Box className="w-1/2">
+          {/* This is where the trip + all catches should be saved */}
           <ActionButton label="Save trip" color="blue" size="md" />
         </Box>
       </HStack>

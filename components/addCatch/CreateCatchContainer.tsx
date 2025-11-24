@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 import { supabase } from "../../lib/supabase";
 import CatchForm from "./CatchForm";
 import { CatchDraft } from "../common/types";
-import { createCatch } from "../../lib/catches/createCatch";
+import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import type { ModalComponentProps } from "../common/types";
 

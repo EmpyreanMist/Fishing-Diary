@@ -18,10 +18,13 @@ import CatchDateTimePicker from "./CatchDateTimePicker";
 import * as ImagePicker from "expo-image-picker";
 import CatchMapModal from "./addCatchMapModal/CatchMapModal";
 import { CatchDraft } from "../common/types";
+import createCatch from "../../lib/catches/createCatch";
+import { supabase } from "../../lib/supabase";
+import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 type Props = {
   onClose: () => void;
-  onSubmit: (draft: CatchDraft) => Promise<void> | void;
+  onSubmit?: (draft: CatchDraft) => Promise<void> | void;
   loading?: boolean;
   initialValue?: Partial<CatchDraft>;
 };
@@ -87,7 +90,65 @@ export default function CatchForm({
       photos: localPhotos,
     };
 
-    onSubmit(draft);
+    if (onSubmit) {
+      // Din funktion för att hantera flera catches via trip-formuläret
+      onSubmit(draft);
+      return;
+    }
+
+    // Spara som fristående catch
+    saveStandaloneCatch(draft);
+  };
+
+  const saveStandaloneCatch = async (draft: CatchDraft) => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const userId = data.session?.user?.id;
+      if (!userId) {
+        Alert.alert("Error", "User not logged in.");
+        return;
+      }
+
+      const formState = {
+        speciesId: draft.speciesId,
+        lureId: draft.lureId,
+        weightKg: draft.weightKg,
+        lengthCm: draft.lengthCm,
+        locationName: draft.locationName,
+        notes: draft.notes,
+        caughtAt: draft.caughtAt,
+      };
+
+      const created = await createCatch(
+        formState,
+        userId,
+        draft.latitude,
+        draft.longitude
+      );
+
+      if (!created) {
+        Alert.alert("Error", "Could not save catch.");
+        return;
+      }
+
+      if (draft.photos.length > 0) {
+        const failed = await uploadCatchPhotos(
+          draft.photos,
+          userId,
+          created.id
+        );
+
+        if (failed.length > 0) {
+          Alert.alert("Warning", "Some photos failed to upload.");
+        }
+      }
+
+      Alert.alert("Success", "Catch saved!");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Something went wrong.");
+    }
   };
 
   return (

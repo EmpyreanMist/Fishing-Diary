@@ -4,7 +4,7 @@ import type { FormState } from "../../components/common/types";
 /**
  * Skapar en ny catch-post i databasen.
  */
-export async function createCatch(
+export default async function createCatch(
   form: FormState,
   userId: string,
   latitude: number | null,
