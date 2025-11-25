@@ -15,13 +15,14 @@ import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
-import CatchDateTimePicker from "./CatchDateTimePicker";
 import type { ModalComponentProps, FormState } from "../common/types";
 import { createCatch } from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
+import CatchDateTimeButton from "./CatchDateTimeButton";
+import CatchDateTimeModals from "./CatchDateTimeModals";
 
 export default function CatchForm({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -42,6 +43,8 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
   const [localPhotos, setLocalPhotos] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showDate, setShowDate] = useState(false);
+  const [showTime, setShowTime] = useState(false);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -159,12 +162,10 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
               />
 
               <LureDropdown onSelect={(id) => setField("lureId", id)} />
-
-              <CatchDateTimePicker
+              <CatchDateTimeButton
                 value={form.caughtAt}
-                onChange={(date) => setField("caughtAt", date)}
+                onPress={() => setShowDate(true)}
               />
-
               <CatchFormActions
                 onClose={onClose}
                 onSave={handleSaveCatch}
@@ -180,6 +181,14 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
             </FormControl>
           </View>
         </ScrollView>
+        <CatchDateTimeModals
+          value={form.caughtAt}
+          onChange={(d) => setField("caughtAt", d)}
+          showDate={showDate}
+          showTime={showTime}
+          setShowDate={setShowDate}
+          setShowTime={setShowTime}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
