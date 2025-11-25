@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
@@ -24,19 +24,41 @@ import * as Location from "expo-location";
 import CatchDateTimeButton from "./CatchDateTimeButton";
 import CatchDateTimeModals from "./CatchDateTimeModals";
 
-export default function CatchForm({ onClose }: ModalComponentProps) {
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+type Props = {
+  onClose: () => void;
+  onSubmit?: (draft: CatchDraft) => Promise<void> | void;
+  loading?: boolean;
+  initialValue?: Partial<CatchDraft>;
+};
 
-  const [form, setForm] = useState<FormState>({
-    speciesId: "",
-    lureId: "",
-    weightKg: "",
-    lengthCm: "",
-    locationName: "",
-    notes: "",
-    caughtAt: new Date(),
+export default function CatchForm({
+  onClose,
+  onSubmit,
+  loading = false,
+  initialValue = {},
+}: Props) {
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [showMap, setShowMap] = useState(false);
+
+  const [form, setForm] = useState({
+    speciesId: initialValue.speciesId ?? "",
+    lureId: initialValue.lureId ?? "",
+    weightKg: initialValue.weightKg ?? "",
+    lengthCm: initialValue.lengthCm ?? "",
+    locationName: initialValue.locationName ?? "",
+    notes: initialValue.notes ?? "",
+    caughtAt: initialValue.caughtAt ?? new Date(),
   });
 
+  const [latitude, setLatitude] = useState<number | null>(
+    initialValue.latitude ?? null
+  );
+  const [longitude, setLongitude] = useState<number | null>(
+    initialValue.longitude ?? null
+  );
+  const [localPhotos, setLocalPhotos] = useState<string[]>(
+    initialValue.photos ?? []
+  );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -59,75 +81,90 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
   };
 
   const handleAddPhoto = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      setLocationStatus(null);
-      Alert.alert("Permission denied", "We need access to your photos.");
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (perm.status !== "granted") {
+      Alert.alert("Permission denied");
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      // NOTE: Using MediaTypeOptions for compatibility with current Expo SDK.
-      // MediaType is the new API but not fully supported in our version yet.
-      // TODO: Replace with [ImagePicker.MediaType.Images] after upgrading Expo SDK (≥55).
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
       quality: 0.8,
       selectionLimit: 0,
     });
 
-    if (result.canceled || !result.assets?.length) return;
-    const newUris = result.assets.map((asset) => asset.uri);
-    setLocalPhotos((prev) => [...prev, ...newUris]);
+    if (!result.canceled) {
+      const uris = result.assets.map((a) => a.uri);
+      setLocalPhotos((prev) => [...prev, ...uris]);
+    }
   };
 
-  const handleGetLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission denied", "We need access to your location.");
+  const handleSubmit = () => {
+    const draft: CatchDraft = {
+      ...form,
+      latitude,
+      longitude,
+      photos: localPhotos,
+    };
+
+    if (onSubmit) {
+      // Din funktion för att hantera flera catches via trip-formuläret
+      onSubmit(draft);
       return;
     }
 
+    // Spara som fristående catch
+    saveStandaloneCatch(draft);
+  };
+
+  const saveStandaloneCatch = async (draft: CatchDraft) => {
     try {
-      const pos = await Location.getCurrentPositionAsync({});
-      setLatitude(pos.coords.latitude);
-      setLongitude(pos.coords.longitude);
+      const { data } = await supabase.auth.getSession();
+      const userId = data.session?.user?.id;
+      if (!userId) {
+        Alert.alert("Error", "User not logged in.");
+        return;
+      }
 
-      setLocationStatus("GPS saved!");
-    } catch (err) {
-      setLocationStatus("Failed to get location");
-    }
-  };
-  const handleSaveCatch = async () => {
-    if (!userId) return Alert.alert("Not signed in");
+      const formState = {
+        speciesId: draft.speciesId,
+        lureId: draft.lureId,
+        weightKg: draft.weightKg,
+        lengthCm: draft.lengthCm,
+        locationName: draft.locationName,
+        notes: draft.notes,
+        caughtAt: draft.caughtAt,
+      };
 
-    setSaving(true);
-
-    const catchData = await createCatch(form, userId, latitude, longitude);
-    if (!catchData) {
-      setSaving(false);
-      Alert.alert("Save failed", "Could not create catch.");
-      return;
-    }
-
-    const failedPhotos = await uploadCatchPhotos(
-      localPhotos,
-      userId,
-      catchData.id
-    );
-    setLocalPhotos(failedPhotos);
-    setSaving(false);
-
-    if (failedPhotos.length > 0) {
-      Alert.alert(
-        "Partial success",
-        failedPhotos.length === localPhotos.length
-          ? "Catch saved but no photos were uploaded."
-          : "Catch saved but some photos failed to upload."
+      const created = await createCatch(
+        formState,
+        userId,
+        draft.latitude,
+        draft.longitude
       );
-    } else {
-      Alert.alert("Success", "Catch and photos saved!");
+
+      if (!created) {
+        Alert.alert("Error", "Could not save catch.");
+        return;
+      }
+
+      if (draft.photos.length > 0) {
+        const failed = await uploadCatchPhotos(
+          draft.photos,
+          userId,
+          created.id
+        );
+
+        if (failed.length > 0) {
+          Alert.alert("Warning", "Some photos failed to upload.");
+        }
+      }
+
+      Alert.alert("Success", "Catch saved!");
       onClose();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Something went wrong.");
     }
   };
 
@@ -137,11 +174,7 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           <CatchFormHeader onClose={onClose} />
 
           <View style={styles.inner}>
@@ -152,13 +185,13 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
                 focusedField={focusedField}
                 setFocusedField={setFocusedField}
                 weightKg={form.weightKg}
-                setWeightKg={(val) => setField("weightKg", val)}
+                setWeightKg={(v) => setField("weightKg", v)}
                 lengthCm={form.lengthCm}
-                setLengthCm={(val) => setField("lengthCm", val)}
+                setLengthCm={(v) => setField("lengthCm", v)}
                 locationName={form.locationName}
-                setLocationName={(val) => setField("locationName", val)}
+                setLocationName={(v) => setField("locationName", v)}
                 notes={form.notes}
-                setNotes={(val) => setField("notes", val)}
+                setNotes={(v) => setField("notes", v)}
               />
 
               <LureDropdown onSelect={(id) => setField("lureId", id)} />
@@ -168,14 +201,14 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
               />
               <CatchFormActions
                 onClose={onClose}
-                onSave={handleSaveCatch}
+                onSave={handleSubmit}
                 onAddPhoto={handleAddPhoto}
-                onGetLocation={handleGetLocation}
-                loading={saving}
+                onGetLocation={() => setShowMap(true)}
+                loading={loading}
                 photos={localPhotos}
                 locationStatus={locationStatus}
-                onRemovePhoto={(index) =>
-                  setLocalPhotos((prev) => prev.filter((_, i) => i !== index))
+                onRemovePhoto={(i) =>
+                  setLocalPhotos((prev) => prev.filter((_, idx) => idx !== i))
                 }
               />
             </FormControl>
@@ -190,20 +223,25 @@ export default function CatchForm({ onClose }: ModalComponentProps) {
           setShowTime={setShowTime}
         />
       </KeyboardAvoidingView>
+
+      <CatchMapModal
+        visible={showMap}
+        onClose={() => setShowMap(false)}
+        onSave={(coords) => {
+          if (coords) {
+            setLatitude(coords.latitude);
+            setLongitude(coords.longitude);
+            setLocationStatus("GPS location saved!");
+          }
+          setShowMap(false);
+        }}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#0A121A",
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 200,
-  },
-  inner: {
-    flexGrow: 1,
-  },
+  safeArea: { flex: 1, backgroundColor: "#0A121A" },
+  scrollContent: { flexGrow: 1, paddingBottom: 200 },
+  inner: { flexGrow: 1 },
 });
