@@ -2,9 +2,9 @@ import { Modal, View, StyleSheet, Pressable, Text } from "react-native";
 import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
 import { useState, useEffect } from "react";
 import { UserCatchMarkers } from "@/components/map/UserCatchMarkers";
-import ActionButton from "../../ui/ActionButton";
+import ActionButton from "../ui/ActionButton";
 
-const fishIcon = require("../../../assets/images/fish2.png");
+const fishIcon = require("../../assets/images/fish2.png");
 
 interface Props {
   visible: boolean;

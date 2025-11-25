@@ -16,7 +16,7 @@ import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import CatchDateTimePicker from "./CatchDateTimePicker";
 import * as ImagePicker from "expo-image-picker";
-import CatchMapModal from "./addCatchMapModal/CatchMapModal";
+import CatchMapModal from "./CatchMapModal";
 import { CatchDraft } from "../common/types";
 import createCatch from "../../lib/catches/createCatch";
 import { supabase } from "../../lib/supabase";
