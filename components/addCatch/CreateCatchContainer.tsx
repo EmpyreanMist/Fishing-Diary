@@ -1,29 +1,18 @@
-import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { supabase } from "../../lib/supabase";
+import { useAuth } from "@/providers/AuthProvider";
 import CatchForm from "./CatchForm";
 import { CatchDraft } from "../common/types";
 import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import type { ModalComponentProps } from "../common/types";
+import { useState } from "react";
 
 export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
-  const [userId, setUserId] = useState<string | null>(null);
+  const { user } = useAuth();
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUserId(data.session?.user?.id ?? null);
-    };
-    load();
-  }, []);
-
   const handleSubmit = async (draft: CatchDraft) => {
-    if (!userId) {
-      Alert.alert("Not signed in");
-      return;
-    }
+    const userId = user!.id;
 
     setSaving(true);
 
