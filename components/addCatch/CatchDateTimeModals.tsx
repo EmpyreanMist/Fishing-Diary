@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import DatePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
+import { useEffect, useRef } from "react";
 
 interface CatchDateTimeModalsProps {
   value: Date;
@@ -35,6 +36,25 @@ export default function CatchDateTimeModals({
     onChange(d);
     setShowTime(false);
   };
+
+  // refs med korrekt typ
+  const hourRef = useRef<ScrollView | null>(null);
+  const minuteRef = useRef<ScrollView | null>(null);
+
+  useEffect(() => {
+    if (showTime) {
+      const hourIndex = value.getHours();
+      const minuteIndex = value.getMinutes();
+
+      const offsetHour = hourIndex * 36;
+      const offsetMinute = minuteIndex * 36;
+
+      setTimeout(() => {
+        hourRef.current?.scrollTo({ y: offsetHour, animated: true });
+        minuteRef.current?.scrollTo({ y: offsetMinute, animated: true });
+      }, 50);
+    }
+  }, [showTime]);
 
   return (
     <>
@@ -75,6 +95,7 @@ export default function CatchDateTimeModals({
                 <Text style={styles.wheelLabel}>Hour</Text>
 
                 <ScrollView
+                  ref={hourRef}
                   showsVerticalScrollIndicator={false}
                   snapToInterval={36}
                   decelerationRate="fast"
@@ -115,6 +136,7 @@ export default function CatchDateTimeModals({
                 <Text style={styles.wheelLabel}>Minute</Text>
 
                 <ScrollView
+                  ref={minuteRef}
                   showsVerticalScrollIndicator={false}
                   snapToInterval={36}
                   decelerationRate="fast"
@@ -267,7 +289,7 @@ const styles = StyleSheet.create({
   },
 
   wheelScroll: {
-    height: 180, 
+    height: 180,
   },
 
   wheelLabel: {
@@ -277,7 +299,7 @@ const styles = StyleSheet.create({
   },
 
   wheelItem: {
-    height: 36, 
+    height: 36,
     justifyContent: "center",
     alignItems: "center",
   },
