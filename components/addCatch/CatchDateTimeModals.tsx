@@ -5,9 +5,19 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import DatePicker from "react-native-ui-datepicker";
-import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
+import CustomCalendar from "../CustomCalendar";
+import ActionButton from "../ui/ActionButton";
+
+const normalizeLocal = (date: Date) => {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds()
+  );
+};
 
 interface CatchDateTimeModalsProps {
   value: Date;
@@ -29,61 +39,27 @@ export default function CatchDateTimeModals({
   const hours = [...Array(24).keys()];
   const minutes = [...Array(60).keys()];
 
-  const selectTime = (h: number, m: number) => {
-    const d = new Date(value);
-    d.setHours(h);
-    d.setMinutes(m);
-    onChange(d);
-    setShowTime(false);
-  };
-
-  // refs med korrekt typ
-  const hourRef = useRef<ScrollView | null>(null);
-  const minuteRef = useRef<ScrollView | null>(null);
-
-  useEffect(() => {
-    if (showTime) {
-      const hourIndex = value.getHours();
-      const minuteIndex = value.getMinutes();
-
-      const offsetHour = hourIndex * 36;
-      const offsetMinute = minuteIndex * 36;
-
-      setTimeout(() => {
-        hourRef.current?.scrollTo({ y: offsetHour, animated: true });
-        minuteRef.current?.scrollTo({ y: offsetMinute, animated: true });
-      }, 50);
-    }
-  }, [showTime]);
+  const localValue = normalizeLocal(value);
 
   return (
     <>
+      {/* DATE PICKER */}
       {showDate && (
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <DatePicker
-              mode="single"
-              date={dayjs(value)}
-              locale="sv"
-              onChange={(params) => {
-                if (!params?.date) return;
-
-                const d = params.date as Date;
-
-                const newD = new Date(value);
-                newD.setFullYear(d.getFullYear());
-                newD.setMonth(d.getMonth());
-                newD.setDate(d.getDate());
-                onChange(newD);
-
+            <CustomCalendar
+              value={value}
+              onSelect={(date) => {
+                onChange(date);
                 setShowDate(false);
-                setShowTime(true);
+                setTimeout(() => setShowTime(true), 200);
               }}
             />
           </View>
         </View>
       )}
 
+      {/* TIME PICKER */}
       {showTime && (
         <View style={styles.overlay}>
           <View style={styles.modalDark}>
@@ -95,7 +71,6 @@ export default function CatchDateTimeModals({
                 <Text style={styles.wheelLabel}>Hour</Text>
 
                 <ScrollView
-                  ref={hourRef}
                   showsVerticalScrollIndicator={false}
                   snapToInterval={36}
                   decelerationRate="fast"
@@ -103,12 +78,12 @@ export default function CatchDateTimeModals({
                   style={styles.wheelScroll}
                 >
                   {hours.map((hour) => {
-                    const selected = hour === value.getHours();
+                    const selected = hour === localValue.getHours();
                     return (
                       <TouchableOpacity
                         key={hour}
                         onPress={() => {
-                          const d = new Date(value);
+                          const d = normalizeLocal(value);
                           d.setHours(hour);
                           onChange(d);
                         }}
@@ -136,7 +111,6 @@ export default function CatchDateTimeModals({
                 <Text style={styles.wheelLabel}>Minute</Text>
 
                 <ScrollView
-                  ref={minuteRef}
                   showsVerticalScrollIndicator={false}
                   snapToInterval={36}
                   decelerationRate="fast"
@@ -144,12 +118,12 @@ export default function CatchDateTimeModals({
                   style={styles.wheelScroll}
                 >
                   {minutes.map((min) => {
-                    const selected = min === value.getMinutes();
+                    const selected = min === localValue.getMinutes();
                     return (
                       <TouchableOpacity
                         key={min}
                         onPress={() => {
-                          const d = new Date(value);
+                          const d = normalizeLocal(value);
                           d.setMinutes(min);
                           onChange(d);
                         }}
@@ -172,13 +146,14 @@ export default function CatchDateTimeModals({
                 </ScrollView>
               </View>
             </View>
-
-            <TouchableOpacity
-              style={styles.doneButton}
+            <ActionButton
+              label="Done"
+              color="blue"
+              size="lg"
+              icon="checkmark"
+              width="100%"
               onPress={() => setShowTime(false)}
-            >
-              <Text style={styles.doneText}>Done</Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       )}
@@ -200,13 +175,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 9999,
   },
+
   modal: {
-    backgroundColor: "white",
     padding: 16,
     borderRadius: 16,
     width: "85%",
     alignItems: "center",
   },
+
   modalDark: {
     backgroundColor: "#1E293B",
     padding: 16,
@@ -214,67 +190,13 @@ const styles = StyleSheet.create({
     width: "85%",
     alignItems: "center",
   },
-  closeButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    backgroundColor: "#334155",
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
-  },
-  closeText: {
-    color: "white",
-    fontSize: 16,
-  },
+
   title: {
     color: "white",
     fontSize: 18,
     marginBottom: 12,
   },
-  timeRow: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-  },
-  timeItem: {
-    color: "white",
-    paddingVertical: 8,
-  },
-  timeButton: {
-    paddingVertical: 8,
-    borderRadius: 6,
-    alignItems: "center",
-  },
 
-  timeButtonSelected: {
-    backgroundColor: "#475569",
-  },
-
-  timeItemSelected: {
-    color: "#5ACCF2",
-    fontWeight: "600",
-  },
-
-  doneButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    backgroundColor: "#5ACCF2",
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
-  },
-
-  doneText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-
-  timeHeader: {
-    color: "white",
-    fontSize: 16,
-    marginBottom: 6,
-  },
   wheelContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -284,12 +206,13 @@ const styles = StyleSheet.create({
   },
 
   wheel: {
-    width: "45%",
+    flex: 1,
     alignItems: "center",
   },
 
   wheelScroll: {
     height: 180,
+    width: "100%",
   },
 
   wheelLabel: {
@@ -316,6 +239,21 @@ const styles = StyleSheet.create({
 
   wheelTextSelected: {
     color: "#5ACCF2",
+    fontWeight: "600",
+  },
+
+  doneButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    backgroundColor: "#1A1A1A",
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+
+  doneText: {
+    color: "white",
+    fontSize: 18,
     fontWeight: "600",
   },
 });
