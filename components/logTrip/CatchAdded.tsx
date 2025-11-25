@@ -12,12 +12,12 @@ interface CatchAddedProps {
 }
 
 export default function CatchAdded({ catchData, onDelete }: CatchAddedProps) {
-  console.log('Catch data received:', catchData);
+  
   return (
     <Card size="md" variant="outline" className="m-3">
-        <HStack style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text size="sm">
-          {catchData.speciesId} - {catchData.weightKg} kg
+      <HStack style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text size="sm">
+          {catchData.speciesId} - {catchData.lengthCm} cm - {catchData.weightKg} kg
         </Text>
         <Pressable onPress={() => onDelete?.(catchData.speciesId)}>
           <Trash size={20} color="#FF0000" />

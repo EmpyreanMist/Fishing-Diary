@@ -26,11 +26,16 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
     setShowCatchModal(false);
   };
 
+  // to handle removal of a catch - to be implemented in the future
+  const removeCatch = (id: string) => {
+    setCatches((prevCatches) => prevCatches.filter((catchItem) => catchItem.speciesId !== id));
+  };
+
   // här ser man objekt i en array med catches datan || Ta bort sen
-  console.log("Catches in trip:", catches);
+  console.log('Catches in trip:', catches);
   return (
     <>
-      <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View className="mb-5">
           <TripHeader />
         </View>
@@ -51,21 +56,15 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
               // ---- NEW PROPS ----
               catches={catches}
               onAddCatch={() => setShowCatchModal(true)}
+              removeCatch={removeCatch}
             />
           </FormControl>
         </ScrollView>
       </SafeAreaView>
 
       {/* SIMPLE BUILT-IN MODAL */}
-      <Modal
-        visible={showCatchModal}
-        animationType="slide"
-        onRequestClose={() => setShowCatchModal(false)}
-      >
-        <CatchForm
-          onClose={() => setShowCatchModal(false)}
-          onSubmit={handleAddCatch}
-        />
+      <Modal visible={showCatchModal} animationType="slide" onRequestClose={() => setShowCatchModal(false)}>
+        <CatchForm onClose={() => setShowCatchModal(false)} onSubmit={handleAddCatch} />
       </Modal>
     </>
   );

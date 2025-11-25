@@ -1,18 +1,18 @@
-import { VStack } from "@/components/ui/vstack";
-import { Input, InputField } from "@/components/ui/input";
-import DateInput from "./DateInput";
-import { Text, StyleSheet, View } from "react-native";
-import { Heading } from "../ui/heading";
-import TripDivider from "./TripDivider";
-import { HStack } from "../ui/hstack";
-import { Box } from "@/components/ui/box";
-import FishingMethodDropdown from "./FishingMethodDropdown";
-import { Fish } from "lucide-react-native";
-import ActionButton from "../ui/ActionButton";
-import { useState } from "react";
-import { Textarea, TextareaInput } from "@/components/ui/textarea";
-import TripMapForm from "./mapTrip";
-import { CatchDraft } from "../common/types";
+import { VStack } from '@/components/ui/vstack';
+import { Input, InputField } from '@/components/ui/input';
+import DateInput from './DateInput';
+import { Text, StyleSheet, View } from 'react-native';
+import { Heading } from '../ui/heading';
+import TripDivider from './TripDivider';
+import { HStack } from '../ui/hstack';
+import { Box } from '@/components/ui/box';
+import FishingMethodDropdown from './FishingMethodDropdown';
+import { Fish } from 'lucide-react-native';
+import ActionButton from '../ui/ActionButton';
+import { useState } from 'react';
+import { Textarea, TextareaInput } from '@/components/ui/textarea';
+import TripMapForm from './mapTrip';
+import { CatchDraft } from '../common/types';
 
 import CatchAdded from './CatchAdded';
 
@@ -37,24 +37,12 @@ export default function TripForm({
   setFocusedField,
   handleFocus,
   onClose,
-    // NY
+  // NY
   catches,
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
-
-  console.log('TripForm props:', { catches, onAddCatch, removeCatch });
-  // add catch to catches array
-  /* const addCatch = () => {
-    setCatchArray((prevCatchArray) => [...prevCatchArray, mockedCatch]);
-  }
- */
-  // to handle removal of a catch - to be implemented in the future
-  /* const removeCatch = (id: number) => {
-    setCatchArray((prevCatchArray) => prevCatchArray.filter((catchItem) => catchItem.id !== id));
-  }; */
-
-
+  
   return (
     <>
       <VStack style={styles.container} className="gap-4">
@@ -76,10 +64,7 @@ export default function TripForm({
         </Heading>
         <DateInput date={date} setDate={setDate} focusedField={focusedField} setFocusedField={setFocusedField} />
 
-        <HStack
-          className="w-full gap-4 py-2"
-          style={{ alignItems: "flex-start", justifyContent: "space-between" }}
-        >
+        <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box className="flex-1">
             <Heading className="pb-1" style={styles.heading} size="sm">
               Start time
@@ -208,7 +193,7 @@ export default function TripForm({
             <Text style={{ color: '#9CA3AF', fontSize: 14 }}>Click &quot;Add Catch&quot; to record your fish</Text>
           </VStack>
         ) : (
-          /* TODO: Fix catches module */
+          //TODO: Fix some validation for catchDraft!
           <>
             <>
               {catches.map((c) => (
@@ -245,12 +230,7 @@ export default function TripForm({
 
       <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
-          <ActionButton
-            label="Cancel"
-            color="black"
-            size="md"
-            onPress={onClose}
-          />
+          <ActionButton label="Cancel" color="black" size="md" onPress={onClose} />
         </Box>
         <Box className="w-1/2">
           {/* This is where the trip + all catches should be saved */}
