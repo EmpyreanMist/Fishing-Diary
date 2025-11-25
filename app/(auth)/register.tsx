@@ -46,7 +46,7 @@ export default function Register() {
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.title}>Create Account 🎣</Text>
+          <Text style={styles.title}>Create Account</Text>
           <Text style={styles.subtitle}>
             Start logging your fishing adventures
           </Text>
