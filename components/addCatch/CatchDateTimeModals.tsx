@@ -192,19 +192,24 @@ const styles = StyleSheet.create({
   },
 
   modal: {
-    padding: 16,
-    borderRadius: 16,
-    width: "85%",
-    alignItems: "center",
-  },
+  padding: 20,
+  paddingTop: 30,        // ⬅️ ger plats för X-knappen
+  borderRadius: 16,
+  width: "85%",
+  backgroundColor: "#1E293B",  // ⬅️ samma färg som modalDark
+  alignItems: "center",
+  position: "relative",  // ⬅️ gör absolut position korrekt
+},
 
-  modalDark: {
-    backgroundColor: "#1E293B",
-    padding: 16,
-    borderRadius: 16,
-    width: "85%",
-    alignItems: "center",
-  },
+modalDark: {
+  padding: 20,
+  paddingTop: 30,        // ⬅️ samma
+  borderRadius: 16,
+  width: "85%",
+  backgroundColor: "#1E293B",
+  alignItems: "center",
+  position: "relative",
+},
 
   title: {
     color: "white",
@@ -257,27 +262,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  doneButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    backgroundColor: "#1A1A1A",
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
-  },
-
-  doneText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "600",
-  },
   closeIconButton: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    padding: 6,
-    borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    zIndex: 999,
-  },
+  position: "absolute",
+  top: 10,
+  right: 10,
+  padding: 6,
+  borderRadius: 20,
+  backgroundColor: "transparent",
+  zIndex: 999,
+},
 });
