@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   dayCell: {
-    flexBasis: `${100 / 7}%`, // exakt 14.2857%
+    flexBasis: `${100 / 7}%`,
     height: 36,
     justifyContent: "center",
     alignItems: "center",
