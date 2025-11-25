@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/providers/AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import ActionButton from "../ui/ActionButton";
 
 export default function ProfileCard() {
   const { user } = useAuth();
@@ -114,13 +115,14 @@ export default function ProfileCard() {
         <Text style={styles.headerTitle}>Profile Information</Text>
 
         {!editMode && (
-          <TouchableOpacity
+          <ActionButton label={"Edit"} onPress={() => setEditMode(true)} />
+          /*           <TouchableOpacity
             style={styles.editButton}
             onPress={() => setEditMode(true)}
           >
             <Ionicons name="pencil-outline" size={16} color="#0f172a" />
             <Text style={styles.editText}>Edit</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */
         )}
       </View>
 
@@ -191,29 +193,24 @@ export default function ProfileCard() {
       </View>
 
       {editMode && (
-        <View style={{ flexDirection: "row", marginTop: 10 }}>
-          <TouchableOpacity
-            style={[
-              styles.editButton,
-              { backgroundColor: "#10b981", marginRight: 10 },
-            ]}
+        <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
+          <ActionButton
+            label={saving ? "Saving..." : "Save"}
             onPress={saveChanges}
+            icon="checkmark-outline"
+            color="green"
+            size="md"
             disabled={saving}
-          >
-            {saving ? (
-              <ActivityIndicator color="#0f172a" />
-            ) : (
-              <Text style={styles.editText}>Save</Text>
-            )}
-          </TouchableOpacity>
+          />
 
-          <TouchableOpacity
-            style={[styles.editButton, { backgroundColor: "#f87171" }]}
+          <ActionButton
+            label="Cancel"
             onPress={cancelEdit}
+            icon="close-outline"
+            color="red"
+            size="md"
             disabled={saving}
-          >
-            <Text style={styles.editText}>Cancel</Text>
-          </TouchableOpacity>
+          />
         </View>
       )}
     </View>
@@ -240,19 +237,6 @@ const styles = StyleSheet.create({
     color: "#f1f5f9",
     fontSize: 18,
     fontWeight: "700",
-  },
-  editButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#38bdf8",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  editText: {
-    fontWeight: "600",
-    marginLeft: 4,
-    color: "#0f172a",
   },
   profileSection: {
     flexDirection: "row",
