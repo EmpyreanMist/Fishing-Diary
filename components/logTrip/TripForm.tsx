@@ -1,17 +1,18 @@
-import { VStack } from '@/components/ui/vstack';
-import { Input, InputField } from '@/components/ui/input';
-import DateInput from './DateInput';
-import { Text, StyleSheet, View } from 'react-native';
-import { Heading } from '../ui/heading';
-import TripDivider from './TripDivider';
-import { HStack } from '../ui/hstack';
-import { Box } from '@/components/ui/box';
-import FishingMethodDropdown from './FishingMethodDropdown';
-import { Fish } from 'lucide-react-native';
-import ActionButton from '../ui/ActionButton';
-import { useState } from 'react';
-import { Textarea, TextareaInput } from '@/components/ui/textarea';
-import TripMapForm from './mapTrip';
+import { VStack } from "@/components/ui/vstack";
+import { Input, InputField } from "@/components/ui/input";
+import DateInput from "./DateInput";
+import { Text, StyleSheet, View } from "react-native";
+import { Heading } from "../ui/heading";
+import TripDivider from "./TripDivider";
+import { HStack } from "../ui/hstack";
+import { Box } from "@/components/ui/box";
+import FishingMethodDropdown from "./FishingMethodDropdown";
+import { Fish } from "lucide-react-native";
+import ActionButton from "../ui/ActionButton";
+import { useState } from "react";
+import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import TripMapForm from "./mapTrip";
+import { CatchDraft } from "../common/types";
 
 import CatchAdded from './CatchAdded';
 
@@ -22,6 +23,10 @@ interface TripFormProps {
   setFocusedField: (field: string | null) => void;
   handleFocus: (field: string) => void;
   onClose: () => void;
+
+  //  Ny props:
+  catches: CatchDraft[];
+  onAddCatch: () => void;
 }
 
 export default function TripForm({
@@ -31,6 +36,9 @@ export default function TripForm({
   setFocusedField,
   handleFocus,
   onClose,
+    // NY
+  catches,
+  onAddCatch,
 }: TripFormProps) {
   //This should be made into a arrya of catches in the future
   // Then it should render each catch logged from the array
@@ -38,7 +46,7 @@ export default function TripForm({
   console.log('Catches logged:', catchesLogged);
 
   // static mock data for catches - to be replaced with dynamic data in the future
-  const [catches, setCatches] = useState([
+  const [catchArray, setCatchArray] = useState([
     { id: 1, species: 'Trout', weight: 2.5 },
     { id: 2, species: 'Bass', weight: 3.0 },
     {id: 3, species: 'Salmon', weight: 4.2},
@@ -49,13 +57,14 @@ export default function TripForm({
 
   // add catch to catches array
   const addCatch = () => {
-    setCatches((prevCatches) => [...prevCatches, mockedCatch]);
+    setCatchArray((prevCatchArray) => [...prevCatchArray, mockedCatch]);
   }
 
   // to handle removal of a catch - to be implemented in the future
   const removeCatch = (id: number) => {
-    setCatches((prevCatches) => prevCatches.filter((catchItem) => catchItem.id !== id));
+    setCatchArray((prevCatchArray) => prevCatchArray.filter((catchItem) => catchItem.id !== id));
   };
+
 
   return (
     <>
@@ -65,6 +74,7 @@ export default function TripForm({
           <TripDivider />
           <Text className="text-gray-400 text-md mt-1 pl-2">Basic information about your fishing trip</Text>
         </VStack>
+
         <Heading className="py-2" style={styles.heading} size="sm">
           Trip name
         </Heading>
@@ -77,9 +87,10 @@ export default function TripForm({
         </Heading>
         <DateInput date={date} setDate={setDate} focusedField={focusedField} setFocusedField={setFocusedField} />
 
-        {/* Choose time row start*/}
-        {/* TODO: Should maybe in the future be changed to a time picker */}
-        <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <HStack
+          className="w-full gap-4 py-2"
+          style={{ alignItems: "flex-start", justifyContent: "space-between" }}
+        >
           <Box className="flex-1">
             <Heading className="pb-1" style={styles.heading} size="sm">
               Start time
@@ -98,7 +109,6 @@ export default function TripForm({
             </Input>
           </Box>
         </HStack>
-        {/* Choose time row end */}
 
         <FishingMethodDropdown />
 
@@ -190,15 +200,16 @@ export default function TripForm({
             <TripDivider />
             <Text className="text-gray-400 text-sm mt-1">Log all fish caught during this trip</Text>
           </Box>
+
           <Box className="justify-center pr-2">
             <ActionButton
               label="Add Catch"
               icon="add"
               color="blue"
               size="sm"
-              onPress={() => addCatch()}
+              // MODAL ÖPPNAS NU HÄR
+              onPress={onAddCatch}
             />
-            {/* This should change depending on catches logged or not */}
           </Box>
         </HStack>
         {catches.length === 0 ? (
@@ -211,7 +222,7 @@ export default function TripForm({
           /* TODO: Fix catches module */
           <>
             <>
-              {catches.map((c) => (
+              {catchArray.map((c) => (
                 <CatchAdded key={c.id} catchData={c} onDelete={() => removeCatch(c.id)} />
               ))}
             </>
@@ -229,14 +240,11 @@ export default function TripForm({
           style={[styles.input, focusedField === 'other' && styles.inputFocused]}
           className="mt-2 w-full px-2"
           size="md"
-          isReadOnly={false}
-          isInvalid={false}
-          isDisabled={false}
         >
           <TextareaInput onFocus={() => handleFocus('other')} placeholder="Your text goes here..." />
         </Textarea>
       </VStack>
-      {/* Map goes here */}
+
       <View style={styles.container} className="mt-5">
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
@@ -245,12 +253,18 @@ export default function TripForm({
           <TripMapForm />
         </Box>
       </View>
-      {/* End of map */}
+
       <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
-          <ActionButton label="Cancel" color="black" size="md" onPress={onClose} /> {/* TODO: THis needs to be fixed */}
+          <ActionButton
+            label="Cancel"
+            color="black"
+            size="md"
+            onPress={onClose}
+          />
         </Box>
         <Box className="w-1/2">
+          {/* This is where the trip + all catches should be saved */}
           <ActionButton label="Save trip" color="blue" size="md" />
         </Box>
       </HStack>
