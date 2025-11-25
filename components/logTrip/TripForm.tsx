@@ -27,6 +27,7 @@ interface TripFormProps {
   //  Ny props:
   catches: CatchDraft[];
   onAddCatch: () => void;
+  removeCatch: (id: string) => void;
 }
 
 export default function TripForm({
@@ -39,31 +40,19 @@ export default function TripForm({
     // NY
   catches,
   onAddCatch,
+  removeCatch,
 }: TripFormProps) {
-  //This should be made into a arrya of catches in the future
-  // Then it should render each catch logged from the array
-  const [catchesLogged, setCatchesLogged] = useState<number>(0);
-  console.log('Catches logged:', catchesLogged);
 
-  // static mock data for catches - to be replaced with dynamic data in the future
-  const [catchArray, setCatchArray] = useState([
-    { id: 1, species: 'Trout', weight: 2.5 },
-    { id: 2, species: 'Bass', weight: 3.0 },
-    {id: 3, species: 'Salmon', weight: 4.2},
-  ]);
-
-  // mocked input to addTrip component
-  const mockedCatch = { id: catches.length + 1, species: 'Pike', weight: 5.1 };
-
+  console.log('TripForm props:', { catches, onAddCatch, removeCatch });
   // add catch to catches array
-  const addCatch = () => {
+  /* const addCatch = () => {
     setCatchArray((prevCatchArray) => [...prevCatchArray, mockedCatch]);
   }
-
+ */
   // to handle removal of a catch - to be implemented in the future
-  const removeCatch = (id: number) => {
+  /* const removeCatch = (id: number) => {
     setCatchArray((prevCatchArray) => prevCatchArray.filter((catchItem) => catchItem.id !== id));
-  };
+  }; */
 
 
   return (
@@ -222,8 +211,8 @@ export default function TripForm({
           /* TODO: Fix catches module */
           <>
             <>
-              {catchArray.map((c) => (
-                <CatchAdded key={c.id} catchData={c} onDelete={() => removeCatch(c.id)} />
+              {catches.map((c) => (
+                <CatchAdded key={c.speciesId} catchData={c} onDelete={() => removeCatch(c.speciesId)} />
               ))}
             </>
           </>

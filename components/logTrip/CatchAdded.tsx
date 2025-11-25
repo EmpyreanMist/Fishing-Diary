@@ -4,15 +4,11 @@ import { Text } from '@/components/ui/text';
 import { Trash } from 'lucide-react-native';
 import { Pressable } from '../ui/pressable';
 import { HStack } from '../ui/hstack';
-interface catchAddedProps {
-  id: number;
-  species: string;
-  weight: number;
-}
+import { CatchDraft } from '../common/types';
 
 interface CatchAddedProps {
-  catchData: catchAddedProps;
-  onDelete?: (id: number) => void;
+  catchData: CatchDraft;
+  onDelete?: (id: string) => void;
 }
 
 export default function CatchAdded({ catchData, onDelete }: CatchAddedProps) {
@@ -21,9 +17,9 @@ export default function CatchAdded({ catchData, onDelete }: CatchAddedProps) {
     <Card size="md" variant="outline" className="m-3">
         <HStack style={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Text size="sm">
-          {catchData.species} - {catchData.weight} kg
+          {catchData.speciesId} - {catchData.weightKg} kg
         </Text>
-        <Pressable onPress={() => onDelete?.(catchData.id)}>
+        <Pressable onPress={() => onDelete?.(catchData.speciesId)}>
           <Trash size={20} color="#FF0000" />
         </Pressable>
       </HStack>
