@@ -1,13 +1,18 @@
-import { supabase } from '../../lib/supabase';
-import type { FormState } from '../../components/addCatch/types/types';
+import { supabase } from "../../lib/supabase";
+import type { FormState } from "../../components/common/types";
 
 /**
  * Skapar en ny catch-post i databasen.
  */
-export async function createCatch(form: FormState, userId: string, latitude: number | null, longitude: number | null) {
-  const weight = parseFloat(form.weightKg.replace(',', '.'));
+export default async function createCatch(
+  form: FormState,
+  userId: string,
+  latitude: number | null,
+  longitude: number | null
+) {
+  const weight = parseFloat(form.weightKg.replace(",", "."));
   if (isNaN(weight) || weight <= 0) {
-    console.error('Invalid weight:', form.weightKg);
+    console.error("Invalid weight:", form.weightKg);
     return null;
   }
 
@@ -24,10 +29,14 @@ export async function createCatch(form: FormState, userId: string, latitude: num
     caught_at: form.caughtAt.toISOString(),
   };
 
-  const { data, error } = await supabase.from('catches').insert([payload]).select().single();
+  const { data, error } = await supabase
+    .from("catches")
+    .insert([payload])
+    .select()
+    .single();
 
   if (error) {
-    console.error('createCatch error:', error);
+    console.error("createCatch error:", error);
     return null;
   }
 
