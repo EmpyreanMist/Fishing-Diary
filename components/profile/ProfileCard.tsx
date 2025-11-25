@@ -12,6 +12,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import ActionButton from "../ui/ActionButton";
+import { uploadAvatar } from "@/lib/uploadAvatar";
 
 export default function ProfileCard() {
   const { user } = useAuth();
@@ -93,6 +94,26 @@ export default function ProfileCard() {
       setEditMode(false);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function changeAvatar() {
+    if (!user) return;
+
+    try {
+      const url = await uploadAvatar(user.id);
+      if (!url) return;
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ avatar_url: url })
+        .eq("id", user.id);
+
+      if (!error) {
+        setProfile((prev) => (prev ? { ...prev, avatar_url: url } : prev));
+      }
+    } catch (err: any) {
+      console.error("Avatar upload error:", err);
     }
   }
 
