@@ -13,7 +13,7 @@ import type { ComponentProps } from "react";
 type Props = {
   label: string;
   icon?: ComponentProps<typeof Ionicons>["name"];
-  color?: "blue" | "green" | "black" | "transparent";
+  color?: "blue" | "green" | "red" | "black" | "transparent";
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
   width?: DimensionValue;
@@ -34,6 +34,7 @@ export default function ActionButton({
   const gradients: Record<string, [string, string]> = {
     blue: ["#0072FF", "#00C6FF"],
     green: ["#2E8B57", "#4CAF50"],
+    red: ["#FF3D5A", "#FF6B3D"],
     black: ["#1A1A1A", "#1A1A1A"],
     transparent: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.15)"],
   };
