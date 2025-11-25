@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/providers/AuthProvider";
@@ -22,6 +23,15 @@ export default function ProfileCard() {
     avatar_url: string | null;
   } | null>(null);
 
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Local editable fields
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
+
   useEffect(() => {
     if (!user) return;
 
@@ -38,13 +48,63 @@ export default function ProfileCard() {
       }
 
       setProfile(data);
+      setFirst(data.first_name ?? "");
+      setLast(data.last_name ?? "");
+      setPhone(data.phone_number ?? "");
+      setBio(data.bio ?? "");
     }
 
     loadProfile(user.id);
   }, [user]);
 
-  if (!user) return null;
-  if (!profile) return null;
+  async function saveChanges() {
+    if (!user) return;
+    try {
+      setSaving(true);
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          first_name: first.trim(),
+          last_name: last.trim(),
+          phone_number: phone.trim(),
+          bio: bio.trim(),
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        console.error("Profile update error:", error);
+        return;
+      }
+
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              first_name: first,
+              last_name: last,
+              phone_number: phone,
+              bio,
+            }
+          : prev
+      );
+
+      setEditMode(false);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function cancelEdit() {
+    if (!profile) return;
+    setFirst(profile.first_name ?? "");
+    setLast(profile.last_name ?? "");
+    setPhone(profile.phone_number ?? "");
+    setBio(profile.bio ?? "");
+    setEditMode(false);
+  }
+
+  if (!user || !profile) return null;
 
   const fullName = `${profile.first_name} ${profile.last_name}`;
 
@@ -52,10 +112,16 @@ export default function ProfileCard() {
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>Profile Information</Text>
-        <TouchableOpacity style={styles.editButton}>
-          <Ionicons name="pencil-outline" size={16} color="#0f172a" />
-          <Text style={styles.editText}>Edit</Text>
-        </TouchableOpacity>
+
+        {!editMode && (
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setEditMode(true)}
+          >
+            <Ionicons name="pencil-outline" size={16} color="#0f172a" />
+            <Text style={styles.editText}>Edit</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.profileSection}>
@@ -84,16 +150,32 @@ export default function ProfileCard() {
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput style={styles.input} editable={false} value={fullName} />
+        <Text style={styles.label}>First name</Text>
+        <TextInput
+          style={styles.input}
+          editable={editMode}
+          value={first}
+          onChangeText={setFirst}
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Last name</Text>
+        <TextInput
+          style={styles.input}
+          editable={editMode}
+          value={last}
+          onChangeText={setLast}
+        />
       </View>
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Phone</Text>
         <TextInput
           style={styles.input}
-          editable={false}
-          value={profile.phone_number ?? ""}
+          editable={editMode}
+          value={phone}
+          onChangeText={setPhone}
         />
       </View>
 
@@ -101,11 +183,39 @@ export default function ProfileCard() {
         <Text style={styles.label}>Bio</Text>
         <TextInput
           style={[styles.input, styles.bioInput]}
-          editable={false}
+          editable={editMode}
           multiline
-          value={profile.bio ?? ""}
+          value={bio}
+          onChangeText={setBio}
         />
       </View>
+
+      {editMode && (
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              { backgroundColor: "#10b981", marginRight: 10 },
+            ]}
+            onPress={saveChanges}
+            disabled={saving}
+          >
+            {saving ? (
+              <ActivityIndicator color="#0f172a" />
+            ) : (
+              <Text style={styles.editText}>Save</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.editButton, { backgroundColor: "#f87171" }]}
+            onPress={cancelEdit}
+            disabled={saving}
+          >
+            <Text style={styles.editText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
