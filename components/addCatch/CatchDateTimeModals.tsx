@@ -3,7 +3,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
+  ScrollView,
 } from "react-native";
 import DatePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
@@ -55,7 +55,7 @@ export default function CatchDateTimeModals({
                 newD.setMonth(d.getMonth());
                 newD.setDate(d.getDate());
                 onChange(newD);
-                
+
                 setShowDate(false);
                 setShowTime(true);
               }}
@@ -69,39 +69,93 @@ export default function CatchDateTimeModals({
           <View style={styles.modalDark}>
             <Text style={styles.title}>Select Time</Text>
 
-            <View style={styles.timeRow}>
-              <FlatList
-                data={hours}
-                style={{ maxHeight: 180 }}
-                keyExtractor={(i) => i.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => selectTime(item, value.getMinutes())}
-                  >
-                    <Text style={styles.timeItem}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
+            <View style={styles.wheelContainer}>
+              {/* HOURS */}
+              <View style={styles.wheel}>
+                <Text style={styles.wheelLabel}>Hour</Text>
 
-              <FlatList
-                data={minutes}
-                style={{ maxHeight: 180 }}
-                keyExtractor={(i) => i.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => selectTime(value.getHours(), item)}
-                  >
-                    <Text style={styles.timeItem}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  snapToInterval={36}
+                  decelerationRate="fast"
+                  contentContainerStyle={{ paddingVertical: 40 }}
+                  style={styles.wheelScroll}
+                >
+                  {hours.map((hour) => {
+                    const selected = hour === value.getHours();
+                    return (
+                      <TouchableOpacity
+                        key={hour}
+                        onPress={() => {
+                          const d = new Date(value);
+                          d.setHours(hour);
+                          onChange(d);
+                        }}
+                        style={[
+                          styles.wheelItem,
+                          selected && styles.wheelItemSelected,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.wheelText,
+                            selected && styles.wheelTextSelected,
+                          ]}
+                        >
+                          {hour.toString().padStart(2, "0")}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+
+              {/* MINUTES */}
+              <View style={styles.wheel}>
+                <Text style={styles.wheelLabel}>Minute</Text>
+
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  snapToInterval={36}
+                  decelerationRate="fast"
+                  contentContainerStyle={{ paddingVertical: 40 }}
+                  style={styles.wheelScroll}
+                >
+                  {minutes.map((min) => {
+                    const selected = min === value.getMinutes();
+                    return (
+                      <TouchableOpacity
+                        key={min}
+                        onPress={() => {
+                          const d = new Date(value);
+                          d.setMinutes(min);
+                          onChange(d);
+                        }}
+                        style={[
+                          styles.wheelItem,
+                          selected && styles.wheelItemSelected,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.wheelText,
+                            selected && styles.wheelTextSelected,
+                          ]}
+                        >
+                          {min.toString().padStart(2, "0")}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
             </View>
 
             <TouchableOpacity
-              style={styles.closeButton}
+              style={styles.doneButton}
               onPress={() => setShowTime(false)}
             >
-              <Text style={styles.closeText}>Done</Text>
+              <Text style={styles.doneText}>Done</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -163,5 +217,83 @@ const styles = StyleSheet.create({
   timeItem: {
     color: "white",
     paddingVertical: 8,
+  },
+  timeButton: {
+    paddingVertical: 8,
+    borderRadius: 6,
+    alignItems: "center",
+  },
+
+  timeButtonSelected: {
+    backgroundColor: "#475569",
+  },
+
+  timeItemSelected: {
+    color: "#5ACCF2",
+    fontWeight: "600",
+  },
+
+  doneButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    backgroundColor: "#5ACCF2",
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+
+  doneText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+
+  timeHeader: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  wheelContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  wheel: {
+    width: "45%",
+    alignItems: "center",
+  },
+
+  wheelScroll: {
+    height: 180, 
+  },
+
+  wheelLabel: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 8,
+  },
+
+  wheelItem: {
+    height: 36, 
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  wheelItemSelected: {
+    backgroundColor: "#475569",
+    borderRadius: 8,
+  },
+
+  wheelText: {
+    color: "white",
+    fontSize: 16,
+  },
+
+  wheelTextSelected: {
+    color: "#5ACCF2",
+    fontWeight: "600",
   },
 });
