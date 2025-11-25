@@ -1,18 +1,8 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet, Image, TextInput } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import ActionButton from "../ui/ActionButton";
-import { uploadAvatar } from "@/lib/uploadAvatar";
 
 export default function ProfileCard() {
   const { user } = useAuth();
@@ -22,13 +12,11 @@ export default function ProfileCard() {
     last_name: string;
     phone_number: string | null;
     bio: string | null;
-    avatar_url: string | null;
   } | null>(null);
 
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Local editable fields
   const [first, setFirst] = useState("");
   const [last, setLast] = useState("");
   const [phone, setPhone] = useState("");
@@ -40,7 +28,7 @@ export default function ProfileCard() {
     async function loadProfile(userId: string) {
       const { data, error } = await supabase
         .from("profiles")
-        .select("first_name, last_name, phone_number, bio, avatar_url")
+        .select("first_name, last_name, phone_number, bio")
         .eq("id", userId)
         .single();
 
@@ -61,24 +49,22 @@ export default function ProfileCard() {
 
   async function saveChanges() {
     if (!user) return;
-    try {
-      setSaving(true);
 
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: first.trim(),
-          last_name: last.trim(),
-          phone_number: phone.trim(),
-          bio: bio.trim(),
-        })
-        .eq("id", user.id);
+    setSaving(true);
 
-      if (error) {
-        console.error("Profile update error:", error);
-        return;
-      }
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: first.trim(),
+        last_name: last.trim(),
+        phone_number: phone.trim(),
+        bio: bio.trim(),
+      })
+      .eq("id", user.id);
 
+    if (error) {
+      console.error("Profile update error:", error);
+    } else {
       setProfile((prev) =>
         prev
           ? {
@@ -90,31 +76,10 @@ export default function ProfileCard() {
             }
           : prev
       );
-
       setEditMode(false);
-    } finally {
-      setSaving(false);
     }
-  }
 
-  async function changeAvatar() {
-    if (!user) return;
-
-    try {
-      const url = await uploadAvatar(user.id);
-      if (!url) return;
-
-      const { error } = await supabase
-        .from("profiles")
-        .update({ avatar_url: url })
-        .eq("id", user.id);
-
-      if (!error) {
-        setProfile((prev) => (prev ? { ...prev, avatar_url: url } : prev));
-      }
-    } catch (err: any) {
-      console.error("Avatar upload error:", err);
-    }
+    setSaving(false);
   }
 
   function cancelEdit() {
@@ -136,24 +101,13 @@ export default function ProfileCard() {
         <Text style={styles.headerTitle}>Profile Information</Text>
 
         {!editMode && (
-          <ActionButton label={"Edit"} onPress={() => setEditMode(true)} />
-          /*           <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => setEditMode(true)}
-          >
-            <Ionicons name="pencil-outline" size={16} color="#0f172a" />
-            <Text style={styles.editText}>Edit</Text>
-          </TouchableOpacity> */
+          <ActionButton label="Edit" onPress={() => setEditMode(true)} />
         )}
       </View>
 
       <View style={styles.profileSection}>
         <Image
-          source={
-            profile.avatar_url
-              ? { uri: profile.avatar_url }
-              : require("@/assets/images/user-placeholder.png")
-          }
+          source={require("@/assets/images/user-placeholder.png")}
           style={styles.avatar}
         />
 
