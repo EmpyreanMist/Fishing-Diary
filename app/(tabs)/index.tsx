@@ -58,27 +58,6 @@ export default function HomeScreen() {
 
         <StatsGrid />
 
-        <View style={styles.buttonsContainer}>
-          <ActionButton
-            label="Find Spots"
-            color="blue"
-            width={"90%"}
-            icon={"location-outline"}
-          />
-          <ActionButton
-            label="Quick Photo"
-            color="green"
-            width={"90%"}
-            icon={"camera-outline"}
-          />
-          <ActionButton
-            label="Statistics"
-            color="black"
-            width={"90%"}
-            icon={"stats-chart-outline"}
-          />
-        </View>
-
         <RecentCatches />
       </ScrollView>
 
