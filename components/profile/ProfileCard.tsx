@@ -7,8 +7,47 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "@/providers/AuthProvider";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function ProfileCard() {
+  const { user } = useAuth();
+
+  const [profile, setProfile] = useState<{
+    first_name: string;
+    last_name: string;
+    phone_number: string | null;
+    bio: string | null;
+    avatar_url: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadProfile(userId: string) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, phone_number, bio, avatar_url")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Profile fetch error:", error);
+        return;
+      }
+
+      setProfile(data);
+    }
+
+    loadProfile(user.id);
+  }, [user]);
+
+  if (!user) return null;
+  if (!profile) return null;
+
+  const fullName = `${profile.first_name} ${profile.last_name}`;
+
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
@@ -21,27 +60,18 @@ export default function ProfileCard() {
 
       <View style={styles.profileSection}>
         <Image
-          source={require("@/assets/images/user-placeholder.png")}
+          source={
+            profile.avatar_url
+              ? { uri: profile.avatar_url }
+              : require("@/assets/images/user-placeholder.png")
+          }
           style={styles.avatar}
         />
+
         <View style={styles.nameContainer}>
-          <Text style={styles.name}>John Anderson</Text>
-          <Text style={styles.role}>Expert Angler</Text>
+          <Text style={styles.name}>{fullName}</Text>
+          <Text style={styles.role}>{profile.phone_number ?? ""}</Text>
         </View>
-      </View>
-
-      <TouchableOpacity style={styles.changePhotoBtn}>
-        <Ionicons name="camera-outline" size={16} color="#fff" />
-        <Text style={styles.changePhotoText}>Change Photo</Text>
-      </TouchableOpacity>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          editable={false}
-          value="John Anderson"
-        />
       </View>
 
       <View style={styles.formGroup}>
@@ -49,16 +79,21 @@ export default function ProfileCard() {
         <TextInput
           style={styles.input}
           editable={false}
-          value="john@example.com"
+          value={user.email ?? ""}
         />
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Location</Text>
+        <Text style={styles.label}>Name</Text>
+        <TextInput style={styles.input} editable={false} value={fullName} />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Phone</Text>
         <TextInput
           style={styles.input}
           editable={false}
-          value="Minnesota, USA"
+          value={profile.phone_number ?? ""}
         />
       </View>
 
@@ -68,7 +103,7 @@ export default function ProfileCard() {
           style={[styles.input, styles.bioInput]}
           editable={false}
           multiline
-          value="Passionate angler exploring north"
+          value={profile.bio ?? ""}
         />
       </View>
     </View>
@@ -131,21 +166,6 @@ const styles = StyleSheet.create({
   role: {
     color: "#94a3b8",
     fontSize: 13,
-  },
-  changePhotoBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
-    alignSelf: "flex-start",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 22,
-  },
-  changePhotoText: {
-    color: "#f1f5f9",
-    fontSize: 14,
-    marginLeft: 6,
   },
   formGroup: {
     marginBottom: 16,
