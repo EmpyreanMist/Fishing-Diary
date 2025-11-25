@@ -7,9 +7,13 @@ import ActionButton from "@/components/ui/ActionButton";
 
 type Props = {
   subtitle?: string;
+  onAddCatch?: () => void;
 };
 
-export default function TopBar({ subtitle = "4 catches logged"}: Props) {
+export default function TopBar({
+  subtitle = "4 catches logged",
+  onAddCatch,
+}: Props) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -19,7 +23,12 @@ export default function TopBar({ subtitle = "4 catches logged"}: Props) {
       end={{ x: 1, y: 1 }}
       style={[styles.topbar, { paddingTop: insets.top + 20 }]}
     >
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
+
       <View style={styles.headerRow}>
         <View style={styles.titleRow}>
           <Fish size={28} color="white" />
@@ -31,7 +40,7 @@ export default function TopBar({ subtitle = "4 catches logged"}: Props) {
           icon="add"
           color="transparent"
           size="md"
-          onPress={() => {}}
+          onPress={onAddCatch}
         />
       </View>
 
