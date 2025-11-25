@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import CustomCalendar from "../CustomCalendar";
 import ActionButton from "../ui/ActionButton";
+import { Ionicons } from "@expo/vector-icons";
 
 const normalizeLocal = (date: Date) => {
   return new Date(
@@ -47,6 +48,13 @@ export default function CatchDateTimeModals({
       {showDate && (
         <View style={styles.overlay}>
           <View style={styles.modal}>
+            <TouchableOpacity
+              style={styles.closeIconButton}
+              onPress={() => setShowDate(false)}
+            >
+              <Ionicons name="close" size={20} color="white" />
+            </TouchableOpacity>
+
             <CustomCalendar
               value={value}
               onSelect={(date) => {
@@ -63,6 +71,13 @@ export default function CatchDateTimeModals({
       {showTime && (
         <View style={styles.overlay}>
           <View style={styles.modalDark}>
+            <TouchableOpacity
+              style={styles.closeIconButton}
+              onPress={() => setShowTime(false)}
+            >
+              <Ionicons name="close" size={20} color="white" />
+            </TouchableOpacity>
+
             <Text style={styles.title}>Select Time</Text>
 
             <View style={styles.wheelContainer}>
@@ -255,5 +270,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "600",
+  },
+  closeIconButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    zIndex: 999,
   },
 });
