@@ -8,21 +8,22 @@ import {
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
-import type { ModalComponentProps, FormState } from "../common/types";
-import { createCatch } from "../../lib/catches/createCatch";
+import type { ModalComponentProps, FormState, CatchDraft } from "../common/types";
+import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import CatchDateTimeButton from "./CatchDateTimeButton";
 import CatchDateTimeModals from "./CatchDateTimeModals";
+import CatchMapModal from "./addCatchMapModal/CatchMapModal";
 
 type Props = {
   onClose: () => void;
@@ -60,9 +61,6 @@ export default function CatchForm({
     initialValue.photos ?? []
   );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-  const [localPhotos, setLocalPhotos] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [showDate, setShowDate] = useState(false);
