@@ -8,19 +8,27 @@ import {
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
-import CatchDateTimePicker from "./CatchDateTimePicker";
-import * as ImagePicker from "expo-image-picker";
-import CatchMapModal from "./CatchMapModal";
-import { CatchDraft } from "../common/types";
+import { supabase } from "../../lib/supabase";
+import type {
+  ModalComponentProps,
+  FormState,
+  CatchDraft,
+} from "../common/types";
 import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import { useAuth } from "@/providers/AuthProvider";
+
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
+import CatchDateTimeButton from "./CatchDateTimeButton";
+import CatchDateTimeModals from "./CatchDateTimeModals";
+import CatchMapModal from "./CatchMapModal";
 
 type Props = {
   onClose: () => void;
@@ -60,6 +68,18 @@ export default function CatchForm({
     initialValue.photos ?? []
   );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [showDate, setShowDate] = useState(false);
+  const [showTime, setShowTime] = useState(false);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUserId(data.session?.user?.id ?? null);
+    };
+    loadSession();
+  }, []);
 
   const setField = (key: keyof typeof form, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -175,12 +195,10 @@ export default function CatchForm({
               />
 
               <LureDropdown onSelect={(id) => setField("lureId", id)} />
-
-              <CatchDateTimePicker
+              <CatchDateTimeButton
                 value={form.caughtAt}
-                onChange={(d) => setField("caughtAt", d)}
+                onPress={() => setShowDate(true)}
               />
-
               <CatchFormActions
                 onClose={onClose}
                 onSave={handleSubmit}
@@ -196,6 +214,14 @@ export default function CatchForm({
             </FormControl>
           </View>
         </ScrollView>
+        <CatchDateTimeModals
+          value={form.caughtAt}
+          onChange={(d) => setField("caughtAt", d)}
+          showDate={showDate}
+          showTime={showTime}
+          setShowDate={setShowDate}
+          setShowTime={setShowTime}
+        />
       </KeyboardAvoidingView>
 
       <CatchMapModal

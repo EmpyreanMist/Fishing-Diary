@@ -58,8 +58,6 @@ export default function RecentCatches() {
       .order("caught_at", { ascending: false })
       .limit(3);
 
-    console.log("RAW DATA:", JSON.stringify(data, null, 2));
-
     if (error || !data) {
       console.error("Error fetching recent catches:", error);
       return;
