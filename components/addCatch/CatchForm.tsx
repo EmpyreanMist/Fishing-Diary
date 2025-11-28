@@ -15,15 +15,20 @@ import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
-import type { ModalComponentProps, FormState, CatchDraft } from "../common/types";
+import type {
+  ModalComponentProps,
+  FormState,
+  CatchDraft,
+} from "../common/types";
 import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
+import { useAuth } from "@/providers/AuthProvider";
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import CatchDateTimeButton from "./CatchDateTimeButton";
 import CatchDateTimeModals from "./CatchDateTimeModals";
-import CatchMapModal from "./addCatchMapModal/CatchMapModal";
+import CatchMapModal from "./CatchMapModal";
 
 type Props = {
   onClose: () => void;
@@ -38,6 +43,8 @@ export default function CatchForm({
   loading = false,
   initialValue = {},
 }: Props) {
+  const { user } = useAuth();
+
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
 
@@ -117,12 +124,7 @@ export default function CatchForm({
 
   const saveStandaloneCatch = async (draft: CatchDraft) => {
     try {
-      const { data } = await supabase.auth.getSession();
-      const userId = data.session?.user?.id;
-      if (!userId) {
-        Alert.alert("Error", "User not logged in.");
-        return;
-      }
+      const userId = user!.id;
 
       const formState = {
         speciesId: draft.speciesId,

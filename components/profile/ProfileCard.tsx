@@ -1,22 +1,108 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import { useAuth } from "@/providers/AuthProvider";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import ActionButton from "../ui/ActionButton";
 
 export default function ProfileCard() {
+  const { user } = useAuth();
+
+  const [profile, setProfile] = useState<{
+    first_name: string;
+    last_name: string;
+    phone_number: string | null;
+    bio: string | null;
+  } | null>(null);
+
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadProfile(userId: string) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, phone_number, bio")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Profile fetch error:", error);
+        return;
+      }
+
+      setProfile(data);
+      setFirst(data.first_name ?? "");
+      setLast(data.last_name ?? "");
+      setPhone(data.phone_number ?? "");
+      setBio(data.bio ?? "");
+    }
+
+    loadProfile(user.id);
+  }, [user]);
+
+  async function saveChanges() {
+    if (!user) return;
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: first.trim(),
+        last_name: last.trim(),
+        phone_number: phone.trim(),
+        bio: bio.trim(),
+      })
+      .eq("id", user.id);
+
+    if (error) {
+      console.error("Profile update error:", error);
+    } else {
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              first_name: first,
+              last_name: last,
+              phone_number: phone,
+              bio,
+            }
+          : prev
+      );
+      setEditMode(false);
+    }
+
+    setSaving(false);
+  }
+
+  function cancelEdit() {
+    if (!profile) return;
+    setFirst(profile.first_name ?? "");
+    setLast(profile.last_name ?? "");
+    setPhone(profile.phone_number ?? "");
+    setBio(profile.bio ?? "");
+    setEditMode(false);
+  }
+
+  if (!user || !profile) return null;
+
+  const fullName = `${profile.first_name} ${profile.last_name}`;
+
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>Profile Information</Text>
-        <TouchableOpacity style={styles.editButton}>
-          <Ionicons name="pencil-outline" size={16} color="#0f172a" />
-          <Text style={styles.editText}>Edit</Text>
-        </TouchableOpacity>
+
+        {!editMode && (
+          <ActionButton label="Edit" onPress={() => setEditMode(true)} />
+        )}
       </View>
 
       <View style={styles.profileSection}>
@@ -24,24 +110,11 @@ export default function ProfileCard() {
           source={require("@/assets/images/user-placeholder.png")}
           style={styles.avatar}
         />
+
         <View style={styles.nameContainer}>
-          <Text style={styles.name}>John Anderson</Text>
-          <Text style={styles.role}>Expert Angler</Text>
+          <Text style={styles.name}>{fullName}</Text>
+          <Text style={styles.role}>{profile.phone_number ?? ""}</Text>
         </View>
-      </View>
-
-      <TouchableOpacity style={styles.changePhotoBtn}>
-        <Ionicons name="camera-outline" size={16} color="#fff" />
-        <Text style={styles.changePhotoText}>Change Photo</Text>
-      </TouchableOpacity>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          editable={false}
-          value="John Anderson"
-        />
       </View>
 
       <View style={styles.formGroup}>
@@ -49,16 +122,37 @@ export default function ProfileCard() {
         <TextInput
           style={styles.input}
           editable={false}
-          value="john@example.com"
+          value={user.email ?? ""}
         />
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Location</Text>
+        <Text style={styles.label}>First name</Text>
         <TextInput
           style={styles.input}
-          editable={false}
-          value="Minnesota, USA"
+          editable={editMode}
+          value={first}
+          onChangeText={setFirst}
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Last name</Text>
+        <TextInput
+          style={styles.input}
+          editable={editMode}
+          value={last}
+          onChangeText={setLast}
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Phone</Text>
+        <TextInput
+          style={styles.input}
+          editable={editMode}
+          value={phone}
+          onChangeText={setPhone}
         />
       </View>
 
@@ -66,11 +160,34 @@ export default function ProfileCard() {
         <Text style={styles.label}>Bio</Text>
         <TextInput
           style={[styles.input, styles.bioInput]}
-          editable={false}
+          editable={editMode}
           multiline
-          value="Passionate angler exploring north"
+          value={bio}
+          onChangeText={setBio}
         />
       </View>
+
+      {editMode && (
+        <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
+          <ActionButton
+            label={saving ? "Saving..." : "Save"}
+            onPress={saveChanges}
+            icon="checkmark-outline"
+            color="green"
+            size="md"
+            disabled={saving}
+          />
+
+          <ActionButton
+            label="Cancel"
+            onPress={cancelEdit}
+            icon="close-outline"
+            color="red"
+            size="md"
+            disabled={saving}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -96,19 +213,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
-  editButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#38bdf8",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  editText: {
-    fontWeight: "600",
-    marginLeft: 4,
-    color: "#0f172a",
-  },
   profileSection: {
     flexDirection: "row",
     alignItems: "center",
@@ -131,21 +235,6 @@ const styles = StyleSheet.create({
   role: {
     color: "#94a3b8",
     fontSize: 13,
-  },
-  changePhotoBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
-    alignSelf: "flex-start",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 22,
-  },
-  changePhotoText: {
-    color: "#f1f5f9",
-    fontSize: 14,
-    marginLeft: 6,
   },
   formGroup: {
     marginBottom: 16,
