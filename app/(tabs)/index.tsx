@@ -13,7 +13,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import StatsGrid from "@/components/home/StatsGrid";
 import RecentCatches from "@/components/home/RecentCatches";
 import CatchForm from "@/components/addCatch/CatchForm";
-import AddTrip from "@/components/logTrip/AddTripScreen";
+import AddTrip from "@/components/logTrip/AddTrip";
 
 export default function HomeScreen() {
   const { width } = useWindowDimensions();

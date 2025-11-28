@@ -6,6 +6,7 @@ import { useState } from "react";
 import TripHeader from "@/components/logTrip/TripHeader";
 import { ModalComponentProps, CatchDraft } from "../common/types";
 import CatchForm from "@/components/addCatch/CatchForm";
+import uuid from 'react-native-uuid';
 
 
 export default function AddTrip({ onClose }: ModalComponentProps) {
@@ -13,22 +14,36 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
   const [date, setDate] = useState<Date | null>(null);
 
   // NEW STATE
-  const [catches, setCatches] = useState<CatchDraft[]>([]);
+  const [catches, setCatches] = useState<{ [key: string]: CatchDraft }>({});
   const [showCatchModal, setShowCatchModal] = useState(false);
 
   const handleFocus = (field: string) => {
     setFocusedField(field);
   };
 
+  const generatUniqueId = () => {
+    return uuid.v4().toString();
+  }
+
   // UI: Add catch to local trip state (will be saved later in DB).
   const handleAddCatch = (draft: CatchDraft) => {
-    setCatches((prev) => [...prev, draft]);
+    // Generate a unique ID for the new catch
+    const id = generatUniqueId();
+
+    setCatches((prev) => {
+      console.log('Adding catch draft:', draft);
+      return { ...prev, [id]: draft };
+    });
     setShowCatchModal(false);
   };
 
-  // to handle removal of a catch - to be implemented in the future
+  // to handle removal of a catch in the dynamic catches list in TripForm
   const removeCatch = (id: string) => {
-    setCatches((prevCatches) => prevCatches.filter((catchItem) => catchItem.speciesId !== id));
+    setCatches((prevCatches) => {
+      const updatedCatches = { ...prevCatches };
+      delete updatedCatches[id];
+      return updatedCatches;
+    });
   };
 
   // här ser man objekt i en array med catches datan || Ta bort sen

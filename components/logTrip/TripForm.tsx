@@ -25,7 +25,7 @@ interface TripFormProps {
   onClose: () => void;
 
   //  Ny props:
-  catches: CatchDraft[];
+  catches: { [key: string]: CatchDraft };
   onAddCatch: () => void;
   removeCatch: (id: string) => void;
 }
@@ -186,7 +186,7 @@ export default function TripForm({
             />
           </Box>
         </HStack>
-        {catches.length === 0 ? (
+        {Object.keys(catches).length === 0 ? (
           <VStack className="items-center justify-center py-10 mx-auto space-y-2">
             <Fish size={40} color="#6B7280" /> {/* Grå ikon */}
             <Text style={{ color: '#6B7280', fontSize: 16, fontWeight: '600' }}>No catches logged yet</Text>
@@ -196,8 +196,8 @@ export default function TripForm({
           //TODO: Fix some validation for catchDraft!
           <>
             <>
-              {catches.map((c) => (
-                <CatchAdded key={c.speciesId} catchData={c} onDelete={() => removeCatch(c.speciesId)} />
+              {Object.entries(catches).map(([id, catchData]) => (
+                <CatchAdded key={id} catchData={catchData} onDelete={() => removeCatch(id)} />
               ))}
             </>
           </>
