@@ -40,5 +40,6 @@ export interface TripValues {
   temperature: string;
   wind: string;
   waterConditions: string;
-  other: string;
+  notes: string;
+  fishingMethod: string;
 }

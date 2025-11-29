@@ -44,7 +44,6 @@ export default function TripForm({
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
-
   const [tripValues, setTripValues] = useState({
     name: '',
     startTime: '',
@@ -54,9 +53,10 @@ export default function TripForm({
     temperature: '',
     wind: '',
     waterConditions: '',
-    other: '',
+    notes: '',
+    fishingMethod: '',
   });
-  
+
   return (
     <>
       <VStack style={styles.container} className="gap-4">
@@ -156,7 +156,12 @@ export default function TripForm({
               isInvalid={false}
               isReadOnly={false}
             >
-              <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('wind')} />
+              <InputField
+                placeholder="Enter Text here..."
+                value={tripValues.wind}
+                onChangeText={(text) => setTripValues({ ...tripValues, wind: text })}
+                onFocus={() => handleFocus('wind')}
+              />
             </Input>
           </Box>
         </HStack>
@@ -248,7 +253,19 @@ export default function TripForm({
         </Box>
         <Box className="w-1/2">
           {/* This is where the trip + all catches should be saved */}
-          <ActionButton label="Save trip" color="blue" size="md" onPress={() => /* console.log("saved") */handleTripSubmit(catches, tripValues)}/>
+          <ActionButton
+            label="Save trip"
+            color="blue"
+            size="md"
+            onPress={async () => {
+              try {
+                const result = await handleTripSubmit(catches, tripValues);
+                console.log('Trip saved!', result);
+              } catch (err) {
+                console.error('Error saving trip:', err);
+              }
+            }}
+          />
         </Box>
       </HStack>
     </>
@@ -285,3 +302,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+//TODO: Add trip_id to the catches when submitting the trip and catches to supabase!
+// create a foreign key relationship between  catches.trip_id and trips.id in the database
+
