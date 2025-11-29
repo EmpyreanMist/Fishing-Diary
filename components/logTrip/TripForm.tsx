@@ -45,16 +45,16 @@ export default function TripForm({
   removeCatch,
 }: TripFormProps) {
   const [tripValues, setTripValues] = useState({
-    name: '',
+    trip_name: '',
     startTime: '',
     endTime: '',
     participants: '',
     weather: '',
     temperature: '',
     wind: '',
-    waterConditions: '',
+    water_conditions: '',
     notes: '',
-    fishingMethod: '',
+    fishing_method: '',
   });
 
   return (
