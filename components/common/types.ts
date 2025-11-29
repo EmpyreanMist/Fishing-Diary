@@ -30,3 +30,15 @@ export type CatchDraft = {
 
   photos: string[];
 };
+
+export interface TripValues {
+  name: string;
+  startTime: string;
+  endTime: string;
+  participants: string;
+  weather: string;
+  temperature: string;
+  wind: string;
+  waterConditions: string;
+  other: string;
+}

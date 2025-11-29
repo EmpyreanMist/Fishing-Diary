@@ -15,6 +15,8 @@ import TripMapForm from './mapTrip';
 import { CatchDraft } from '../common/types';
 
 import CatchAdded from './CatchAdded';
+import handleTripSubmit from './utils/TripSumbit';
+/* import handleTripSubmit from './utils/TripSumbit'; */
 
 interface TripFormProps {
   date: Date | null;
@@ -42,6 +44,18 @@ export default function TripForm({
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
+
+  const [tripValues, setTripValues] = useState({
+    name: '',
+    startTime: '',
+    endTime: '',
+    participants: '',
+    weather: '',
+    temperature: '',
+    wind: '',
+    waterConditions: '',
+    other: '',
+  });
   
   return (
     <>
@@ -234,7 +248,7 @@ export default function TripForm({
         </Box>
         <Box className="w-1/2">
           {/* This is where the trip + all catches should be saved */}
-          <ActionButton label="Save trip" color="blue" size="md" />
+          <ActionButton label="Save trip" color="blue" size="md" onPress={() => /* console.log("saved") */handleTripSubmit(catches, tripValues)}/>
         </Box>
       </HStack>
     </>
