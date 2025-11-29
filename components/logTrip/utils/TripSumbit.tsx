@@ -9,7 +9,7 @@ export default async function handleTripSubmit(
   //implement trip submission logic here to supabase
   console.log('Submitting trip with the following details:');
   console.log('Trip Values:', tripValues);
-  const { data, error } = await supabase
+  const { data: tripData, error } = await supabase
     .from('trips')
     .insert([
       {
@@ -25,33 +25,41 @@ export default async function handleTripSubmit(
         fishing_method: tripValues.fishing_method,
       },
     ])
-    .select();
+    .select()
+    .single();
 
   if (error) {
     console.error('Error submitting trip:', error);
   } else {
-    console.log('Trip submitted successfully:', data);
+    console.log('Trip submitted successfully:', tripData);
   }
-  //implement catches submission logic here to supabase
+
+  // to get the trip id for foreign key in catches table
+  const tripId = tripData.id;
+  console.log('Trip ID for submitted trip:', tripId);
+
+  /* //implement catches submission logic here to supabase
   for (const element of Object.values(catches)) {
     console.log('Catch to submit:', element);
     const { data, error } = await supabase
       .from('catches')
       .insert([
         {
-          speciesId: element.speciesId,
-          lureId: element.lureId,
-          weightKg: element.weightKg,
-          lengthCm: element.lengthCm,
-          locationName: element.locationName,
+          trip_id: tripId,
+          species_id: element.speciesId,
+          lure_id: element.lureId,
+          weight_kg: element.weightKg,
+          length_cm: element.lengthCm,
+          location_name: element.locationName,
           notes: element.notes,
-          caughtAt: element.caughtAt,
+          caught_at: element.caughtAt,
           latitude: element.latitude,
           longitude: element.longitude,
           photos: element.photos,
         },
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       console.error(`Error submitting catch (${element}): ${error}`);
@@ -59,7 +67,7 @@ export default async function handleTripSubmit(
       console.log('Catch submitted successfully:', data);
       succesfulSubmittedCatches.push(data);
     }
-  }
+  } */
 
   return succesfulSubmittedCatches;
 }
