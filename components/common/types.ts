@@ -32,14 +32,14 @@ export type CatchDraft = {
 };
 
 export interface TripValues {
-  name: string;
+  trip_name: string;
   startTime: string;
   endTime: string;
   participants: string;
   weather: string;
   temperature: string;
   wind: string;
-  waterConditions: string;
+  water_conditions: string;
   notes: string;
-  fishingMethod: string;
+  fishing_method: string;
 }

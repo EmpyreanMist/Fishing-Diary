@@ -13,16 +13,16 @@ export default async function handleTripSubmit(
     .from('trips')
     .insert([
       {
-        trip_name: tripValues.name,
+        trip_name: tripValues.trip_name,
         start_time: tripValues.startTime,
         end_time: tripValues.endTime,
         participants: tripValues.participants,
         weather: tripValues.weather,
         temperature: tripValues.temperature,
         wind: tripValues.wind,
-        water_conditions: tripValues.waterConditions,
-        notes: tripValues.other,
-        fishing_method: tripValues.fishingMethod,
+        water_conditions: tripValues.water_conditions,
+        notes: tripValues.notes,
+        fishing_method: tripValues.fishing_method,
       },
     ])
     .select();
