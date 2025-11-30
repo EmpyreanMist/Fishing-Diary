@@ -204,7 +204,11 @@ export default function TripForm({
           isInvalid={false}
           isReadOnly={false}
         >
-          <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('water-conditions')} />
+          <InputField
+            onChangeText={(text) => setTripValues({ ...tripValues, water_conditions: text })}
+            placeholder="Enter Text here..."
+            onFocus={() => handleFocus('water-conditions')}
+          />
         </Input>
       </VStack>
 
@@ -261,7 +265,11 @@ export default function TripForm({
           className="mt-2 w-full px-2"
           size="md"
         >
-          <TextareaInput onFocus={() => handleFocus('other')} placeholder="Your text goes here..." />
+          <TextareaInput
+            onChangeText={(text) => setTripValues({ ...tripValues, notes: text })}
+            onFocus={() => handleFocus('other')}
+            placeholder="Your text goes here..."
+          />
         </Textarea>
       </VStack>
 
@@ -284,7 +292,10 @@ export default function TripForm({
             label="Save trip"
             color="blue"
             size="md"
-            onPress={() => handleTripSubmit(catches, tripValues)}
+            onPress={() => {
+              handleTripSubmit(catches, tripValues);
+              onClose();
+            }}
             // TODO: Needs to implemented with supabase
             // now it just logs the trip values and catches to the console, for testing purposes
             // TODO: The code below is the code that should be implemented to save the trip and catches to supabase

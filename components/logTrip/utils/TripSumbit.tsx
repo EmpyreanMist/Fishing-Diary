@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase.web';
 
 export default /* async */ function handleTripSubmit(
   catches: { [key: string]: CatchDraft },
-  tripValues: TripValues /* , form: any */
+  tripValues: TripValues, /* , form: any */
 ) {
   const succesfulSubmittedCatches: any[] = [];
   //implement trip submission logic here to supabase
