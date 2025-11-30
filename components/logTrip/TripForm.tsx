@@ -70,7 +70,11 @@ export default function TripForm({
           Trip name
         </Heading>
         <Input style={[styles.input, focusedField === 'name' && styles.inputFocused]} size="md">
-          <InputField placeholder="e.q., Weekend at Lake Superior" onFocus={() => handleFocus('name')} />
+          <InputField
+            onChangeText={(text) => setTripValues({ ...tripValues, trip_name: text })}
+            placeholder="e.q., Weekend at Lake Superior"
+            onFocus={() => handleFocus('name')}
+          />
         </Input>
 
         <Heading className="py-2" style={styles.heading} size="sm">
@@ -84,7 +88,11 @@ export default function TripForm({
               Start time
             </Heading>
             <Input style={[styles.input, focusedField === 'startTime' && styles.inputFocused]} size="md">
-              <InputField placeholder="e.g., 08:00" onFocus={() => handleFocus('startTime')} />
+              <InputField
+                onChangeText={(text) => setTripValues({ ...tripValues, startTime: text })}
+                placeholder="e.g., 08:00"
+                onFocus={() => handleFocus('startTime')}
+              />
             </Input>
           </Box>
 
@@ -93,18 +101,27 @@ export default function TripForm({
               End time
             </Heading>
             <Input style={[styles.input, focusedField === 'endTime' && styles.inputFocused]} size="md">
-              <InputField placeholder="e.g., 14:30" onFocus={() => handleFocus('endTime')} />
+              <InputField
+                onChangeText={(text) => setTripValues({ ...tripValues, endTime: text })}
+                placeholder="e.g., 14:30"
+                onFocus={() => handleFocus('endTime')}
+              />
             </Input>
           </Box>
         </HStack>
 
-        <FishingMethodDropdown />
+        <FishingMethodDropdown onSelect={(id) => setTripValues({ ...tripValues, fishing_method: id })} />
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Participants
         </Heading>
         <Input style={[styles.input, focusedField === 'participants' && styles.inputFocused]} size="md">
-          <InputField placeholder="Participants..." onFocus={() => handleFocus('participants')} />
+          <InputField
+            value={tripValues.participants}
+            onChangeText={(text) => setTripValues({ ...tripValues, participants: text })}
+            placeholder="Participants..."
+            onFocus={() => handleFocus('participants')}
+          />
         </Input>
       </VStack>
 
@@ -125,7 +142,12 @@ export default function TripForm({
           isInvalid={false}
           isReadOnly={false}
         >
-          <InputField placeholder="Enter Weather Conditions..." onFocus={() => handleFocus('weather')} />
+          <InputField
+            value={tripValues.weather}
+            onChangeText={(text) => setTripValues({ ...tripValues, weather: text })}
+            placeholder="Enter Weather Conditions..."
+            onFocus={() => handleFocus('weather')}
+          />
         </Input>
 
         <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -141,7 +163,12 @@ export default function TripForm({
               isInvalid={false}
               isReadOnly={false}
             >
-              <InputField placeholder="Enter Text here..." onFocus={() => handleFocus('temperature')} />
+              <InputField
+                value={tripValues.temperature}
+                onChangeText={(text) => setTripValues({ ...tripValues, temperature: text })}
+                placeholder="Enter Text here..."
+                onFocus={() => handleFocus('temperature')}
+              />
             </Input>
           </Box>
           <Box className="flex-1">
@@ -257,14 +284,18 @@ export default function TripForm({
             label="Save trip"
             color="blue"
             size="md"
-            onPress={async () => {
+            onPress={() => handleTripSubmit(catches, tripValues)}
+            // TODO: Needs to implemented with supabase
+            // now it just logs the trip values and catches to the console, for testing purposes
+            // TODO: The code below is the code that should be implemented to save the trip and catches to supabase
+            /* onPress={async () => {
               try {
                 const result = await handleTripSubmit(catches, tripValues);
                 console.log('Trip saved!', result);
               } catch (err) {
                 console.error('Error saving trip:', err);
               }
-            }}
+            }} */
           />
         </Box>
       </HStack>
@@ -305,4 +336,3 @@ const styles = StyleSheet.create({
 
 //TODO: Add trip_id to the catches when submitting the trip and catches to supabase!
 // create a foreign key relationship between  catches.trip_id and trips.id in the database
-
