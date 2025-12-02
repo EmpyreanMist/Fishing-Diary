@@ -57,6 +57,8 @@ export default function TripForm({
     fishing_method: '',
   });
 
+  //fitler only on numbers
+
   return (
     <>
       <VStack style={styles.container} className="gap-4">
@@ -165,6 +167,7 @@ export default function TripForm({
             >
               <InputField
                 value={tripValues.temperature}
+                keyboardType='numeric'
                 onChangeText={(text) => setTripValues({ ...tripValues, temperature: text })}
                 placeholder="Enter Text here..."
                 onFocus={() => handleFocus('temperature')}
