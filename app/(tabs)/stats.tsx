@@ -117,7 +117,7 @@ export default function StatsScreen() {
           <StatsGrid
             total={stats.totalCatches}
             days={stats.fishingDays}
-            biggestLength={stats.biggestCatch?.length_cm ?? 0}
+            biggestLength={stats.longestCatch?.length_cm ?? 0}
             biggestWeight={biggest.toFixed(1)}
           />
 
