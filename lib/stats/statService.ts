@@ -10,7 +10,7 @@ export async function getUserStatistics(userId: string) {
       length_cm,
       created_at,
       location_name,
-      fish_species:fish_species_id (id, swedish_name),
+      fish_species:fish_species_id (id, english_name),
       lure:lure_id (id, name)
   `
     )
@@ -40,8 +40,8 @@ export async function getUserStatistics(userId: string) {
   safeCatches.forEach((c) => {
     const fishSpecies = c.fish_species as any;
     const name = Array.isArray(fishSpecies)
-      ? fishSpecies[0]?.swedish_name ?? "Unknown"
-      : fishSpecies?.swedish_name ?? "Unknown";
+      ? fishSpecies[0]?.english_name ?? "Unknown"
+      : fishSpecies?.english_name ?? "Unknown";
     speciesMap[name] = (speciesMap[name] || 0) + 1;
   });
   const speciesBreakdown = Object.entries(speciesMap).map(
