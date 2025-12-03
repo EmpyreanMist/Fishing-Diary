@@ -193,17 +193,17 @@ const styles = StyleSheet.create({
 
   modal: {
   padding: 20,
-  paddingTop: 30,        // ⬅️ ger plats för X-knappen
+  paddingTop: 30,        
   borderRadius: 16,
   width: "85%",
-  backgroundColor: "#1E293B",  // ⬅️ samma färg som modalDark
+  backgroundColor: "#1E293B",  
   alignItems: "center",
-  position: "relative",  // ⬅️ gör absolut position korrekt
+  position: "relative",  
 },
 
 modalDark: {
   padding: 20,
-  paddingTop: 30,        // ⬅️ samma
+  paddingTop: 30,       
   borderRadius: 16,
   width: "85%",
   backgroundColor: "#1E293B",
