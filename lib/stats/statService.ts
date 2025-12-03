@@ -8,7 +8,7 @@ export async function getUserStatistics(userId: string) {
       id,
       weight_kg,
       length_cm,
-      created_at,
+      caught_at,
       location_name,
       fish_species:fish_species_id (id, english_name),
       lure:lure_id (id, name)
@@ -23,7 +23,7 @@ export async function getUserStatistics(userId: string) {
   const totalCatches = safeCatches.length;
 
   const fishingDays = new Set(
-    safeCatches.map((c) => new Date(c.created_at).toDateString())
+    safeCatches.map((c) => new Date(c.caught_at).toDateString())
   ).size;
 
   const heaviestCatch = safeCatches.reduce(
@@ -86,7 +86,7 @@ export async function getUserStatistics(userId: string) {
     const monthName = month.toLocaleString("en-US", { month: "short" });
 
     const count = catches.filter((c) => {
-      const d = new Date(c.created_at);
+      const d = new Date(c.caught_at);
       return (
         d.getMonth() === month.getMonth() &&
         d.getFullYear() === month.getFullYear()
