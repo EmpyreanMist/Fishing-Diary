@@ -32,6 +32,7 @@ import CatchMapModal from "./CatchMapModal";
 
 type Props = {
   onClose: () => void;
+  onSaved?: () => void;
   onSubmit?: (draft: CatchDraft) => Promise<void> | void;
   loading?: boolean;
   initialValue?: Partial<CatchDraft>;
@@ -39,6 +40,7 @@ type Props = {
 
 export default function CatchForm({
   onClose,
+  onSaved,
   onSubmit,
   loading = false,
   initialValue = {},
@@ -161,6 +163,9 @@ export default function CatchForm({
       }
 
       Alert.alert("Success", "Catch saved!");
+      if (onSaved) {
+        onSaved();
+      }
       onClose();
     } catch (err) {
       console.error(err);
