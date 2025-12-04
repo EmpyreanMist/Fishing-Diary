@@ -12,6 +12,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, MapPressEvent } from "react-native-maps";
 import { useNavigation } from "expo-router";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+import { ActivityIndicator } from "react-native";
 
 const fishIcon = require("../../assets/images/fish2.png");
 
@@ -28,32 +31,25 @@ export default function MapScreen() {
   const mapRef = useRef<MapView | null>(null);
   const navigation = useNavigation();
 
-  // 1) Tillfällig marker (max en)
   const [pendingMarker, setPendingMarker] = useState<LatLng | null>(null);
-
-  // 2) Sparade markers (består efter ”Spara”)
   const [savedMarkers, setSavedMarkers] = useState<LatLng[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  // Tryck på kartan: ersätt/uppdatera ENDAST den tillfälliga markern
   const handleMapPress = (e: MapPressEvent) => {
     const coord = e.nativeEvent?.coordinate;
     if (!coord) return;
-
-    const { latitude, longitude } = coord;
-    setPendingMarker({ latitude, longitude });
+    setPendingMarker(coord);
   };
 
-  // Spara: flytta från pending -> saved och töm pending
   const handleSave = () => {
     if (!pendingMarker) return;
     setSavedMarkers((prev) => [...prev, pendingMarker]);
     setPendingMarker(null);
   };
 
-  // Avbryt: ta bort tillfällig marker
   const handleCancel = () => setPendingMarker(null);
 
-  // Fokusknapp: centrera på pending om den finns, annars på senast sparad
   const focusMap = () => {
     const target = pendingMarker ?? savedMarkers[savedMarkers.length - 1];
     if (!target) return;
@@ -63,7 +59,16 @@ export default function MapScreen() {
     );
   };
 
-  // Visa ”Focus” alltid och ”Spara”/”Avbryt” när en pending finns
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      setRefreshKey((k) => k + 1);
+
+      const timeout = setTimeout(() => setLoading(false), 300);
+      return () => clearTimeout(timeout);
+    }, [])
+  );
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -101,18 +106,27 @@ export default function MapScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.mapContainer}>
+          {/* 🔹 DARK OVERLAY */}
+          {loading && <View style={styles.dimOverlay} />}
+
+          {/* 🔹 SPINNER + TEXT */}
+          {loading && (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#5ACCF2" />
+              <Text style={styles.loaderText}>Loading map…</Text>
+            </View>
+          )}
+
           <MapView
             style={styles.map}
             initialRegion={INITIAL_REGION}
             showsUserLocation
             showsMyLocationButton
             ref={mapRef}
-            // Välj gärna onLongPress om du vill undvika oavsiktliga klick
             onPress={handleMapPress}
           >
-            {/* Here we render pins from users catches in database */}
-            <UserCatchMarkers />
-            {/* EN tillfällig marker (byts ut vid nytt tryck) */}
+            <UserCatchMarkers refreshKey={refreshKey} />
+
             {pendingMarker && (
               <Marker
                 coordinate={pendingMarker}
@@ -120,7 +134,7 @@ export default function MapScreen() {
                 anchor={{ x: 0.5, y: 0.5 }}
               />
             )}
-            {/* Sparade markers (ligger kvar även efter ny pending) */}
+
             {savedMarkers.map((m, i) => (
               <Marker
                 key={`saved-${i}`}
@@ -162,5 +176,35 @@ const styles = StyleSheet.create({
   map: {
     height: "100%",
     width: "100%",
+  },
+
+  loaderText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "white",
+    opacity: 0.9,
+  },
+
+  dimOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    zIndex: 500,
+    elevation: 500,
+  },
+
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+    elevation: 999,
   },
 });
