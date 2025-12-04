@@ -33,6 +33,7 @@ export default function DateInput({ date, setDate, focusedField, setFocusedField
     }
   }, [focusedField]);
 
+  // TODO: This needs to be corrected
   const handleSelect = (d: any) => {
     if (!d) return;
     console.log('Selected date:', d);

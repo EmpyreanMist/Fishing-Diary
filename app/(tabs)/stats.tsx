@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { supabase } from "../../lib/supabase";
@@ -13,40 +19,53 @@ import { StatsLures } from "@/components/stats/StatsLures";
 import { StatsTopLocations } from "@/components/stats/StatsTopLocations";
 import { StatsAchievements } from "@/components/stats/StatsAchievements";
 
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
 export default function StatsScreen() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        setErrorMsg(null);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-        // Hämta användare
-        const { data: auth } = await supabase.auth.getUser();
-        const user = auth.user;
+      async function load() {
+        try {
+          setLoading(true);
+          setErrorMsg(null);
 
-        if (!user) {
-          setErrorMsg("You must be logged in to see your statistics.");
-          return;
+          const { data: auth } = await supabase.auth.getUser();
+          const user = auth.user;
+
+          if (!user) {
+            setErrorMsg("You must be logged in to see your statistics.");
+            return;
+          }
+
+          const result = await getUserStatistics(user.id);
+          if (isActive) setStats(result);
+        } catch (error) {
+          console.error("Stats load error:", error);
+
+          if (error instanceof Error) {
+            setErrorMsg(error.message);
+          } else {
+            setErrorMsg("Failed to load statistics.");
+          }
+        } finally {
+          if (isActive) setLoading(false);
         }
-
-        // Hämta statistik
-        const result = await getUserStatistics(user.id);
-        setStats(result);
-
-      } catch (err: any) {
-        console.error("Stats load error:", err);
-        setErrorMsg(err.message ?? "Failed to load statistics.");
-      } finally {
-        setLoading(false);
       }
-    }
 
-    load();
-  }, []);
+      load();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
 
   // --- LOADING STATE ---
   if (loading) {
@@ -98,7 +117,7 @@ export default function StatsScreen() {
           <StatsGrid
             total={stats.totalCatches}
             days={stats.fishingDays}
-            biggestLength={stats.biggestCatch?.length_cm ?? 0}
+            biggestLength={stats.longestCatch?.length_cm ?? 0}
             biggestWeight={biggest.toFixed(1)}
           />
 

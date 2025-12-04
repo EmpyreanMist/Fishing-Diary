@@ -8,27 +8,31 @@ import {
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import CatchFormHeader from "./CatchFormHeader";
 import CatchFormInputs from "./CatchFormInputs";
 import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
-import { supabase } from '../../lib/supabase';
-import type { ModalComponentProps, FormState, CatchDraft } from '../common/types';
-import createCatch from '../../lib/catches/createCatch';
-import { uploadCatchPhotos } from '../../lib/catches/uploadPhotos';
-import { useAuth } from '@/providers/AuthProvider';
-
+import { supabase } from "../../lib/supabase";
+import type {
+  ModalComponentProps,
+  FormState,
+  CatchDraft,
+} from "../common/types";
+import createCatch from "../../lib/catches/createCatch";
+import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
+import { useAuth } from "@/providers/AuthProvider";
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-import CatchDateTimeButton from './CatchDateTimeButton';
-import CatchDateTimeModals from './CatchDateTimeModals';
-import CatchMapModal from './CatchMapModal';
+import CatchDateTimeButton from "./CatchDateTimeButton";
+import CatchDateTimeModals from "./CatchDateTimeModals";
+import CatchMapModal from "./CatchMapModal";
 
 type Props = {
   onClose: () => void;
+  onSaved?: () => void;
   onSubmit?: (draft: CatchDraft) => Promise<void> | void;
   loading?: boolean;
   initialValue?: Partial<CatchDraft>;
@@ -36,6 +40,7 @@ type Props = {
 
 export default function CatchForm({
   onClose,
+  onSaved,
   onSubmit,
   loading = false,
   initialValue = {},
@@ -152,6 +157,9 @@ export default function CatchForm({
       }
 
       Alert.alert("Success", "Catch saved!");
+      if (onSaved) {
+        onSaved();
+      }
       onClose();
     } catch (err) {
       console.error(err);

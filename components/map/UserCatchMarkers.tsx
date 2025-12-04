@@ -13,12 +13,16 @@ type CatchMarker = {
   } | null;
 };
 
-export function UserCatchMarkers() {
+type UserCatchMarkersProps = {
+  refreshKey: number;
+};
+
+export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
   const [markers, setMarkers] = useState<CatchMarker[]>([]);
 
   useEffect(() => {
     fetchMarkers();
-  }, []);
+  }, [refreshKey]); // refetch på fokus
 
   async function fetchMarkers() {
     const {
