@@ -47,7 +47,6 @@ export default function AddCustomLureModal({
     <Modal transparent visible={visible} animationType="fade">
       <View style={styles.backdrop}>
         <View style={styles.modal}>
-          {/* Header */}
           <View style={styles.headerRow}>
             <Text style={styles.headerTitle}>Add Custom Lure</Text>
 
@@ -56,7 +55,6 @@ export default function AddCustomLureModal({
             </TouchableOpacity>
           </View>
 
-          {/* Inputs */}
           <TextInput
             placeholder="Brand"
             placeholderTextColor="#94A3B8"
@@ -90,7 +88,6 @@ export default function AddCustomLureModal({
             style={styles.input}
           />
 
-          {/* Save button */}
           <TouchableOpacity style={styles.saveButton} onPress={saveLure}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
