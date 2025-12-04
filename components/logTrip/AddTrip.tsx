@@ -22,7 +22,7 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
   };
 
   const generateUniqueId = () => {
-    return uuid.v4().toString();
+    return uuid.v4();
   }
 
   // UI: Add catch to local trip state (will be saved later in DB).
