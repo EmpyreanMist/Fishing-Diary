@@ -22,6 +22,8 @@ interface SimpleDropdownProps {
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
+  enableAddCustom: boolean;
+  onAddCustom: () => void;
 }
 
 export default function SimpleDropdown({
@@ -30,6 +32,8 @@ export default function SimpleDropdown({
   enableSearch = false,
   placeholder = "Select...",
   onSelect,
+  enableAddCustom,
+  onAddCustom,
 }: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -83,6 +87,15 @@ export default function SimpleDropdown({
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
             <View style={styles.doneRow}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsVisible(false); // Stänger dropdown-modal
+                  setTimeout(() => onAddCustom(), 10); // Öppnar AddCustomLureModal i nästa render-cykel
+                }}
+              >
+                <Text style={styles.doneText}>Add Lure</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={() => setIsVisible(false)}>
                 <Text style={styles.doneText}>Close</Text>
               </TouchableOpacity>
@@ -172,7 +185,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   doneRow: {
-    alignItems: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#475569",
