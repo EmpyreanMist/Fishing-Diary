@@ -21,14 +21,14 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
     setFocusedField(field);
   };
 
-  const generatUniqueId = () => {
+  const generateUniqueId = () => {
     return uuid.v4().toString();
   }
 
   // UI: Add catch to local trip state (will be saved later in DB).
   const handleAddCatch = (draft: CatchDraft) => {
     // Generate a unique ID for the new catch
-    const id = generatUniqueId();
+    const id = generateUniqueId();
 
     setCatches((prev) => {
       console.log('Adding catch draft:', draft);
