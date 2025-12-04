@@ -135,7 +135,7 @@ To be added
 | id           | uuid (PK)   | Matches Supabase Auth user.id                                             |
 | updated_at   | timestamptz | Auto-set to `now()`. Timestamp when profile was updated                   |
 | avatar_url   | text        | _(Optional)_ URL link that points to the avatar image in supabase storage |
-| bio          | text        | _(Optional)_ User written biography optional                              |
+| bio          | text        | _(Optional)_ User written biography                                       |
 | first_name   | text        | _(Required)_ Users first name, gets added when registering                |
 | last_name    | text        | _(Required)_ Users last name, gets added when registering                 |
 | phone_number | text        | _(Required)_ Users phone number, gets added when registering              |
@@ -147,7 +147,7 @@ To be added
 | id                 | int8 (PK)   | Auto-incrementing primary key                                                     |
 | method_img         | text        | _(Optional)_ URL link that points to the fishing method image in supabase storage |
 | method_name        | text        | _(Optional)_ _(Unique)_ Fishing method name                                       |
-| method_description | timestamptz | _(Optional)_ Short description about the fishing method                           |
+| method_description | text        | _(Optional)_ Short description about the fishing method                           |
 | created_at         | timestamptz | Auto-set to `now()`. Timestamp when fishing method was added                      |
 
 ### trip
@@ -177,7 +177,7 @@ To be added
 | user_id     | uuid (FK)   | _(Required)_ FK → `profiles.id` links lure to the owning user                  |
 | created_at  | timestamptz | Auto-set to `now()`. Timestamp when lure was created                           |
 | name        | text        | _(Required)_ Name of the lure added by the user                                |
-| brand       | text        | _(Optional)_ Brand of the lrue added by the user (e.g "rapala", "Savage Gear") |
+| brand       | text        | _(Optional)_ Brand of the lure added by the user (e.g "rapala", "Savage Gear") |
 | type        | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
 | weight_gram | numeric     | _(Optional)_ Lure weight in grams                                              |
 | color       | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
