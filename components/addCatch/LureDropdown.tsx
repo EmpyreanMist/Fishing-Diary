@@ -25,7 +25,9 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
   const [customLures, setCustomLures] = useState<UserLure[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // ---- FETCH ALL LURES ----
+  // NEW → Used to force dropdown to open
+  const [forceOpenDropdown, setForceOpenDropdown] = useState(false);
+
   const fetchLures = async () => {
     const { data: glob } = await supabase
       .from("lures")
@@ -38,20 +40,21 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
       .order("name", { ascending: true });
 
     if (glob) setGlobalLures(glob);
-    if (custom) setCustomLures(custom.map((l) => ({ ...l, isCustom: true })));
+    if (custom)
+      setCustomLures(custom.map((l) => ({ ...l, isCustom: true })));
   };
 
-  // ---- INITIAL LOAD ----
   useEffect(() => {
     fetchLures();
   }, []);
 
-  // ---- REFRESH AFTER CUSTOM LURE WAS ADDED ----
   const refresh = async () => {
     await fetchLures();
+
+    // NEW → When Save is pressed, reopen dropdown
+    setForceOpenDropdown(true);
   };
 
-  // ---- COMBINED LIST FOR DROPDOWN ----
   const lureOptions = [
     ...customLures.map((lure) => ({
       label: `⭐ ${lure.brand} - ${lure.name} – ${lure.weight_gram}g - ${lure.color}`,
@@ -75,6 +78,10 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
         onAddCustom={() => setShowAddModal(true)}
         placeholder="Search or select lure..."
         onSelect={onSelect}
+
+        // NEW: open dropdown after save
+        forceOpen={forceOpenDropdown}
+        onForceOpenHandled={() => setForceOpenDropdown(false)}
       />
 
       <AddCustomLureModal

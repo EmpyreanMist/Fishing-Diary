@@ -34,7 +34,7 @@ export default function AddCustomLureModal({
     });
 
     if (!error) {
-      onCreated();
+      await onCreated();
       onClose();
       setName("");
       setBrand("");

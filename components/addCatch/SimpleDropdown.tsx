@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -24,6 +24,8 @@ interface SimpleDropdownProps {
   onSelect?: (value: string) => void;
   enableAddCustom: boolean;
   onAddCustom: () => void;
+  forceOpen?: boolean;
+  onForceOpenHandled?: () => void;
 }
 
 export default function SimpleDropdown({
@@ -32,12 +34,20 @@ export default function SimpleDropdown({
   enableSearch = false,
   placeholder = "Select...",
   onSelect,
-  enableAddCustom,
   onAddCustom,
+  forceOpen,
+  onForceOpenHandled,
 }: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+useEffect(() => {
+  if (forceOpen) {
+    setIsVisible(true);        // öppna dropdown
+    onForceOpenHandled?.();    // nollställ flaggan i LureDropdown
+  }
+}, [forceOpen]);
 
   const filteredItems = enableSearch
     ? items.filter((item) =>
