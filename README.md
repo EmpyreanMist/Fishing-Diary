@@ -81,52 +81,108 @@ To be added
 
 ### catches
 
-| Column          | Type        | Notes                               |
-| --------------- | ----------- | ----------------------------------- |
-| id              | int8 (PK)   | Auto-increment                      |
-| user_id         | uuid        | FK → `profiles.id`                  |
-| created_at      | timestamptz | default `now()`                     |
-| caught_at       | timestamptz | optional catch date                 |
-| fish_species_id | int8        | FK → `fish_species.id` _(optional)_ |
-| lure_id         | int8        | FK → `lures.id` _(optional)_        |
-| latitude        | numeric     | optional                            |
-| longitude       | numeric     | optional                            |
-| weight_kg       | numeric     | required                            |
-| length_cm       | numeric     | optional                            |
-| notes           | text        | optional                            |
-| location_name   | text        | optional                            |
+| Column          | Type        | Notes                                                                                        |
+| --------------- | ----------- | -------------------------------------------------------------------------------------------- |
+| id              | int8 (PK)   | Auto-incrementing primary key                                                                |
+| user_id         | uuid (FK)   | _(Required_) FK → `profiles.id` links catch to the owning user                               |
+| created_at      | timestamptz | Auto-set to `now()`. Timestamp when the catch entry was created in the app                   |
+| caught_at       | timestamptz | _(Optional)_ The actual date and time the fish was caught. User may leave blank if unknown   |
+| fish_species_id | int8 (FK)   | _(Optional)_ FK → `fish_species.id`. Species may be unknown if user cannot identify the fish |
+| lure_id         | int8 (FK)   | _(Optional)_ FK → `lures.id`. User may have caught fish without a lure, or may not remember  |
+| latitude        | numeric     | _(Optional)_ GPS latitude of catch location                                                  |
+| longitude       | numeric     | _(Optional)_ GPS longitude of catch location                                                 |
+| weight_kg       | numeric     | _(Required)_ Logged weight of fish in kilograms                                              |
+| length_cm       | numeric     | _(Optional)_ Logged length of fish in centimeters                                            |
+| notes           | text        | _(Optional)_ Free-text notes such as technique, weather or conditions                        |
+| location_name   | text        | _(Optional)_ Own written name of location (e.g "Luleälven)                                   |
 
 ## catch_photos
 
-| Column     | Type        | Notes                      |
-| ---------- | ----------- | -------------------------- |
-| id         | int8 (PK)   | Auto-increment             |
-| created_at | timestamptz | default `now()`            |
-| catch_id   | int8        | FK → `catches.id`          |
-| image_url  | text        | stored in Supabase Storage |
+| Column     | Type        | Notes                                                                    |
+| ---------- | ----------- | ------------------------------------------------------------------------ |
+| id         | int8 (PK)   | Auto-incrementing primary key                                            |
+| created_at | timestamptz | Auto-set to `now()` when the photo record is created                     |
+| catch_id   | int8 (FK)   | _(Required)_ FK → `catches.id`. Each photo must belong to a catch        |
+| image_url  | text        | _(Required)_ URL link that points to the catch image in supabase storage |
 
 ## fish_species
 
-| Column       | Type        | Notes                   |
-| ------------ | ----------- | ----------------------- |
-| id           | int8 (PK)   | Auto-increment          |
-| created_at   | timestamptz | default `now()`         |
-| english_name | text        |                         |
-| swedish_name | text        |                         |
-| image_url    | text        | icon/photo _(optional)_ |
+| Column       | Type        | Notes                                                                      |
+| ------------ | ----------- | -------------------------------------------------------------------------- |
+| id           | int8 (PK)   | Auto-incrementing primary key                                              |
+| created_at   | timestamptz | Auto-set to `now()`. Timestamp when species was added                      |
+| english_name | text        | _(Required)_ English species name                                          |
+| swedish_name | text        | _(Required)_ Swedish species name                                          |
+| image_url    | text        | _(Required)_ URL link that points to the species image in supabase storage |
 
 ## lures
 
-| Column      | Type        | Notes                                |
-| ----------- | ----------- | ------------------------------------ |
-| id          | int8 (PK)   | Auto-increment                       |
-| created_at  | timestamptz | default `now()`                      |
-| name        | text        |                                      |
-| brand       | text        | optional                             |
-| type        | text        | category (spoon, jig, crankbait etc) |
-| weight_gram | numeric     | optional                             |
-| color       | text        | optional                             |
-| image_url   | text        | optional image                       |
+| Column      | Type        | Notes                                                                   |
+| ----------- | ----------- | ----------------------------------------------------------------------- |
+| id          | int8 (PK)   | Auto-incrementing primary key                                           |
+| created_at  | timestamptz | Auto-set to `now()`. Timestamp when lure was added                      |
+| name        | text        | _(Required)_ The name/model of the lure                                 |
+| brand       | text        | _(Optional)_                                                            |
+| type        | text        | _(Optional)_ Lure category (e.g "spoon", "jig", "crankbait")            |
+| weight_gram | numeric     | _(Optional)_ Weight of lure in grams                                    |
+| color       | text        | _(Optional)_ Color description of the lure                              |
+| image_url   | text        | _(Optional)_ URL link that points to the lure image in supabase storage |
+
+## profiles
+
+| Column       | Type        | Notes                                                                     |
+| ------------ | ----------- | ------------------------------------------------------------------------- |
+| id           | uuid (PK)   | Matches Supabase Auth user.id                                             |
+| updated_at   | timestamptz | Auto-set to `now()`. Timestamp when profile was updated                   |
+| avatar_url   | text        | _(Optional)_ URL link that points to the avatar image in supabase storage |
+| bio          | text        | _(Optional)_ User written biography optional                              |
+| first_name   | text        | _(Required)_ Users first name, gets added when registering                |
+| last_name    | text        | _(Required)_ Users last name, gets added when registering                 |
+| phone_number | text        | _(Required)_ Users phone number, gets added when registering              |
+
+## fishing_methods
+
+| Column             | Type        | Notes                                                                             |
+| ------------------ | ----------- | --------------------------------------------------------------------------------- |
+| id                 | int8 (PK)   | Auto-incrementing primary key                                                     |
+| method_img         | text        | _(Optional)_ URL link that points to the fishing method image in supabase storage |
+| method_name        | text        | _(Optional)_ _(Unique)_ Fishing method name                                       |
+| method_description | timestamptz | _(Optional)_ Short description about the fishing method                           |
+| created_at         | timestamptz | Auto-set to `now()`. Timestamp when fishing method was added                      |
+
+## trip
+
+| Column          | Type        | Notes                                                                         |
+| --------------- | ----------- | ----------------------------------------------------------------------------- |
+| id              | int8 (PK)   | Auto-incrementing primary key                                                 |
+| trip_name       | text        | _(Required)_                                                                  |
+| start_time      | timestamptz | _(Optional)_ Timestamp representing when the trip started                     |
+| end_time        | timestamptz | _(Optional)_ Timestamp representing when the trip ended                       |
+| participants    | text        | _(Optional)_ List of people who joined the trip                               |
+| weather         | weather     | _(Optional)_ General weather description (e.g "Sunny", "Cloudy", "Rainy")     |
+| temperature     | numeric     | _(Optional)_ Recorded temperature during the trip, in °C                      |
+| wind            | text        | _(Optional)_ Wind description (e.g "5 m/s" or "fast winds")                   |
+| water_condition | text        | _(Optional)_ Short description of water conditions (e.g "Clear" or "Murky")   |
+| notes           | text        | _(Optional)_ Free-form notes about the trip (conditions, impressions, events) |
+| created_at      | timestamptz | Auto-set to `now()`. Timestamp when trip was created                          |
+| updated_at      | timestamptz | Auto-set to `now()`. Timestamp when trip was updated                          |
+| user_id         | uuid (FK)   | _(Required)_ FK → `profiles.id` links trip to the owning user                 |
+| fishing_method  | text        | _(Optional)_ How the fishing was done (e.g "Spin fishing", "Fly fishing")     |
+
+## user_lures
+
+| Column      | Type        | Notes                                                                          |
+| ----------- | ----------- | ------------------------------------------------------------------------------ |
+| id          | int8 (PK)   | Auto-incrementing primary key                                                  |
+| user_id     | uuid (FK)   | _(Required)_ FK → `profiles.id` links lure to the owning user                  |
+| created_at  | timestamptz | Auto-set to `now()`. Timestamp when lure was created                           |
+| name        | text        | _(Required)_ Name of the lure added by the user                                |
+| brand       | text        | _(Optional)_ Brand of the lrue added by the user (e.g "rapala", "Savage Gear") |
+| type        | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
+| weight_gram | numeric     | _(Optional)_ Lure weight in grams                                              |
+| color       | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
+| image_url   | text        | _(Optional)_ URL to the lure's stored image in SUpabase Storage                |
+| notes       | text        | _(Optional)_ Free-form notes about the lure                                    |
 
 <h2  style="text-align: center;">Authors</h2>
 <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">
