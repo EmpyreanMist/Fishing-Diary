@@ -25,7 +25,6 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
   const [customLures, setCustomLures] = useState<UserLure[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // NEW → Used to force dropdown to open
   const [forceOpenDropdown, setForceOpenDropdown] = useState(false);
 
   const fetchLures = async () => {
@@ -50,8 +49,6 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
 
   const refresh = async () => {
     await fetchLures();
-
-    // NEW → When Save is pressed, reopen dropdown
     setForceOpenDropdown(true);
   };
 
@@ -78,8 +75,6 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
         onAddCustom={() => setShowAddModal(true)}
         placeholder="Search or select lure..."
         onSelect={onSelect}
-
-        // NEW: open dropdown after save
         forceOpen={forceOpenDropdown}
         onForceOpenHandled={() => setForceOpenDropdown(false)}
       />

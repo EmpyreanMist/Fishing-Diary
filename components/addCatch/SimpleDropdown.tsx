@@ -44,8 +44,8 @@ export default function SimpleDropdown({
 
 useEffect(() => {
   if (forceOpen) {
-    setIsVisible(true);        // öppna dropdown
-    onForceOpenHandled?.();    // nollställ flaggan i LureDropdown
+    setIsVisible(true);
+    onForceOpenHandled?.();    
   }
 }, [forceOpen]);
 
@@ -99,8 +99,8 @@ useEffect(() => {
             <View style={styles.doneRow}>
               <TouchableOpacity
                 onPress={() => {
-                  setIsVisible(false); // Stänger dropdown-modal
-                  setTimeout(() => onAddCustom(), 10); // Öppnar AddCustomLureModal i nästa render-cykel
+                  setIsVisible(false);
+                  setTimeout(() => onAddCustom(), 10);
                 }}
               >
                 <Text style={styles.doneText}>Add Lure</Text>

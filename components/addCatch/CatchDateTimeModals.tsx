@@ -44,7 +44,6 @@ export default function CatchDateTimeModals({
 
   return (
     <>
-      {/* DATE PICKER */}
       {showDate && (
         <View style={styles.overlay}>
           <View style={styles.modal}>
@@ -67,7 +66,7 @@ export default function CatchDateTimeModals({
         </View>
       )}
 
-      {/* TIME PICKER */}
+ 
       {showTime && (
         <View style={styles.overlay}>
           <View style={styles.modalDark}>
@@ -81,7 +80,7 @@ export default function CatchDateTimeModals({
             <Text style={styles.title}>Select Time</Text>
 
             <View style={styles.wheelContainer}>
-              {/* HOURS */}
+        
               <View style={styles.wheel}>
                 <Text style={styles.wheelLabel}>Hour</Text>
 
@@ -121,7 +120,7 @@ export default function CatchDateTimeModals({
                 </ScrollView>
               </View>
 
-              {/* MINUTES */}
+            
               <View style={styles.wheel}>
                 <Text style={styles.wheelLabel}>Minute</Text>
 
