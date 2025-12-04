@@ -96,7 +96,7 @@ To be added
 | notes           | text        | _(Optional)_ Free-text notes such as technique, weather or conditions                        |
 | location_name   | text        | _(Optional)_ Own written name of location (e.g "Luleälven)                                   |
 
-## catch_photos
+### catch_photos
 
 | Column     | Type        | Notes                                                                    |
 | ---------- | ----------- | ------------------------------------------------------------------------ |
@@ -105,7 +105,7 @@ To be added
 | catch_id   | int8 (FK)   | _(Required)_ FK → `catches.id`. Each photo must belong to a catch        |
 | image_url  | text        | _(Required)_ URL link that points to the catch image in supabase storage |
 
-## fish_species
+### fish_species
 
 | Column       | Type        | Notes                                                                      |
 | ------------ | ----------- | -------------------------------------------------------------------------- |
@@ -115,7 +115,7 @@ To be added
 | swedish_name | text        | _(Required)_ Swedish species name                                          |
 | image_url    | text        | _(Required)_ URL link that points to the species image in supabase storage |
 
-## lures
+### lures
 
 | Column      | Type        | Notes                                                                   |
 | ----------- | ----------- | ----------------------------------------------------------------------- |
@@ -128,7 +128,7 @@ To be added
 | color       | text        | _(Optional)_ Color description of the lure                              |
 | image_url   | text        | _(Optional)_ URL link that points to the lure image in supabase storage |
 
-## profiles
+### profiles
 
 | Column       | Type        | Notes                                                                     |
 | ------------ | ----------- | ------------------------------------------------------------------------- |
@@ -140,7 +140,7 @@ To be added
 | last_name    | text        | _(Required)_ Users last name, gets added when registering                 |
 | phone_number | text        | _(Required)_ Users phone number, gets added when registering              |
 
-## fishing_methods
+### fishing_methods
 
 | Column             | Type        | Notes                                                                             |
 | ------------------ | ----------- | --------------------------------------------------------------------------------- |
@@ -150,7 +150,7 @@ To be added
 | method_description | timestamptz | _(Optional)_ Short description about the fishing method                           |
 | created_at         | timestamptz | Auto-set to `now()`. Timestamp when fishing method was added                      |
 
-## trip
+### trip
 
 | Column          | Type        | Notes                                                                         |
 | --------------- | ----------- | ----------------------------------------------------------------------------- |
@@ -169,7 +169,7 @@ To be added
 | user_id         | uuid (FK)   | _(Required)_ FK → `profiles.id` links trip to the owning user                 |
 | fishing_method  | text        | _(Optional)_ How the fishing was done (e.g "Spin fishing", "Fly fishing")     |
 
-## user_lures
+### user_lures
 
 | Column      | Type        | Notes                                                                          |
 | ----------- | ----------- | ------------------------------------------------------------------------------ |
