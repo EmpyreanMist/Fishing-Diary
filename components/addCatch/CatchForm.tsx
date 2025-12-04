@@ -51,24 +51,18 @@ export default function CatchForm({
   const [showMap, setShowMap] = useState(false);
 
   const [form, setForm] = useState({
-    speciesId: initialValue.speciesId ?? "",
-    lureId: initialValue.lureId ?? "",
-    weightKg: initialValue.weightKg ?? "",
-    lengthCm: initialValue.lengthCm ?? "",
-    locationName: initialValue.locationName ?? "",
-    notes: initialValue.notes ?? "",
+    speciesId: initialValue.speciesId ?? '',
+    lureId: initialValue.lureId ?? '',
+    weightKg: initialValue.weightKg ?? '',
+    lengthCm: initialValue.lengthCm ?? '',
+    locationName: initialValue.locationName ?? '',
+    notes: initialValue.notes ?? '',
     caughtAt: initialValue.caughtAt ?? new Date(),
   });
 
-  const [latitude, setLatitude] = useState<number | null>(
-    initialValue.latitude ?? null
-  );
-  const [longitude, setLongitude] = useState<number | null>(
-    initialValue.longitude ?? null
-  );
-  const [localPhotos, setLocalPhotos] = useState<string[]>(
-    initialValue.photos ?? []
-  );
+  const [latitude, setLatitude] = useState<number | null>(initialValue.latitude ?? null);
+  const [longitude, setLongitude] = useState<number | null>(initialValue.longitude ?? null);
+  const [localPhotos, setLocalPhotos] = useState<string[]>(initialValue.photos ?? []);
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);

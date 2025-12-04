@@ -6,6 +6,7 @@ import {
   ScrollView,
   View,
   Modal,
+  RefreshControl
 } from "react-native";
 import { Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,8 +14,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import StatsGrid from "@/components/home/StatsGrid";
 import RecentCatches from "@/components/home/RecentCatches";
 import CatchForm from "@/components/addCatch/CatchForm";
-import AddTrip from "@/components/logTrip/AddTripScreen";
-import { RefreshControl } from "react-native";
+import AddTrip from "@/components/logTrip/AddTrip";
 
 export default function HomeScreen() {
   const { width } = useWindowDimensions();

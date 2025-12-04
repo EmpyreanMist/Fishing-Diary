@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 
 interface DateInputProps {
   date: Date | null;
-  setDate: (d: Date) => void;
+  setDate: string; // here should date be implemented correctly
   focusedField: string | null;
   setFocusedField: (field: string | null) => void;
 }
@@ -33,10 +33,11 @@ export default function DateInput({ date, setDate, focusedField, setFocusedField
     }
   }, [focusedField]);
 
+  // TODO: This needs to be corrected
   const handleSelect = (d: any) => {
     if (!d) return;
-    const jsDate = d.toDate(); // Dayjs → JS Date
-    setDate(jsDate);
+    console.log('Selected date:', d);
+    //setDate(""); // here should the correct date be set
   };
 
   return (
