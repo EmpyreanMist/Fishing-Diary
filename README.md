@@ -84,7 +84,7 @@ To be added
 | Column          | Type        | Notes                                                                                        |
 | --------------- | ----------- | -------------------------------------------------------------------------------------------- |
 | id              | int8 (PK)   | Auto-incrementing primary key                                                                |
-| user_id         | uuid (FK)   | _(Required_) FK → `profiles.id` links catch to the owning user                               |
+| user_id         | uuid (FK)   | _(Required)_ FK → `profiles.id` links catch to the owning user                               |
 | created_at      | timestamptz | Auto-set to `now()`. Timestamp when the catch entry was created in the app                   |
 | caught_at       | timestamptz | _(Optional)_ The actual date and time the fish was caught. User may leave blank if unknown   |
 | fish_species_id | int8 (FK)   | _(Optional)_ FK → `fish_species.id`. Species may be unknown if user cannot identify the fish |
@@ -103,7 +103,7 @@ To be added
 | id         | int8 (PK)   | Auto-incrementing primary key                                            |
 | created_at | timestamptz | Auto-set to `now()` when the photo record is created                     |
 | catch_id   | int8 (FK)   | _(Required)_ FK → `catches.id`. Each photo must belong to a catch        |
-| image_url  | text        | _(Required)_ URL link that points to the catch image in supabase storage |
+| image_url  | text        | _(Required)_ URL link that points to the catch image in Supabase Storage |
 
 ### fish_species
 
@@ -113,7 +113,7 @@ To be added
 | created_at   | timestamptz | Auto-set to `now()`. Timestamp when species was added                      |
 | english_name | text        | _(Required)_ English species name                                          |
 | swedish_name | text        | _(Required)_ Swedish species name                                          |
-| image_url    | text        | _(Required)_ URL link that points to the species image in supabase storage |
+| image_url    | text        | _(Required)_ URL link that points to the species image in Supabase Storage |
 
 ### lures
 
@@ -126,7 +126,7 @@ To be added
 | type        | text        | _(Optional)_ Lure category (e.g "spoon", "jig", "crankbait")            |
 | weight_gram | numeric     | _(Optional)_ Weight of lure in grams                                    |
 | color       | text        | _(Optional)_ Color description of the lure                              |
-| image_url   | text        | _(Optional)_ URL link that points to the lure image in supabase storage |
+| image_url   | text        | _(Optional)_ URL link that points to the lure image in Supabase Storage |
 
 ### profiles
 
@@ -134,7 +134,7 @@ To be added
 | ------------ | ----------- | ------------------------------------------------------------------------- |
 | id           | uuid (PK)   | Matches Supabase Auth user.id                                             |
 | updated_at   | timestamptz | Auto-set to `now()`. Timestamp when profile was updated                   |
-| avatar_url   | text        | _(Optional)_ URL link that points to the avatar image in supabase storage |
+| avatar_url   | text        | _(Optional)_ URL link that points to the avatar image in Supabase Storage |
 | bio          | text        | _(Optional)_ User written biography                                       |
 | first_name   | text        | _(Required)_ Users first name, gets added when registering                |
 | last_name    | text        | _(Required)_ Users last name, gets added when registering                 |
@@ -145,7 +145,7 @@ To be added
 | Column             | Type        | Notes                                                                             |
 | ------------------ | ----------- | --------------------------------------------------------------------------------- |
 | id                 | int8 (PK)   | Auto-incrementing primary key                                                     |
-| method_img         | text        | _(Optional)_ URL link that points to the fishing method image in supabase storage |
+| method_img         | text        | _(Optional)_ URL link that points to the fishing method image in Supabase Storage |
 | method_name        | text        | _(Optional)_ _(Unique)_ Fishing method name                                       |
 | method_description | text        | _(Optional)_ Short description about the fishing method                           |
 | created_at         | timestamptz | Auto-set to `now()`. Timestamp when fishing method was added                      |
@@ -181,7 +181,7 @@ To be added
 | type        | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
 | weight_gram | numeric     | _(Optional)_ Lure weight in grams                                              |
 | color       | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
-| image_url   | text        | _(Optional)_ URL to the lure's stored image in supabase Storage                |
+| image_url   | text        | _(Optional)_ URL to the lure's stored image in Supabase Storage                |
 | notes       | text        | _(Optional)_ Free-form notes about the lure                                    |
 
 <h2  style="text-align: center;">Authors</h2>
