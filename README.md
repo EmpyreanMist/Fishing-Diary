@@ -181,7 +181,7 @@ To be added
 | type        | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
 | weight_gram | numeric     | _(Optional)_ Lure weight in grams                                              |
 | color       | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
-| image_url   | text        | _(Optional)_ URL to the lure's stored image in SUpabase Storage                |
+| image_url   | text        | _(Optional)_ URL to the lure's stored image in supabase Storage                |
 | notes       | text        | _(Optional)_ Free-form notes about the lure                                    |
 
 <h2  style="text-align: center;">Authors</h2>
