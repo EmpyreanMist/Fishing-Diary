@@ -24,8 +24,17 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
   const [globalLures, setGlobalLures] = useState<Lure[]>([]);
   const [customLures, setCustomLures] = useState<UserLure[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [forceOpenDropdown, setForceOpenDropdown] = useState(false);
+
+  useEffect(() => {
+    async function loadUser() {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) setUserId(data.user.id);
+    }
+    loadUser();
+  }, []);
 
   const fetchLures = async () => {
     const { data: glob } = await supabase
@@ -39,8 +48,7 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
       .order("name", { ascending: true });
 
     if (glob) setGlobalLures(glob);
-    if (custom)
-      setCustomLures(custom.map((l) => ({ ...l, isCustom: true })));
+    if (custom) setCustomLures(custom.map((l) => ({ ...l, isCustom: true })));
   };
 
   useEffect(() => {
@@ -83,6 +91,7 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
         visible={showAddModal}
         onClose={() => setShowAddModal(false)}
         onCreated={refresh}
+        userId={userId!}
       />
     </>
   );

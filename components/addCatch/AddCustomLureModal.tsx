@@ -5,55 +5,92 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
+  Image,
   StyleSheet,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { supabase } from "@/lib/supabase";
+import { uploadLurePhoto } from "@/lib/catches/uploadLurePhoto";
 
 interface AddCustomLureModalProps {
   visible: boolean;
   onClose: () => void;
   onCreated: () => void;
+  userId: string;
 }
 
 export default function AddCustomLureModal({
   visible,
   onClose,
   onCreated,
+  userId,
 }: AddCustomLureModalProps) {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [color, setColor] = useState("");
   const [weight, setWeight] = useState("");
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
-  const saveLure = async () => {
-    const { error } = await supabase.from("user_lures").insert({
-      name,
-      brand,
-      color,
-      weight_gram: Number(weight),
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") return;
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.8,
     });
 
-    if (!error) {
-      await onCreated();
+    if (!result.canceled) setPhotoUri(result.assets[0].uri);
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) setPhotoUri(result.assets[0].uri);
+  };
+
+  const saveLure = async () => {
+    try {
+
+      const { data: lure, error } = await supabase
+        .from("user_lures")
+        .insert({
+          name,
+          brand,
+          color,
+          weight_gram: Number(weight) || null,
+          user_id: userId,
+        })
+        .select()
+        .single();
+
+      const lureId = lure.id;
+
+      if (photoUri) {
+        await uploadLurePhoto(photoUri, userId, lureId);
+      }
+
+      onCreated();
       onClose();
+
       setName("");
       setBrand("");
       setColor("");
       setWeight("");
+      setPhotoUri(null);
+    } catch (err) {
+      console.log("Error creating lure:", err);
     }
   };
 
   return (
     <Modal transparent visible={visible} animationType="fade">
-      <View style={styles.backdrop}>
-        <View style={styles.modal}>
-          <View style={styles.headerRow}>
-            <Text style={styles.headerTitle}>Add Custom Lure</Text>
-
-            <TouchableOpacity onPress={onClose}>
-              <Text style={styles.headerButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.centered}>
+        <View style={styles.card}>
+          <Text style={styles.title}>Add Custom Lure</Text>
 
           <TextInput
             placeholder="Brand"
@@ -84,12 +121,29 @@ export default function AddCustomLureModal({
             placeholderTextColor="#94A3B8"
             value={weight}
             onChangeText={setWeight}
-            keyboardType="numeric"
             style={styles.input}
           />
 
-          <TouchableOpacity style={styles.saveButton} onPress={saveLure}>
-            <Text style={styles.saveButtonText}>Save</Text>
+          {photoUri && (
+            <Image source={{ uri: photoUri }} style={styles.previewImage} />
+          )}
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={takePhoto}>
+            <Text style={styles.secondaryButtonText}>📷 Take Photo</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={pickImage}>
+            <Text style={styles.secondaryButtonText}>
+              📁 Choose from Library
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={saveLure}>
+            <Text style={styles.buttonText}>Save Lure</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.closeText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -98,63 +152,69 @@ export default function AddCustomLureModal({
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
+  centered: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "center",
     alignItems: "center",
   },
-
-  modal: {
-    width: "85%",
+  card: {
     backgroundColor: "#1E293B",
     borderRadius: 12,
-    padding: 16,
+    width: "85%",
+    padding: 20,
   },
-
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#475569",
+  title: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "600",
     marginBottom: 15,
   },
-
-  headerTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-
-  headerButton: {
-    color: "#5ACCF2",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-
   input: {
     backgroundColor: "#0A121A",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#334155",
     color: "#fff",
-    paddingHorizontal: 12,
-    height: 42,
+    paddingHorizontal: 10,
+    height: 40,
+    marginBottom: 10,
+  },
+  previewImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: 10,
     marginBottom: 12,
   },
-
-  saveButton: {
-    backgroundColor: "#5ACCF2",
-    paddingVertical: 12,
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: "#5ACCF2",
     borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginVertical: 6,
+  },
+  secondaryButtonText: {
+    color: "#5ACCF2",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  button: {
+    backgroundColor: "#5ACCF2",
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: "center",
     marginTop: 10,
   },
-
-  saveButtonText: {
+  buttonText: {
     color: "#0A121A",
-    textAlign: "center",
     fontWeight: "700",
+    fontSize: 16,
+  },
+  closeText: {
+    color: "#94A3B8",
+    textAlign: "center",
+    marginTop: 15,
     fontSize: 16,
   },
 });
