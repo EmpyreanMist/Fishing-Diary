@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { AuthProvider, useAuth } from "@/providers/AuthProvider";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -53,15 +54,17 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <AuthProvider>
-      <GluestackUIProvider mode="dark">
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <RootNavigationGuard />
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </GluestackUIProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <GluestackUIProvider mode="dark">
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <RootNavigationGuard />
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
