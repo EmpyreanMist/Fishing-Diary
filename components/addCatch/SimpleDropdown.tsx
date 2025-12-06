@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import LureRow from "./LureRow";
+import LureRowSelectable from "./LureRowSelectable";
 import {
   View,
   Text,
@@ -12,13 +14,15 @@ import {
 
 interface DropdownItem {
   label: string;
-  value: string;
+  value: string; 
   image?: string;
 }
 
 interface SimpleDropdownProps {
   label: string;
   items: DropdownItem[];
+  customLures: any[];
+  refresh: () => void;      
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
@@ -33,6 +37,8 @@ export default function SimpleDropdown({
   items,
   enableSearch = false,
   placeholder = "Select...",
+  customLures,
+  refresh,
   onSelect,
   onAddCustom,
   forceOpen,
@@ -42,12 +48,12 @@ export default function SimpleDropdown({
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-useEffect(() => {
-  if (forceOpen) {
-    setIsVisible(true);
-    onForceOpenHandled?.();    
-  }
-}, [forceOpen]);
+  useEffect(() => {
+    if (forceOpen) {
+      setIsVisible(true);
+      onForceOpenHandled?.();
+    }
+  }, [forceOpen]);
 
   const filteredItems = enableSearch
     ? items.filter((item) =>
@@ -124,20 +130,33 @@ useEffect(() => {
             <FlatList
               data={filteredItems}
               keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.optionRow}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text style={styles.optionText}>{item.label}</Text>
-                  {item.image && (
-                    <Image
-                      source={{ uri: item.image }}
-                      style={styles.optionThumb}
+              renderItem={({ item }) => {
+                const isCustom = item.value.startsWith("custom-");
+
+                if (isCustom) {
+                  const lureId = Number(item.value.replace("custom-", ""));
+                  const lure = customLures.find((l) => l.id === lureId);
+
+                  if (!lure) return null;
+
+                  return (
+                    <LureRow
+                      lure={lure}
+                      refresh={refresh}
+                      onPress={() => handleSelect(item)} 
                     />
-                  )}
-                </TouchableOpacity>
-              )}
+                  );
+                }
+
+                // Globala beten
+                return (
+                  <LureRowSelectable
+                    label={item.label}
+                    image={item.image}
+                    onPress={() => handleSelect(item)}
+                  />
+                );
+              }}
             />
           </View>
         </View>
@@ -212,25 +231,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
     height: 40,
-  },
-  optionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#334155",
-  },
-  optionText: {
-    color: "#fff",
-    fontSize: 16,
-    flexShrink: 1,
-    marginRight: 10,
-  },
-  optionThumb: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    resizeMode: "cover",
   },
 });

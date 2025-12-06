@@ -62,12 +62,12 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
 
   const lureOptions = [
     ...customLures.map((lure) => ({
-      label: `⭐ ${lure.brand} - ${lure.name} – ${lure.weight_gram}g - ${lure.color}`,
+      label: `${lure.brand} - ${lure.name} - ${lure.weight_gram}g - ${lure.color}`,
       value: `custom-${lure.id}`,
       image: lure.image_url ?? undefined,
     })),
     ...globalLures.map((lure) => ({
-      label: `${lure.brand} - ${lure.name} – ${lure.weight_gram}g - ${lure.color}`,
+      label: `${lure.brand} - ${lure.name} - ${lure.weight_gram}g - ${lure.color}`,
       value: String(lure.id),
       image: lure.image_url ?? undefined,
     })),
@@ -78,6 +78,8 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
       <SimpleDropdown
         label="Lure Used:"
         items={[{ label: "Select lure", value: "" }, ...lureOptions]}
+        customLures={customLures}
+        refresh={fetchLures}
         enableSearch
         enableAddCustom
         onAddCustom={() => setShowAddModal(true)}
