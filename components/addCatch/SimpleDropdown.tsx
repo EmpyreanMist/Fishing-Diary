@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import LureRow from "./LureRow";
 import LureRowSelectable from "./LureRowSelectable";
 import {
   View,
@@ -21,13 +20,17 @@ interface DropdownItem {
 interface SimpleDropdownProps {
   label: string;
   items: DropdownItem[];
-  customLures: any[];
-  refresh: () => void;      
+
+  customLures?: any[];
+  refresh?: () => void;      
+  
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
-  enableAddCustom: boolean;
-  onAddCustom: () => void;
+  
+  enableAddCustom?: boolean;
+  onAddCustom?: () => void;
+  
   forceOpen?: boolean;
   onForceOpenHandled?: () => void;
 }
@@ -37,8 +40,6 @@ export default function SimpleDropdown({
   items,
   enableSearch = false,
   placeholder = "Select...",
-  customLures,
-  refresh,
   onSelect,
   onAddCustom,
   forceOpen,
@@ -106,7 +107,7 @@ export default function SimpleDropdown({
               <TouchableOpacity
                 onPress={() => {
                   setIsVisible(false);
-                  setTimeout(() => onAddCustom(), 10);
+                  setTimeout(() => onAddCustom?.(), 10);
                 }}
               >
                 <Text style={styles.doneText}>Add Lure</Text>
@@ -131,22 +132,8 @@ export default function SimpleDropdown({
               data={filteredItems}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => {
-                const isCustom = item.value.startsWith("custom-");
-
-                if (isCustom) {
-                  const lureId = Number(item.value.replace("custom-", ""));
-                  const lure = customLures.find((l) => l.id === lureId);
-
-                  if (!lure) return null;
-
-                  return (
-                    <LureRow
-                      lure={lure}
-                      refresh={refresh}
-                      onPress={() => handleSelect(item)} 
-                    />
-                  );
-                }
+                
+                
 
                 // Globala beten
                 return (
