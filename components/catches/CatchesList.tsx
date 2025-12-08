@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, Text, View } from "react-native";
 import CatchRow from "./CatchRow";
-import type { CatchItem } from "./types/catch";
+import type { CatchItem } from "../../components/common/types";
 
 type Props = {
   data: CatchItem[];
@@ -11,13 +11,15 @@ type Props = {
 export default function CatchesList({ data, title = "All Catches" }: Props) {
   return (
     <>
-      <Text style={{
-        color: "#E5E7EB",
-        fontSize: 18,
-        fontWeight: "700",
-        marginTop: 20,
-        marginBottom: 10,
-      }}>
+      <Text
+        style={{
+          color: "#E5E7EB",
+          fontSize: 18,
+          fontWeight: "700",
+          marginTop: 20,
+          marginBottom: 10,
+        }}
+      >
         {title}
       </Text>
 

@@ -51,6 +51,7 @@ export type CatchItem = {
   length: string;
   lake: string;
   date: string;
+  photos: string[];
 };
 
 export type CatchRow = {
@@ -63,4 +64,5 @@ export type CatchRow = {
   caught_at: string | null;
   notes: string | null;
   created_at: string;
+  catch_photos?: { image_url: string }[];
 };
