@@ -11,6 +11,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { supabase } from "@/lib/supabase";
 import { uploadLurePhoto } from "@/lib/catches/uploadLurePhoto";
+import ActionButton from "../ui/ActionButton";
 
 interface AddCustomLureModalProps {
   visible: boolean;
@@ -54,7 +55,6 @@ export default function AddCustomLureModal({
 
   const saveLure = async () => {
     try {
-
       const { data: lure, error } = await supabase
         .from("user_lures")
         .insert({
@@ -128,19 +128,32 @@ export default function AddCustomLureModal({
             <Image source={{ uri: photoUri }} style={styles.previewImage} />
           )}
 
-          <TouchableOpacity style={styles.secondaryButton} onPress={takePhoto}>
-            <Text style={styles.secondaryButtonText}>📷 Take Photo</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", gap: 10, marginVertical: 8 }}>
+            <ActionButton
+              label="Take Photo"
+              icon="camera"
+              color="blue"
+              size="md"
+              width="48%"
+              onPress={takePhoto}
+            />
 
-          <TouchableOpacity style={styles.secondaryButton} onPress={pickImage}>
-            <Text style={styles.secondaryButtonText}>
-              📁 Choose from Library
-            </Text>
-          </TouchableOpacity>
+            <ActionButton
+              label="Choose"
+              icon="image"
+              color="blue"
+              size="md"
+              width="48%"
+              onPress={pickImage}
+            />
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={saveLure}>
-            <Text style={styles.buttonText}>Save Lure</Text>
-          </TouchableOpacity>
+          <ActionButton
+            label="Save Lure"
+            color="blue"
+            size="md"
+            onPress={saveLure}
+          />
 
           <TouchableOpacity onPress={onClose}>
             <Text style={styles.closeText}>Cancel</Text>
