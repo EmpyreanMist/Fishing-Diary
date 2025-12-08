@@ -1,19 +1,26 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, Image } from "react-native";
 import { CalendarDays, Fish, MapPin, Ruler, Scale } from "lucide-react-native";
 import type { CatchItem } from "../../components/common/types";
-import { Image } from "react-native";
 
-export default function CatchRow({ item }: { item: CatchItem }) {
+export default function CatchRow({
+  item,
+  onImagePress,
+}: {
+  item: CatchItem;
+  onImagePress: (url: string) => void;
+}) {
   return (
     <View style={styles.catchCard}>
       <View style={styles.catchLeft}>
         <View style={styles.avatar}>
           {item.photos.length > 0 ? (
-            <Image
-              source={{ uri: item.photos[0] }}
-              style={styles.avatarImage}
-            />
+            <Pressable onPress={() => onImagePress(item.photos[0])}>
+              <Image
+                source={{ uri: item.photos[0] }}
+                style={styles.avatarImage}
+              />
+            </Pressable>
           ) : (
             <Fish size={18} color="#5ACCF2" />
           )}
@@ -72,6 +79,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    resizeMode: "cover",
+  },
   catchSpecies: {
     color: "#E5E7EB",
     fontSize: 16,
@@ -111,11 +124,5 @@ const styles = StyleSheet.create({
     color: "#D1D5DB",
     fontSize: 12,
     fontWeight: "600",
-  },
-  avatarImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    resizeMode: "cover",
   },
 });
