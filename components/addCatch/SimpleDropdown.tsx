@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import LureRowSelectable from "./LureRowSelectable";
 import {
   View,
   Text,
@@ -10,6 +9,8 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import LureRowSelectable from "./LureRowSelectable";
+import LureRow from "./LureRow";
 
 interface DropdownItem {
   label: string;
@@ -22,15 +23,12 @@ interface SimpleDropdownProps {
   items: DropdownItem[];
 
   customLures?: any[];
-  refresh?: () => void;      
-  
+  refresh?: () => void;
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
-  
   enableAddCustom?: boolean;
   onAddCustom?: () => void;
-  
   forceOpen?: boolean;
   onForceOpenHandled?: () => void;
 }
@@ -38,9 +36,12 @@ interface SimpleDropdownProps {
 export default function SimpleDropdown({
   label,
   items,
+  customLures,
+  refresh,
   enableSearch = false,
   placeholder = "Select...",
   onSelect,
+  enableAddCustom,
   onAddCustom,
   forceOpen,
   onForceOpenHandled,
@@ -54,7 +55,7 @@ export default function SimpleDropdown({
       setIsVisible(true);
       onForceOpenHandled?.();
     }
-  }, [forceOpen]);
+  }, [forceOpen, onForceOpenHandled]);
 
   const filteredItems = enableSearch
     ? items.filter((item) =>
@@ -68,6 +69,8 @@ export default function SimpleDropdown({
     setSearchQuery("");
     onSelect?.(item.value);
   };
+
+  const supportsCustomLures = Array.isArray(customLures) && typeof refresh === "function";
 
   return (
     <View style={styles.wrapper}>
@@ -104,14 +107,18 @@ export default function SimpleDropdown({
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
             <View style={styles.doneRow}>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsVisible(false);
-                  setTimeout(() => onAddCustom?.(), 10);
-                }}
-              >
-                <Text style={styles.doneText}>Add Lure</Text>
-              </TouchableOpacity>
+              {enableAddCustom && onAddCustom ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsVisible(false);
+                    setTimeout(() => onAddCustom(), 10);
+                  }}
+                >
+                  <Text style={styles.doneText}>Add Lure</Text>
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )}
 
               <TouchableOpacity onPress={() => setIsVisible(false)}>
                 <Text style={styles.doneText}>Close</Text>
@@ -132,10 +139,24 @@ export default function SimpleDropdown({
               data={filteredItems}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => {
-                
-                
+                if (
+                  supportsCustomLures &&
+                  typeof item.value === "string" &&
+                  item.value.startsWith("custom-")
+                ) {
+                  const lureId = Number(item.value.replace("custom-", ""));
+                  const lure = customLures!.find((l: any) => l.id === lureId);
+                  if (!lure) return null;
 
-                // Globala beten
+                  return (
+                    <LureRow
+                      lure={lure}
+                      refresh={refresh!}
+                      onPress={() => handleSelect(item)}
+                    />
+                  );
+                }
+
                 return (
                   <LureRowSelectable
                     label={item.label}
