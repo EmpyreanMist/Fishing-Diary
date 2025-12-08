@@ -29,13 +29,14 @@ export default function CatchesScreen() {
       .select(
         `
     *,
-catch_photos ( image_url )
+    catch_photos ( image_url ),
+    fish_species ( swedish_name, english_name )
   `
       )
       .eq("user_id", user.id)
       .order("caught_at", { ascending: false });
 
-    if (error) {
+    if (error || !data) {
       console.error("Error fetching catches:", error);
       return;
     }
@@ -62,7 +63,7 @@ catch_photos ( image_url )
   function mapCatch(row: CatchRow): CatchItem {
     return {
       id: row.id,
-      species: row.fish_species_id?.toString() ?? "Unknown",
+      species: row.fish_species?.english_name ?? "Unknown",
       weight: row.weight_kg ? `${row.weight_kg} kg` : "—",
       length: row.length_cm ? `${row.length_cm} cm` : "—",
       lake: row.location_name ?? "—",

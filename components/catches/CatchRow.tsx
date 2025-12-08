@@ -44,6 +44,10 @@ export default function CatchRow({
             <MapPin size={14} color="#9CA3AF" />
             <Text style={styles.locationText}>{item.lake}</Text>
           </View>
+          <View style={[styles.inlineGroup, { marginTop: 4 }]}>
+            <Fish size={14} color="#9CA3AF" />
+            <Text style={styles.inlineText}>{item.species}</Text>
+          </View>
         </View>
       </View>
 
