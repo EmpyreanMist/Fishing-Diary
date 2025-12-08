@@ -39,6 +39,21 @@ export default function CatchesScreen() {
     setCatches(mapped);
   }
 
+  function getSpeciesCount(list: CatchItem[]) {
+    const set = new Set(list.map((c) => c.species));
+    return set.size.toString();
+  }
+
+  function getBiggestCatch(list: CatchItem[]) {
+    const weights = list
+      .map((c) => parseFloat(c.weight))
+      .filter((n) => !isNaN(n));
+
+    if (weights.length === 0) return "—";
+
+    return `${Math.max(...weights)} kg`;
+  }
+
   function mapCatch(row: CatchRow): CatchItem {
     return {
       id: row.id,
@@ -64,8 +79,8 @@ export default function CatchesScreen() {
         <SearchFilterCard />
         <StatsRow
           total={`${catches.length}`}
-          biggest={"2.3 kg"}
-          species={"3"}
+          biggest={getBiggestCatch(catches)}
+          species={getSpeciesCount(catches)}
         />
         <CatchesList data={catches} />
         <View style={{ height: 24 }} />
