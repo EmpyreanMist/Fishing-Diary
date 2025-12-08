@@ -1,77 +1,79 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   ScrollView,
   StyleSheet,
   Modal,
-  RefreshControl,
+  ActivityIndicator,
+  Text,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
+
 import TopBar from "@/components/catches/TopBar";
 import SearchFilterCard from "@/components/catches/SearchFilterCard";
 import StatsRow from "@/components/catches/StatRow";
 import CatchesList from "@/components/catches/CatchesList";
 import CreateCatchContainer from "@/components/addCatch/CreateCatchContainer";
+
 import { supabase } from "@/lib/supabase";
-import type { CatchRow } from "../../components/common/types";
-import type { CatchItem } from "../../components/common/types";
+import type { CatchRow, CatchItem } from "../../components/common/types";
 
 export default function CatchesScreen() {
-  const [refreshing, setRefreshing] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [catches, setCatches] = useState<CatchItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchCatches();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-  async function onRefresh() {
-    setRefreshing(true);
-    await fetchCatches();
-    setRefreshing(false);
-  }
+      async function load() {
+        try {
+          setLoading(true);
+          setErrorMsg(null);
 
-  async function fetchCatches() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+          const { data: auth } = await supabase.auth.getUser();
+          const user = auth.user;
 
-    if (!user) return;
+          if (!user) {
+            setErrorMsg("You must be logged in to see your catches.");
+            return;
+          }
 
-    const { data, error } = await supabase
-      .from("catches")
-      .select(
-        `
-    *,
-    catch_photos ( image_url ),
-    fish_species ( swedish_name, english_name )
-  `
-      )
-      .eq("user_id", user.id)
-      .order("caught_at", { ascending: false });
+          const { data, error } = await supabase
+            .from("catches")
+            .select(
+              `
+              *,
+              catch_photos ( image_url ),
+              fish_species ( english_name, swedish_name )
+            `
+            )
+            .eq("user_id", user.id)
+            .order("caught_at", { ascending: false });
 
-    if (error || !data) {
-      console.error("Error fetching catches:", error);
-      return;
-    }
+          if (error) throw error;
 
-    const mapped = data.map(mapCatch);
-    setCatches(mapped);
-  }
+          if (isActive) {
+            setCatches(data.map(mapCatch));
+          }
+        } catch (err) {
+          console.error("Catches load error:", err);
+          setErrorMsg("Failed to load catches.");
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      }
 
-  function getSpeciesCount(list: CatchItem[]) {
-    const set = new Set(list.map((c) => c.species));
-    return set.size.toString();
-  }
+      load();
 
-  function getBiggestCatch(list: CatchItem[]) {
-    const weights = list
-      .map((c) => parseFloat(c.weight))
-      .filter((n) => !isNaN(n));
-
-    if (weights.length === 0) return "—";
-
-    return `${Math.max(...weights)} kg`;
-  }
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
 
   function mapCatch(row: CatchRow): CatchItem {
     return {
@@ -85,8 +87,40 @@ export default function CatchesScreen() {
     };
   }
 
+  function getSpeciesCount(list: CatchItem[]) {
+    return new Set(list.map((c) => c.species)).size.toString();
+  }
+
+  function getBiggestCatch(list: CatchItem[]) {
+    const weights = list
+      .map((c) => parseFloat(c.weight))
+      .filter((n) => !isNaN(n));
+    return weights.length ? `${Math.max(...weights)} kg` : "—";
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safe} edges={["top"]}>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#5ACCF2" />
+          <Text style={styles.loadingText}>Loading catches…</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <SafeAreaView style={styles.safe} edges={["top"]}>
+        <View style={styles.center}>
+          <Text style={styles.errorText}>{errorMsg}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <TopBar
         subtitle={`${catches.length} catches logged`}
         onAddCatch={() => setShowCreateModal(true)}
@@ -95,22 +129,17 @@ export default function CatchesScreen() {
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#5ACCF2"
-            colors={["#5ACCF2"]}
-          />
-        }
       >
         <SearchFilterCard />
+
         <StatsRow
           total={`${catches.length}`}
           biggest={getBiggestCatch(catches)}
           species={getSpeciesCount(catches)}
         />
+
         <CatchesList data={catches} />
+
         <View style={{ height: 24 }} />
       </ScrollView>
 
@@ -121,12 +150,32 @@ export default function CatchesScreen() {
       >
         <CreateCatchContainer onClose={() => setShowCreateModal(false)} />
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#0A121A" },
+  safe: {
+    flex: 1,
+    backgroundColor: "#0A121A",
+  },
   scroll: { flex: 1 },
   scrollContent: { padding: 16 },
+  center: {
+    flex: 1,
+    backgroundColor: "#0A121A",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#98A6B3",
+  },
+  errorText: {
+    color: "#FF6B6B",
+    fontSize: 16,
+    textAlign: "center",
+    paddingHorizontal: 20,
+  },
 });
