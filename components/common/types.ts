@@ -64,5 +64,11 @@ export type CatchRow = {
   caught_at: string | null;
   notes: string | null;
   created_at: string;
+
   catch_photos?: { image_url: string }[];
+
+  fish_species?: {
+    swedish_name: string | null;
+    english_name: string | null;
+  };
 };

@@ -44,7 +44,6 @@ export default function CatchesList({ data, title = "All Catches" }: Props) {
         contentContainerStyle={{ paddingTop: 4 }}
       />
 
-      {/* Global modal */}
       <Modal
         visible={selectedImage !== null}
         transparent
