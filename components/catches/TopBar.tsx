@@ -21,7 +21,7 @@ export default function TopBar({
       colors={["#2F7D71", "#2E6F83"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={[styles.topbar, { paddingTop: insets.top + 20 }]}
+      style={[styles.topbar, { paddingTop: insets.top }]}
     >
       <StatusBar
         barStyle="light-content"
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   topbar: {
     paddingHorizontal: 20,
     paddingBottom: 16,
+    height: 140,
     overflow: "hidden",
   },
   headerRow: {

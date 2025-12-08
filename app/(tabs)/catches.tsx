@@ -100,7 +100,7 @@ export default function CatchesScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.safe} edges={["top"]}>
+      <SafeAreaView style={styles.safe} edges={[]}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#5ACCF2" />
           <Text style={styles.loadingText}>Loading catches…</Text>
@@ -111,7 +111,7 @@ export default function CatchesScreen() {
 
   if (errorMsg) {
     return (
-      <SafeAreaView style={styles.safe} edges={["top"]}>
+      <SafeAreaView style={styles.safe} edges={[]}>
         <View style={styles.center}>
           <Text style={styles.errorText}>{errorMsg}</Text>
         </View>
