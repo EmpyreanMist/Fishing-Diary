@@ -4,7 +4,6 @@ import TopBar from "@/components/catches/TopBar";
 import SearchFilterCard from "@/components/catches/SearchFilterCard";
 import StatsRow from "@/components/catches/StatRow";
 import CatchesList from "@/components/catches/CatchesList";
-import { DUMMY_CATCHES } from "@/components/catches/dummy/dummyCatches";
 import CreateCatchContainer from "@/components/addCatch/CreateCatchContainer";
 import { supabase } from "@/lib/supabase";
 import type { CatchRow } from "../../components/common/types";
@@ -63,11 +62,11 @@ export default function CatchesScreen() {
       >
         <SearchFilterCard />
         <StatsRow
-          total={`${DUMMY_CATCHES.length}`}
+          total={`${catches.length}`}
           biggest={"2.3 kg"}
           species={"3"}
         />
-        <CatchesList data={DUMMY_CATCHES} />
+        <CatchesList data={catches} />
         <View style={{ height: 24 }} />
       </ScrollView>
 
