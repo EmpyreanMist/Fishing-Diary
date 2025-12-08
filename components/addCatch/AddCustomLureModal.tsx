@@ -68,9 +68,16 @@ export default function AddCustomLureModal({
         .single();
 
       const lureId = lure.id;
+      let storagePath = null;
 
       if (photoUri) {
-        await uploadLurePhoto(photoUri, userId, lureId);
+        const upload = await uploadLurePhoto(photoUri, userId, lure.id);
+        storagePath = upload?.storagePath ?? null;
+
+        await supabase
+          .from("user_lures")
+          .update({ image_url: upload?.publicUrl, storage_path: storagePath })
+          .eq("id", lure.id);
       }
 
       onCreated();
