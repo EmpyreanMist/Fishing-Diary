@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Modal } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Modal,
+  RefreshControl,
+} from "react-native";
 import TopBar from "@/components/catches/TopBar";
 import SearchFilterCard from "@/components/catches/SearchFilterCard";
 import StatsRow from "@/components/catches/StatRow";
@@ -10,12 +16,19 @@ import type { CatchRow } from "../../components/common/types";
 import type { CatchItem } from "../../components/common/types";
 
 export default function CatchesScreen() {
+  const [refreshing, setRefreshing] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [catches, setCatches] = useState<CatchItem[]>([]);
 
   useEffect(() => {
     fetchCatches();
   }, []);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await fetchCatches();
+    setRefreshing(false);
+  }
 
   async function fetchCatches() {
     const {
@@ -82,6 +95,14 @@ export default function CatchesScreen() {
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#5ACCF2"
+            colors={["#5ACCF2"]}
+          />
+        }
       >
         <SearchFilterCard />
         <StatsRow
