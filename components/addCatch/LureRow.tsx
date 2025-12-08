@@ -9,6 +9,7 @@ interface Lure {
   color?: string;
   weight_gram?: number;
   image_url?: string | null;
+  storage_path?: string | null;
   user_id?: string;
 }
 
@@ -21,19 +22,17 @@ interface LureRowProps {
 export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
   const handleDelete = async () => {
     try {
-     
-      if (lure.image_url) {
-        const path = lure.image_url.split("/user_lure_images/")[1];
-        if (path) {
-          await supabase.storage.from("user_lure_images").remove([path]);
-        }
+      if (lure.storage_path) {
+        await supabase.storage
+          .from("user_lure_images")
+          .remove([lure.storage_path]);
       }
 
       const { error } = await supabase
         .from("user_lures")
         .delete()
         .eq("id", lure.id)
-        .eq("user_id", lure.user_id); 
+        .eq("user_id", lure.user_id);
 
       if (error) throw error;
 
@@ -60,10 +59,7 @@ export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={onPress} 
-      >
+      <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
         <View
           style={{
             flexDirection: "row",
