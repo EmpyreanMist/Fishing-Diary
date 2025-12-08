@@ -132,16 +132,16 @@ export default function AddCustomLureModal({
             <ActionButton
               label="Take Photo"
               icon="camera"
-              color="blue"
+              color="green"
               size="md"
               width="48%"
               onPress={takePhoto}
             />
 
             <ActionButton
-              label="Choose"
+              label="Library"
               icon="image"
-              color="blue"
+              color="green"
               size="md"
               width="48%"
               onPress={pickImage}
@@ -151,7 +151,7 @@ export default function AddCustomLureModal({
           <ActionButton
             label="Save Lure"
             color="blue"
-            size="md"
+            size="lg"
             onPress={saveLure}
           />
 
@@ -198,31 +198,6 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 10,
     marginBottom: 12,
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: "#5ACCF2",
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-    marginVertical: 6,
-  },
-  secondaryButtonText: {
-    color: "#5ACCF2",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  button: {
-    backgroundColor: "#5ACCF2",
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#0A121A",
-    fontWeight: "700",
-    fontSize: 16,
   },
   closeText: {
     color: "#94A3B8",
