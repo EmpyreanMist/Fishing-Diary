@@ -1,15 +1,24 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { CalendarDays, Fish, MapPin, Ruler, Scale } from "lucide-react-native";
-import type { CatchItem } from "./types/catch";
+import type { CatchItem } from "../../components/common/types";
+import { Image } from "react-native";
 
 export default function CatchRow({ item }: { item: CatchItem }) {
   return (
     <View style={styles.catchCard}>
       <View style={styles.catchLeft}>
         <View style={styles.avatar}>
-          <Fish size={18} color="#5ACCF2" />
+          {item.photos.length > 0 ? (
+            <Image
+              source={{ uri: item.photos[0] }}
+              style={styles.avatarImage}
+            />
+          ) : (
+            <Fish size={18} color="#5ACCF2" />
+          )}
         </View>
+
         <View style={{ flex: 1 }}>
           <Text style={styles.catchSpecies}>{item.species}</Text>
 
@@ -102,5 +111,11 @@ const styles = StyleSheet.create({
     color: "#D1D5DB",
     fontSize: 12,
     fontWeight: "600",
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    resizeMode: "cover",
   },
 });

@@ -26,7 +26,12 @@ export default function CatchesScreen() {
 
     const { data, error } = await supabase
       .from("catches")
-      .select("*")
+      .select(
+        `
+    *,
+catch_photos ( image_url )
+  `
+      )
       .eq("user_id", user.id)
       .order("caught_at", { ascending: false });
 
@@ -62,6 +67,7 @@ export default function CatchesScreen() {
       length: row.length_cm ? `${row.length_cm} cm` : "—",
       lake: row.location_name ?? "—",
       date: row.caught_at ? new Date(row.caught_at).toLocaleDateString() : "—",
+      photos: row.catch_photos?.map((p) => p.image_url) ?? [],
     };
   }
 
