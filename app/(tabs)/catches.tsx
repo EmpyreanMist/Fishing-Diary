@@ -27,7 +27,8 @@ export default function CatchesScreen() {
     const { data, error } = await supabase
       .from("catches")
       .select("*")
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .order("caught_at", { ascending: false });
 
     if (error) {
       console.error("Error fetching catches:", error);
