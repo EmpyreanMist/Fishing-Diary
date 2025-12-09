@@ -57,16 +57,14 @@ export default function CatchRow({
 
 const styles = StyleSheet.create({
   catchCard: {
-    backgroundColor: "#121B22",
-    borderColor: "#1F2937",
-    borderWidth: 1,
     borderRadius: 16,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     gap: 12,
   },
+
   catchLeft: {
     flex: 1,
     flexDirection: "row",
@@ -78,6 +76,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
+    marginLeft: "auto",
   },
   avatarImage: {
     width: 40,
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     fontSize: 12,
   },
+
   dateBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -115,11 +115,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 999,
+
     borderWidth: 1,
     borderColor: "#1F2937",
+
     backgroundColor: "#0A121A",
     alignSelf: "flex-start",
   },
+
   dateText: {
     color: "#D1D5DB",
     fontSize: 12,

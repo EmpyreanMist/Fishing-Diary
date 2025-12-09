@@ -1,16 +1,17 @@
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Modal, Pressable, Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../../lib/supabase";
+import CatchCard from "../common/CatchCard";
 
 type CatchItem = {
   id: string;
   species: string;
   weight: string;
   length: string;
-  location: string;
+  lake: string;
   date: string;
+  photos: string[];
 };
 
 type SpeciesRow = {
@@ -23,6 +24,7 @@ type CatchRow = {
   length_cm: number | null;
   location_name: string | null;
   caught_at: string | null;
+  catch_photos?: { image_url: string }[];
   fish_species: SpeciesRow | SpeciesRow[] | null;
 };
 
@@ -32,6 +34,7 @@ export default function RecentCatches({
   refreshSignal: number;
 }) {
   const [recentCatches, setRecentCatches] = useState<CatchItem[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRecentCatches();
@@ -48,15 +51,14 @@ export default function RecentCatches({
       .from("catches")
       .select(
         `
-      id,
-      weight_kg,
-      length_cm,
-      location_name,
-      caught_at,
-      fish_species (
-        english_name
-      )
-    `
+        id,
+        weight_kg,
+        length_cm,
+        location_name,
+        caught_at,
+        catch_photos ( image_url ),
+        fish_species ( english_name )
+      `
       )
       .eq("user_id", user.id)
       .order("caught_at", { ascending: false })
@@ -67,9 +69,7 @@ export default function RecentCatches({
       return;
     }
 
-    const catches = data as CatchRow[];
-
-    const mapped = catches.map((c) => {
+    const mapped = data.map((c: CatchRow) => {
       const species = Array.isArray(c.fish_species)
         ? c.fish_species[0]?.english_name
         : c.fish_species?.english_name;
@@ -79,10 +79,11 @@ export default function RecentCatches({
         species: species ?? "Unknown",
         weight: c.weight_kg ? `${c.weight_kg} kg` : "—",
         length: c.length_cm ? `${c.length_cm} cm` : "—",
-        location: c.location_name ?? "Unknown location",
+        lake: c.location_name ?? "—",
         date: c.caught_at
           ? new Date(c.caught_at).toLocaleDateString("sv-SE")
           : "—",
+        photos: c.catch_photos?.map((p) => p.image_url) ?? [],
       };
     });
 
@@ -95,49 +96,31 @@ export default function RecentCatches({
         <Ionicons name="fish-outline" size={20} color="#5ACCF2" />
         <Text style={styles.title}>Recent Catches</Text>
       </View>
+
       <Text style={styles.subtitle}>Your latest fishing successes</Text>
 
-      <View style={{ gap: 12, marginTop: 10 }}>
+      <View style={{ gap: 12, marginTop: 12 }}>
         {recentCatches.length === 0 ? (
           <Text style={{ color: "#A5B2C4" }}>No recent catches yet.</Text>
         ) : (
           recentCatches.map((item) => (
-            <LinearGradient
+            <CatchCard
               key={item.id}
-              colors={["#1A2732", "#0E141B"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.card}
-            >
-              <View style={styles.cardHeader}>
-                <View style={styles.speciesContainer}>
-                  <Ionicons name="fish-outline" size={18} color="#5ACCF2" />
-                  <Text style={styles.species}>{item.species}</Text>
-                </View>
-                <View style={styles.dateBadge}>
-                  <Text style={styles.dateText}>{item.date}</Text>
-                </View>
-              </View>
-
-              <View style={styles.statsRow}>
-                <View style={styles.stat}>
-                  <Ionicons name="barbell-outline" size={15} color="#98A6B3" />
-                  <Text style={styles.statText}>{item.weight}</Text>
-                </View>
-                <View style={styles.stat}>
-                  <Ionicons name="resize-outline" size={15} color="#98A6B3" />
-                  <Text style={styles.statText}>{item.length}</Text>
-                </View>
-              </View>
-
-              <View style={styles.locationRow}>
-                <Ionicons name="location-outline" size={15} color="#98A6B3" />
-                <Text style={styles.locationText}>{item.location}</Text>
-              </View>
-            </LinearGradient>
+              item={item}
+              onImagePress={(url: string) => setSelectedImage(url)}
+            />
           ))
         )}
       </View>
+
+      <Modal visible={selectedImage !== null} transparent animationType="fade">
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setSelectedImage(null)}
+        >
+          <Image source={{ uri: selectedImage! }} style={styles.fullImage} />
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -167,59 +150,17 @@ const styles = StyleSheet.create({
     color: "#A5B2C4",
     fontSize: 13,
   },
-  card: {
-    borderRadius: 10,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#1C2E40",
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.85)",
     alignItems: "center",
-    marginBottom: 8,
+    justifyContent: "center",
   },
-  speciesContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  species: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  dateBadge: {
-    backgroundColor: "#172838",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  dateText: {
-    color: "#A5B2C4",
-    fontSize: 12,
-  },
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 6,
-  },
-  stat: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  statText: {
-    color: "#A5B2C4",
-    fontSize: 13,
-  },
-  locationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  locationText: {
-    color: "#A5B2C4",
-    fontSize: 13,
+  fullImage: {
+    width: "90%",
+    height: "70%",
+    borderRadius: 12,
+    resizeMode: "contain",
   },
 });
