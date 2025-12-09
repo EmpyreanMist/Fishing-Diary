@@ -89,12 +89,14 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
         onForceOpenHandled={() => setForceOpenDropdown(false)}
       />
 
-      <AddCustomLureModal
-        visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onCreated={refresh}
-        userId={userId!}
-      />
+      {userId && (
+        <AddCustomLureModal
+          visible={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onCreated={refresh}
+          userId={userId}
+        />
+      )}
     </>
   );
 }

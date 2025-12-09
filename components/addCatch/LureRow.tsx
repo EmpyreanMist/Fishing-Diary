@@ -22,6 +22,11 @@ interface LureRowProps {
 export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
   const handleDelete = async () => {
     try {
+      if (!lure.user_id) {
+        console.error("Cannot delete lure without user_id");
+        return;
+      }
+
       if (lure.storage_path) {
         await supabase.storage
           .from("user_lure_images")
@@ -78,7 +83,7 @@ export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
               }}
               numberOfLines={2}
             >
-              {lure.brand} - {lure.name} - {lure.weight_gram}g - {lure.color}
+              {lure.brand} - {lure.name}{lure.weight_gram ? ` - ${lure.weight_gram}g` : ""}{lure.color ? ` - ${lure.color}` : ""}
             </Text>
           </View>
 
