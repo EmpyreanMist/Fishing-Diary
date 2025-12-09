@@ -50,7 +50,8 @@ export default function CatchForm({
 
   const [form, setForm] = useState({
     speciesId: initialValue.speciesId ?? "",
-    lureId: initialValue.lureId ?? "",
+    lureId: initialValue.lureId ?? null,
+    lureType: initialValue.lureType ?? "global",
     weightKg: initialValue.weightKg ?? "",
     lengthCm: initialValue.lengthCm ?? "",
     locationName: initialValue.locationName ?? "",
@@ -129,6 +130,7 @@ export default function CatchForm({
       const formState = {
         speciesId: draft.speciesId,
         lureId: draft.lureId,
+        lureType: draft.lureType, // ✅ NYTT
         weightKg: draft.weightKg,
         lengthCm: draft.lengthCm,
         locationName: draft.locationName,
@@ -194,7 +196,13 @@ export default function CatchForm({
                 setNotes={(v) => setField("notes", v)}
               />
 
-              <LureDropdown onSelect={(id) => setField("lureId", id)} />
+              <LureDropdown
+                onSelect={({ id, type }) => {
+                  setField("lureId", id);
+                  setField("lureType", type);
+                }}
+              />
+
               <CatchDateTimeButton
                 value={form.caughtAt}
                 onPress={() => setShowDate(true)}
