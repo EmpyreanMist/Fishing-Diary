@@ -26,12 +26,16 @@ type CatchRow = {
   fish_species: SpeciesRow | SpeciesRow[] | null;
 };
 
-export default function RecentCatches() {
+export default function RecentCatches({
+  refreshSignal,
+}: {
+  refreshSignal: number;
+}) {
   const [recentCatches, setRecentCatches] = useState<CatchItem[]>([]);
 
   useEffect(() => {
     fetchRecentCatches();
-  }, []);
+  }, [refreshSignal]);
 
   async function fetchRecentCatches() {
     const {

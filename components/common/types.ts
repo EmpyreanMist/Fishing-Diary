@@ -33,3 +33,45 @@ export type CatchDraft = {
 
   photos: string[];
 };
+
+export interface TripValues {
+  trip_name: string;
+  startTime: string;
+  endTime: string;
+  participants: string;
+  weather: string;
+  temperature: string;
+  wind: string;
+  water_conditions: string;
+  notes: string;
+  fishing_method: string;
+}
+
+export type CatchItem = {
+  id: string;
+  species: string;
+  weight: string;
+  length: string;
+  lake: string;
+  date: string;
+  photos: string[];
+};
+
+export type CatchRow = {
+  id: string;
+  user_id: string;
+  fish_species_id: number | null;
+  weight_kg: number | null;
+  length_cm: number | null;
+  location_name: string | null;
+  caught_at: string | null;
+  notes: string | null;
+  created_at: string;
+
+  catch_photos?: { image_url: string }[];
+
+  fish_species?: {
+    swedish_name: string | null;
+    english_name: string | null;
+  };
+};

@@ -6,6 +6,7 @@ import {
   ScrollView,
   View,
   Modal,
+  RefreshControl
 } from "react-native";
 import { Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,7 +14,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import StatsGrid from "@/components/home/StatsGrid";
 import RecentCatches from "@/components/home/RecentCatches";
 import CatchForm from "@/components/addCatch/CatchForm";
-import AddTrip from "@/components/logTrip/AddTripScreen";
+import AddTrip from "@/components/logTrip/AddTrip";
 
 export default function HomeScreen() {
   const { width } = useWindowDimensions();
@@ -21,12 +22,29 @@ export default function HomeScreen() {
 
   const [showCatchForm, setShowCatchForm] = useState(false);
   const [showTripScreen, setShowTripScreen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshSignal, setRefreshSignal] = useState(0);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    // Triggerar barnkomponenterna
+    setRefreshSignal((prev) => prev + 1);
+
+    // Fake wait
+    await new Promise((res) => setTimeout(res, 300));
+
+    setRefreshing(false);
+  };
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View style={styles.heroContainer}>
           <Image
@@ -56,9 +74,8 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <StatsGrid />
-
-        <RecentCatches />
+        <StatsGrid refreshSignal={refreshSignal} />
+        <RecentCatches refreshSignal={refreshSignal} />
       </ScrollView>
 
       <Modal
@@ -68,7 +85,10 @@ export default function HomeScreen() {
         onRequestClose={() => setShowCatchForm(false)}
         style={styles.catchFormContainer}
       >
-        <CatchForm onClose={() => setShowCatchForm(false)} />
+        <CatchForm
+          onClose={() => setShowCatchForm(false)}
+          onSaved={() => setRefreshSignal((s) => s + 1)}
+        />
       </Modal>
       <Modal
         visible={showTripScreen}

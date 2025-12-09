@@ -32,6 +32,7 @@ import CatchMapModal from "./CatchMapModal";
 
 type Props = {
   onClose: () => void;
+  onSaved?: () => void;
   onSubmit?: (draft: CatchDraft) => Promise<void> | void;
   loading?: boolean;
   initialValue?: Partial<CatchDraft>;
@@ -39,6 +40,7 @@ type Props = {
 
 export default function CatchForm({
   onClose,
+  onSaved,
   onSubmit,
   loading = false,
   initialValue = {},
@@ -59,15 +61,9 @@ export default function CatchForm({
     caughtAt: initialValue.caughtAt ?? new Date(),
   });
 
-  const [latitude, setLatitude] = useState<number | null>(
-    initialValue.latitude ?? null
-  );
-  const [longitude, setLongitude] = useState<number | null>(
-    initialValue.longitude ?? null
-  );
-  const [localPhotos, setLocalPhotos] = useState<string[]>(
-    initialValue.photos ?? []
-  );
+  const [latitude, setLatitude] = useState<number | null>(initialValue.latitude ?? null);
+  const [longitude, setLongitude] = useState<number | null>(initialValue.longitude ?? null);
+  const [localPhotos, setLocalPhotos] = useState<string[]>(initialValue.photos ?? []);
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -130,7 +126,7 @@ export default function CatchForm({
       const formState = {
         speciesId: draft.speciesId,
         lureId: draft.lureId,
-        lureType: draft.lureType, // ✅ NYTT
+        lureType: draft.lureType,
         weightKg: draft.weightKg,
         lengthCm: draft.lengthCm,
         locationName: draft.locationName,
@@ -163,6 +159,9 @@ export default function CatchForm({
       }
 
       Alert.alert("Success", "Catch saved!");
+      if (onSaved) {
+        onSaved();
+      }
       onClose();
     } catch (err) {
       console.error(err);

@@ -6,7 +6,11 @@ interface FishingMethod {
   method_name: string;
   method_img: string | null;
 }
-export default function FishingMethodDropdown() {
+interface FishingMethodDropdownProps {
+  onSelect: (id: string) => void;
+}
+
+export default function FishingMethodDropdown({onSelect} : FishingMethodDropdownProps) {
   const [fishMethods, setFishMethods] = useState<FishingMethod[]>([]);
 
   useEffect(() => {
@@ -39,6 +43,7 @@ export default function FishingMethodDropdown() {
       label="Choose fishing method:"
       items={[{ label: 'Choose fishing method:', value: '' }, ...methodOptions]}
       enableSearch={true}
+      onSelect={onSelect}
       placeholder="Search or select method..."
     />
   );

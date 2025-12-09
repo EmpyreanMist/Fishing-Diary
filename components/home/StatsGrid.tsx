@@ -11,7 +11,11 @@ type StatItem = {
   sub: string;
 };
 
-export default function StatsGrid() {
+export default function StatsGrid({
+  refreshSignal,
+}: {
+  refreshSignal: number;
+}) {
   const [totalCatches, setTotalCatches] = useState<number>(0);
   const [favoriteSpecies, setFavoriteSpecies] = useState<string>("—");
   const [bestMonth, setBestMonth] = useState<string>("—");
@@ -20,7 +24,7 @@ export default function StatsGrid() {
     fetchTotalCatches();
     fetchFavoriteSpecies();
     fetchBestMonth().then(setBestMonth);
-  }, []);
+  }, [refreshSignal]);
 
   async function fetchBestMonth() {
     const {
