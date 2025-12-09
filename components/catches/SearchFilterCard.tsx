@@ -5,18 +5,25 @@ import { Card } from "@/components/ui/card";
 import { Input, InputField } from "@/components/ui/input";
 import { Search } from "lucide-react-native";
 import SimpleDropdown from "../addCatch/SimpleDropdown";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function SearchFilterCard() {
   return (
     <Card
       style={{
-        backgroundColor: "#121B22",
+        backgroundColor: "transparent",
         borderColor: "#1F2937",
         borderWidth: 1,
         borderRadius: 16,
         overflow: "hidden",
       }}
     >
+      <LinearGradient
+        colors={["#1A2732", "#0E141B"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <View style={styles.cardHeader}>
         <Icon as={Search} color="#5ACCF2" size="sm" />
         <Text style={styles.cardTitle}>Search & Filter</Text>
@@ -29,25 +36,28 @@ export default function SearchFilterCard() {
               borderColor: "#1F2937",
               borderWidth: 1,
               borderRadius: 12,
-              backgroundColor: "transparent",
+              backgroundColor: "#0E141B",
             }}
           >
             <Icon as={Search} color="#9CA3AF" style={{ marginLeft: 12 }} />
             <InputField
               placeholder="Search by species or location..."
               placeholderTextColor="#6B7280"
-              style={{ color: "white", paddingVertical: 10, paddingHorizontal: 8 }}
+              style={{
+                color: "white",
+                paddingVertical: 10,
+                paddingHorizontal: 8,
+              }}
             />
           </Input>
         </View>
 
-  
         <View style={styles.dropdownRow}>
           <View style={{ flex: 1 }}>
             <SimpleDropdown
               label="Species"
               items={[
-                { label: "All species", value: "" },  // no value means no filter
+                { label: "All species", value: "" },
                 { label: "Pike", value: "pike" },
                 { label: "Perch", value: "perch" },
                 { label: "Trout", value: "trout" },
