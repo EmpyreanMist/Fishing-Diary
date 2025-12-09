@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import type { ComponentType } from "react";
 
 type Props = {
@@ -9,25 +10,27 @@ type Props = {
 
 export function StatsCard({ icon: Icon, value, label }: Props) {
   return (
-    <View style={styles.card}>
+    <LinearGradient
+      colors={["#1A2732", "#0E141B"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.card}
+    >
       <Icon size={28} color="#5ACCF2" />
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
     width: "48%",
-    backgroundColor: "#121B22",
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#1E2A33",
-    alignItems: "center",
-    justifyContent: "center",
     paddingVertical: 20,
     marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   value: {
     color: "white",
