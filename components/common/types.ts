@@ -21,7 +21,7 @@ export interface FormState {
 export type CatchDraft = {
   speciesId: string;
   lureId: number | null;
-  lureType: "global" | "custom";
+  lureType: "global" | "custom" | null;
   weightKg: string;
   lengthCm: string;
   locationName: string;
