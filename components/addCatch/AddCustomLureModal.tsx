@@ -67,7 +67,11 @@ export default function AddCustomLureModal({
         .select()
         .single();
 
-      const lureId = lure.id;
+      if (error || !lure) {
+        console.error("Error inserting lure:", error);
+        return;
+      }
+
       let storagePath = null;
 
       if (photoUri) {
@@ -89,7 +93,7 @@ export default function AddCustomLureModal({
       setWeight("");
       setPhotoUri(null);
     } catch (err) {
-      console.log("Error creating lure:", err);
+      console.error("Error creating lure:", err);
     }
   };
 
