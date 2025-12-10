@@ -12,7 +12,7 @@ import ActionButton from '../ui/ActionButton';
 import { useState } from 'react';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import TripMapForm from './mapTrip';
-import { CatchDraft, TripLocation } from '../common/types';
+import { CatchDraft, TripLocation, TripValues } from '../common/types';
 
 import CatchAdded from './CatchAdded';
 import handleTripSubmit from './utils/TripSumbit';
@@ -43,7 +43,7 @@ export default function TripForm({
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
-  const [tripValues, setTripValues] = useState({
+  const [tripValues, setTripValues] = useState<TripValues>({
     trip_name: '',
     startTime: '',
     endTime: '',
@@ -55,15 +55,20 @@ export default function TripForm({
     notes: '',
     fishing_method: '',
     trip_location: '',
+    trip_longitude: null,
+    trip_latitude: null,
   });
 
   // handle trip submission
-  const [tripLocation, setTripLocation] = useState<TripLocation>(null);
+  /* const [tripLocation, setTripLocation] = useState<TripLocation>(null); */
 
   function handleTripLocation(location: TripLocation) {
-    setTripLocation(location);
-    console.log('Selected trip location:', location);
-    console.log('Trip location set in state:', tripLocation);
+    
+    /* setTripLocation(location); */
+    if (location === null) return;
+    setTripValues({ ...tripValues, trip_location: location.place.city, trip_longitude: location.longitude, trip_latitude: location.latitude });
+    console.log('Selected trip location:', tripValues);
+    console.log('Trip location set in state:', location);
   }
 
   return (

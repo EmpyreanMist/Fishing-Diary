@@ -42,6 +42,9 @@ export interface TripValues {
   water_conditions: string;
   notes: string;
   fishing_method: string;
+  trip_location: string;
+  trip_longitude: number | null;
+  trip_latitude: number | null;
 }
 
 export type TripLocation = {
