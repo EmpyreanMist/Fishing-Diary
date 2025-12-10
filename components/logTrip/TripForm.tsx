@@ -12,11 +12,10 @@ import ActionButton from '../ui/ActionButton';
 import { useState } from 'react';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import TripMapForm from './mapTrip';
-import { CatchDraft } from '../common/types';
+import { CatchDraft, TripLocation } from '../common/types';
 
 import CatchAdded from './CatchAdded';
 import handleTripSubmit from './utils/TripSumbit';
-/* import handleTripSubmit from './utils/TripSumbit'; */
 
 interface TripFormProps {
   date: Date | null;
@@ -55,9 +54,17 @@ export default function TripForm({
     water_conditions: '',
     notes: '',
     fishing_method: '',
+    trip_location: '',
   });
 
-  //fitler only on numbers
+  // handle trip submission
+  const [tripLocation, setTripLocation] = useState<TripLocation>(null);
+
+  function handleTripLocation(location: TripLocation) {
+    setTripLocation(location);
+    console.log('Selected trip location:', location);
+    console.log('Trip location set in state:', tripLocation);
+  }
 
   return (
     <>
@@ -166,9 +173,21 @@ export default function TripForm({
               isReadOnly={false}
             >
               <InputField
-                value={tripValues.temperature}
-                keyboardType='numeric'
-                onChangeText={(text) => setTripValues({ ...tripValues, temperature: text })}
+                value={tripValues.temperature?.toString() ?? ''}
+                keyboardType="numeric"
+                onChangeText={(text) => {
+                  if (text === '') {
+                    setTripValues({ ...tripValues, temperature: '' });
+                    return;
+                  }
+
+                  if (/^-?\d*(\.\d*)?$/.test(text)) {
+                    const num = parseFloat(text);
+                    if (!isNaN(num) && num >= -273) {
+                      setTripValues({ ...tripValues, temperature: text });
+                    }
+                  }
+                }}
                 placeholder="Enter Text here..."
                 onFocus={() => handleFocus('temperature')}
               />
@@ -281,7 +300,7 @@ export default function TripForm({
         <TripDivider />
         <Text className="text-gray-400 text-md mt-1 pl-2">Tap on the map to select your fishing spot</Text>
         <Box className="pt-2 border-solid outline-2">
-          <TripMapForm />
+          <TripMapForm setTripLocation={handleTripLocation} />
         </Box>
       </View>
 
@@ -348,5 +367,5 @@ const styles = StyleSheet.create({
   },
 });
 
-//TODO: Add trip_id to the catches when submitting the trip and catches to supabase!
+//TODO: Validation to form time input and check for valid inputs. Maybe some sanitation functions? Does supabase handle this automatically?
 // create a foreign key relationship between  catches.trip_id and trips.id in the database

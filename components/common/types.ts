@@ -43,3 +43,20 @@ export interface TripValues {
   notes: string;
   fishing_method: string;
 }
+
+export type TripLocation = {
+  latitude: number;
+  longitude: number;
+  place?: any;
+} | null;
+
+export type TripMapFormProps = {
+  setTripLocation: (location: TripLocation) => void;
+};
+
+export type regionType = {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+};
