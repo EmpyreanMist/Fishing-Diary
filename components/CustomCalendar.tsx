@@ -7,21 +7,21 @@ interface Props {
 }
 
 const svMonths = [
-  "januari",
-  "februari",
-  "mars",
-  "april",
-  "maj",
-  "juni",
-  "juli",
-  "augusti",
-  "september",
-  "oktober",
-  "november",
-  "december",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
-const svWeekdays = ["må", "ti", "on", "to", "fr", "lö", "sö"];
+const svWeekdays = ["mo", "tu", "we", "th", "fr", "sa", "su"];
 
 export default function CustomCalendar({ value, onSelect }: Props) {
   const [currentMonth, setCurrentMonth] = useState(
@@ -47,7 +47,7 @@ export default function CustomCalendar({ value, onSelect }: Props) {
 
   return (
     <View style={styles.container}>
-      {/* HEADER MED MÅNAD + PILAR */}
+      
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => setCurrentMonth(new Date(year, month - 1, 1))}
@@ -66,7 +66,7 @@ export default function CustomCalendar({ value, onSelect }: Props) {
         </TouchableOpacity>
       </View>
 
-      {/* VECKODAGAR */}
+     
       <View style={styles.weekRow}>
         {svWeekdays.map((d) => (
           <Text key={d} style={styles.weekdayText}>
@@ -75,7 +75,7 @@ export default function CustomCalendar({ value, onSelect }: Props) {
         ))}
       </View>
 
-      {/* DAGAR */}
+   
       <View style={styles.daysGrid}>
         {days.map((day, i) => {
           if (day === null) return <View key={i} style={styles.dayCell} />;

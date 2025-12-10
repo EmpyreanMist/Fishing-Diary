@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,31 +9,53 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import LureRowSelectable from "./LureRowSelectable";
+import LureRow from "./LureRow";
 
 interface DropdownItem {
   label: string;
-  value: string;
+  value: string; 
   image?: string;
 }
 
 interface SimpleDropdownProps {
   label: string;
   items: DropdownItem[];
+
+  customLures?: any[];
+  refresh?: () => void;
   enableSearch?: boolean;
   placeholder?: string;
   onSelect?: (value: string) => void;
+  enableAddCustom?: boolean;
+  onAddCustom?: () => void;
+  forceOpen?: boolean;
+  onForceOpenHandled?: () => void;
 }
 
 export default function SimpleDropdown({
   label,
   items,
+  customLures,
+  refresh,
   enableSearch = false,
   placeholder = "Select...",
   onSelect,
+  enableAddCustom,
+  onAddCustom,
+  forceOpen,
+  onForceOpenHandled,
 }: SimpleDropdownProps) {
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (forceOpen) {
+      setIsVisible(true);
+      onForceOpenHandled?.();
+    }
+  }, [forceOpen, onForceOpenHandled]);
 
   const filteredItems = enableSearch
     ? items.filter((item) =>
@@ -47,6 +69,8 @@ export default function SimpleDropdown({
     setSearchQuery("");
     onSelect?.(item.value);
   };
+
+  const supportsCustomLures = Array.isArray(customLures) && typeof refresh === "function";
 
   return (
     <View style={styles.wrapper}>
@@ -83,6 +107,19 @@ export default function SimpleDropdown({
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
             <View style={styles.doneRow}>
+              {enableAddCustom && onAddCustom ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsVisible(false);
+                    setTimeout(() => onAddCustom(), 10);
+                  }}
+                >
+                  <Text style={styles.doneText}>Add Lure</Text>
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )}
+
               <TouchableOpacity onPress={() => setIsVisible(false)}>
                 <Text style={styles.doneText}>Close</Text>
               </TouchableOpacity>
@@ -101,20 +138,33 @@ export default function SimpleDropdown({
             <FlatList
               data={filteredItems}
               keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.optionRow}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text style={styles.optionText}>{item.label}</Text>
-                  {item.image && (
-                    <Image
-                      source={{ uri: item.image }}
-                      style={styles.optionThumb}
+              renderItem={({ item }) => {
+                if (
+                  supportsCustomLures &&
+                  typeof item.value === "string" &&
+                  item.value.startsWith("custom-")
+                ) {
+                  const lureId = Number(item.value.replace("custom-", ""));
+                  const lure = customLures!.find((l: any) => l.id === lureId);
+                  if (!lure) return null;
+
+                  return (
+                    <LureRow
+                      lure={lure}
+                      refresh={refresh!}
+                      onPress={() => handleSelect(item)}
                     />
-                  )}
-                </TouchableOpacity>
-              )}
+                  );
+                }
+
+                return (
+                  <LureRowSelectable
+                    label={item.label}
+                    image={item.image}
+                    onPress={() => handleSelect(item)}
+                  />
+                );
+              }}
             />
           </View>
         </View>
@@ -172,7 +222,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   doneRow: {
-    alignItems: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#475569",
@@ -187,25 +239,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
     height: 40,
-  },
-  optionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#334155",
-  },
-  optionText: {
-    color: "#fff",
-    fontSize: 16,
-    flexShrink: 1,
-    marginRight: 10,
-  },
-  optionThumb: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    resizeMode: "cover",
   },
 });
