@@ -63,8 +63,6 @@ export default function RecentCatches({
           : lureObj.name
         : null;
 
-      console.log("LURES RAW:", c.lures);
-
       return {
         id: c.id.toString(),
         species: species ?? "Unknown",
