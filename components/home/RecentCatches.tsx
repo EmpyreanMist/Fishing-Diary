@@ -13,6 +13,7 @@ type CatchItem = {
   date: string;
   photos: string[];
   lure: string | null;
+  notes: string | null;
 };
 
 type SpeciesRow = {
@@ -30,6 +31,7 @@ type CatchRow = {
   length_cm: number | null;
   location_name: string | null;
   caught_at: string | null;
+  notes: string | null;
   catch_photos?: { image_url: string }[];
   fish_species: SpeciesRow | SpeciesRow[] | null;
   lures: LureRow | LureRow[] | null;
@@ -63,6 +65,7 @@ export default function RecentCatches({
         length_cm,
         location_name,
         caught_at,
+        notes,
         catch_photos ( image_url ),
         fish_species ( english_name ),
         lures!catches_lure_id_fkey ( name, brand )
@@ -81,6 +84,8 @@ export default function RecentCatches({
       const species = Array.isArray(c.fish_species)
         ? c.fish_species[0]?.english_name
         : c.fish_species?.english_name;
+
+      const notes = c.notes ?? null;
 
       const lureObj = Array.isArray(c.lures) ? c.lures[0] : c.lures;
 
@@ -103,6 +108,7 @@ export default function RecentCatches({
           : "—",
         photos: c.catch_photos?.map((p) => p.image_url) ?? [],
         lure,
+        notes,
       };
     });
     setRecentCatches(mapped);
