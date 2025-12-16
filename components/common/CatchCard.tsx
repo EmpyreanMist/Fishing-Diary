@@ -76,7 +76,6 @@ export default function CatchCard({ item, onImagePress }: any) {
         <View style={styles.expandArea}>
           <Text style={styles.expandLabel}>More details</Text>
 
-          <Text style={styles.expandText}>🎣 Species: {item.species}</Text>
           <Text style={styles.expandText}>🎯 Lure: {item.lure ?? "—"}</Text>
           <Text style={styles.expandText}>📝 Notes: {item.notes ?? "—"}</Text>
         </View>
