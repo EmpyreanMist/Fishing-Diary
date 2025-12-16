@@ -258,8 +258,8 @@ export default function TripForm({
             label="Save trip"
             color="blue"
             size="md"
-            onPress={() => {
-              handleTripSubmit(catches, tripValues);
+            onPress={async () => {
+              await handleTripSubmit(catches, tripValues);
               onClose();
             }}
           />
@@ -289,3 +289,7 @@ const styles = StyleSheet.create({
     borderColor: '#5ACCF2',
   },
 });
+
+// TODO: implement validation and error handling for input fields§
+// TODO: fix date picker to show selected date
+// TODO: fix time inputs to use time picker component
