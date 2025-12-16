@@ -3,39 +3,7 @@ import { View, Text, StyleSheet, Modal, Pressable, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../../lib/supabase";
 import CatchCard from "../common/CatchCard";
-
-type CatchItem = {
-  id: string;
-  species: string;
-  weight: string;
-  length: string;
-  lake: string;
-  date: string;
-  photos: string[];
-  lure: string | null;
-  notes: string | null;
-};
-
-type SpeciesRow = {
-  english_name: string;
-};
-
-type LureRow = {
-  name: string;
-  brand: string | null;
-};
-
-type CatchRow = {
-  id: number;
-  weight_kg: number | null;
-  length_cm: number | null;
-  location_name: string | null;
-  caught_at: string | null;
-  notes: string | null;
-  catch_photos?: { image_url: string }[];
-  fish_species: SpeciesRow | SpeciesRow[] | null;
-  lures: LureRow | LureRow[] | null;
-};
+import type { CatchItem, CatchRow, SpeciesRow, LureRow } from "../common/types";
 
 export default function RecentCatches({
   refreshSignal,
