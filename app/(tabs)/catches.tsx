@@ -46,9 +46,15 @@ export default function CatchesScreen() {
             .from("catches")
             .select(
               `
-              *,
+              id,
+              weight_kg,
+              length_cm,
+              location_name,
+              caught_at,
+              notes,
               catch_photos ( image_url ),
-              fish_species ( english_name, swedish_name )
+              fish_species ( english_name ),
+              lures!catches_lure_id_fkey ( name, brand )
             `
             )
             .eq("user_id", user.id)
@@ -56,7 +62,7 @@ export default function CatchesScreen() {
 
           if (error) throw error;
 
-          if (isActive) {
+          if (isActive && data) {
             setCatches(data.map(mapCatch));
           }
         } catch (err) {
@@ -75,15 +81,31 @@ export default function CatchesScreen() {
     }, [])
   );
 
-  function mapCatch(row: CatchRow): CatchItem {
+  function mapCatch(c: CatchRow): CatchItem {
+    const species = Array.isArray(c.fish_species)
+      ? c.fish_species[0]?.english_name
+      : c.fish_species?.english_name;
+
+    const lureObj = Array.isArray(c.lures) ? c.lures[0] : c.lures;
+
+    const lure = lureObj
+      ? lureObj.brand
+        ? `${lureObj.brand} ${lureObj.name}`
+        : lureObj.name
+      : null;
+
     return {
-      id: row.id,
-      species: row.fish_species?.english_name ?? "Unknown",
-      weight: row.weight_kg ? `${row.weight_kg} kg` : "—",
-      length: row.length_cm ? `${row.length_cm} cm` : "—",
-      lake: row.location_name ?? "—",
-      date: row.caught_at ? new Date(row.caught_at).toLocaleDateString() : "—",
-      photos: row.catch_photos?.map((p) => p.image_url) ?? [],
+      id: c.id.toString(),
+      species: species ?? "Unknown",
+      weight: c.weight_kg ? `${c.weight_kg} kg` : "—",
+      length: c.length_cm ? `${c.length_cm} cm` : "—",
+      lake: c.location_name ?? "—",
+      date: c.caught_at
+        ? new Date(c.caught_at).toLocaleDateString("sv-SE")
+        : "—",
+      photos: c.catch_photos?.map((p) => p.image_url) ?? [],
+      lure,
+      notes: c.notes ?? null,
     };
   }
 

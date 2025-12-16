@@ -74,23 +74,29 @@ export type CatchItem = {
   lake: string;
   date: string;
   photos: string[];
+  lure: string | null;
+  notes: string | null;
+};
+
+export type SpeciesRow = {
+  english_name: string;
+};
+
+export type LureRow = {
+  name: string;
+  brand: string | null;
 };
 
 export type CatchRow = {
-  id: string;
-  user_id: string;
-  fish_species_id: number | null;
+  id: number;
   weight_kg: number | null;
   length_cm: number | null;
   location_name: string | null;
   caught_at: string | null;
   notes: string | null;
-  created_at: string;
 
   catch_photos?: { image_url: string }[];
 
-  fish_species?: {
-    swedish_name: string | null;
-    english_name: string | null;
-  };
+  fish_species: SpeciesRow | SpeciesRow[] | null;
+  lures: LureRow | LureRow[] | null;
 };
