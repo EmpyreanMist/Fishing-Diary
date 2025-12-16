@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import type { CatchItem } from "./types";
 
 if (
   Platform.OS === "android" &&
@@ -19,7 +20,12 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export default function CatchCard({ item, onImagePress }: any) {
+type CatchCardProps = {
+  item: CatchItem;
+  onImagePress: (url: string) => void;
+};
+
+export default function CatchCard({ item, onImagePress }: CatchCardProps) {
   const [expanded, setExpanded] = useState(false);
   const hasPhoto = item.photos && item.photos.length > 0;
 
