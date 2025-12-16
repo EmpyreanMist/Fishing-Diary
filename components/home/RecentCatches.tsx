@@ -12,10 +12,16 @@ type CatchItem = {
   lake: string;
   date: string;
   photos: string[];
+  lure: string | null;
 };
 
 type SpeciesRow = {
   english_name: string;
+};
+
+type LureRow = {
+  name: string;
+  brand: string | null;
 };
 
 type CatchRow = {
@@ -26,6 +32,7 @@ type CatchRow = {
   caught_at: string | null;
   catch_photos?: { image_url: string }[];
   fish_species: SpeciesRow | SpeciesRow[] | null;
+  lures: LureRow | LureRow[] | null;
 };
 
 export default function RecentCatches({
@@ -57,7 +64,8 @@ export default function RecentCatches({
         location_name,
         caught_at,
         catch_photos ( image_url ),
-        fish_species ( english_name )
+        fish_species ( english_name ),
+        lures!catches_lure_id_fkey ( name, brand )
       `
       )
       .eq("user_id", user.id)
@@ -74,6 +82,16 @@ export default function RecentCatches({
         ? c.fish_species[0]?.english_name
         : c.fish_species?.english_name;
 
+      const lureObj = Array.isArray(c.lures) ? c.lures[0] : c.lures;
+
+      const lure = lureObj
+        ? lureObj.brand
+          ? `${lureObj.brand} ${lureObj.name}`
+          : lureObj.name
+        : null;
+
+      console.log("LURES RAW:", c.lures);
+
       return {
         id: c.id.toString(),
         species: species ?? "Unknown",
@@ -84,9 +102,9 @@ export default function RecentCatches({
           ? new Date(c.caught_at).toLocaleDateString("sv-SE")
           : "—",
         photos: c.catch_photos?.map((p) => p.image_url) ?? [],
+        lure,
       };
     });
-
     setRecentCatches(mapped);
   }
 
