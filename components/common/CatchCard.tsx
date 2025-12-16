@@ -76,8 +76,15 @@ export default function CatchCard({ item, onImagePress }: any) {
         <View style={styles.expandArea}>
           <Text style={styles.expandLabel}>More details</Text>
 
-          <Text style={styles.expandText}>🎯 Lure: {item.lure ?? "—"}</Text>
-          <Text style={styles.expandText}>📝 Notes: {item.notes ?? "—"}</Text>
+          <View style={styles.expandRow}>
+            <Ionicons name="fish-outline" size={14} color="#98A6B3" />
+            <Text style={styles.expandText}>Lure: {item.lure ?? "—"}</Text>
+          </View>
+
+          <View style={styles.expandRow}>
+            <Ionicons name="document-text-outline" size={14} color="#98A6B3" />
+            <Text style={styles.expandText}>Notes: {item.notes ?? "—"}</Text>
+          </View>
         </View>
       )}
 
@@ -194,5 +201,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: "500",
     textAlign: "center",
+  },
+  expandRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
 });

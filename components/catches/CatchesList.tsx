@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import {
   FlatList,
-  Text,
   View,
   Modal,
   Pressable,
   Image,
   StyleSheet,
+  Text,
 } from "react-native";
-import CatchRow from "./CatchRow";
+import CatchCard from "../common/CatchCard";
 import type { CatchItem } from "../../components/common/types";
-import { LinearGradient } from "expo-linear-gradient";
 
 type Props = {
   data: CatchItem[];
@@ -22,7 +21,6 @@ export default function CatchesList({ data, title = "All Catches" }: Props) {
 
   return (
     <>
-      {/* STATIC BACKGROUND CONTAINER — same as RecentCatches */}
       <View style={styles.container}>
         <Text style={styles.title}>{title}</Text>
 
@@ -30,14 +28,7 @@ export default function CatchesList({ data, title = "All Catches" }: Props) {
           data={data}
           keyExtractor={(i) => i.id}
           renderItem={({ item }) => (
-            <LinearGradient
-              colors={["#1A2732", "#0E141B"]} // SAME gradient as RecentCatches
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.card}
-            >
-              <CatchRow item={item} onImagePress={setSelectedImage} />
-            </LinearGradient>
+            <CatchCard item={item} onImagePress={setSelectedImage} />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           scrollEnabled={false}
@@ -63,7 +54,6 @@ export default function CatchesList({ data, title = "All Catches" }: Props) {
 }
 
 const styles = StyleSheet.create({
-  // SAME container as RecentCatches
   container: {
     backgroundColor: "#121B22",
     borderRadius: 12,
@@ -80,20 +70,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 
-  // SAME card style as RecentCatches.card
-  card: {
-    borderRadius: 10,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#1C2E40",
-  },
-
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.85)",
     justifyContent: "center",
     alignItems: "center",
   },
+
   fullImage: {
     width: "90%",
     height: "70%",
