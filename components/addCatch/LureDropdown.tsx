@@ -17,7 +17,7 @@ interface UserLure extends Lure {
 }
 
 interface LureDropdownProps {
-  onSelect: (id: string) => void;
+  onSelect: (data: { id: number; type: "global" | "custom" }) => void;
 }
 
 export default function LureDropdown({ onSelect }: LureDropdownProps) {
@@ -68,10 +68,22 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
     })),
     ...globalLures.map((lure) => ({
       label: `${lure.brand} - ${lure.name} - ${lure.weight_gram}g - ${lure.color}`,
-      value: String(lure.id),
+      value: `global-${lure.id}`,
       image: lure.image_url ?? undefined,
     })),
   ];
+
+  const handleSelect = (value: string) => {
+    if (!value) return;
+
+    if (value.startsWith("custom-")) {
+      const id = Number(value.replace("custom-", ""));
+      onSelect({ id, type: "custom" });
+    } else if (value.startsWith("global-")) {
+      const id = Number(value.replace("global-", ""));
+      onSelect({ id, type: "global" });
+    }
+  };
 
   return (
     <>
@@ -84,7 +96,7 @@ export default function LureDropdown({ onSelect }: LureDropdownProps) {
         enableAddCustom
         onAddCustom={() => setShowAddModal(true)}
         placeholder="Search or select lure..."
-        onSelect={onSelect}
+        onSelect={handleSelect}
         forceOpen={forceOpenDropdown}
         onForceOpenHandled={() => setForceOpenDropdown(false)}
       />

@@ -8,7 +8,8 @@ export interface CatchFormProps {
 
 export interface FormState {
   speciesId: string;
-  lureId: string;
+  lureId: number | null;
+  lureType: "global" | "custom" | null; 
   weightKg: string;
   lengthCm: string;
   locationName: string;
@@ -16,9 +17,11 @@ export interface FormState {
   caughtAt: Date;
 }
 
+
 export type CatchDraft = {
   speciesId: string;
-  lureId: string;
+  lureId: number | null;
+  lureType: "global" | "custom";
   weightKg: string;
   lengthCm: string;
   locationName: string;

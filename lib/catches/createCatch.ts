@@ -19,7 +19,10 @@ export default async function createCatch(
   const payload = {
     user_id: userId,
     fish_species_id: form.speciesId ? Number(form.speciesId) : null,
-    lure_id: form.lureId ? Number(form.lureId) : null,
+
+    lure_id: form.lureId ?? null,
+    lure_type: form.lureType ?? null,
+
     weight_kg: weight,
     length_cm: form.lengthCm ? Number(form.lengthCm) : null,
     location_name: form.locationName || null,

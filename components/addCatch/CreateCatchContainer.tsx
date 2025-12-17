@@ -20,6 +20,7 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
       {
         speciesId: draft.speciesId,
         lureId: draft.lureId,
+        lureType: draft.lureType, 
         weightKg: draft.weightKg,
         lengthCm: draft.lengthCm,
         locationName: draft.locationName,
