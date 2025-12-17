@@ -71,28 +71,34 @@ export default async function handleTripSubmit(
       .from('catches')
       .insert([
         {
+          user_id: user.id,
           trip_id: tripId,
-          species_id: element.speciesId,
-          lure_id: element.lureId,
-          weight_kg: element.weightKg,
-          length_cm: element.lengthCm,
-          location_name: element.locationName,
-          notes: element.notes,
-          caught_at: element.caughtAt,
-          latitude: element.latitude,
-          longitude: element.longitude,
-          photos: element.photos,
+          fish_species_id: element.speciesId ? Number(element.speciesId) : null,
+          lure_id: element.lureId ? Number(element.lureId) : null,
+          weight_kg: element.weightKg ? Number(element.weightKg) : null,
+          length_cm: element.lengthCm ? Number(element.lengthCm) : null,
+          location_name: element.locationName || null,
+          notes: element.notes || null,
+          caught_at: element.caughtAt ? new Date(element.caughtAt).toISOString() : null,
+          latitude: element.latitude || null,
+          longitude: element.longitude || null,
         },
       ])
       .select()
       .single();
 
     if (error) {
-      console.error(`Error submitting catch (${element}): ${error}`);
+      console.error('Catch insert ERROR →');
+      console.error('message:', error.message);
+      console.error('details:', error.details);
+      console.error('hint:', error.hint);
+      console.error('code:', error.code);
     } else {
       console.log('Catch submitted successfully:', data);
       succesfulSubmittedCatches.push(data);
     }
+
+    // Insert photo assets associated with the catch here if needed
   }
 
   return succesfulSubmittedCatches;

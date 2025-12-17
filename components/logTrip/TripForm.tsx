@@ -190,6 +190,18 @@ export default function TripForm({
             </Input>
           </Box>
         </HStack>
+
+        <Heading className="py-2" style={styles.heading} size="sm">
+          Water Condition
+        </Heading>
+        <Input style={[styles.input, focusedField === 'water_conditions' && styles.inputFocused]}>
+          <InputField
+            value={tripValues.water_conditions}
+            onChangeText={(text) => setTripValues({ ...tripValues, water_conditions: text })}
+            placeholder="Enter Water Conditions..."
+            onFocus={() => handleFocus('water_conditions')}
+          />
+        </Input>
       </View>
 
       <View style={[styles.container, { flexDirection: 'column' }]} className="my-5 mx-auto w-full">
