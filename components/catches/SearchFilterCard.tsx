@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Icon } from "@/components/ui/icon";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,28 @@ import { Search } from "lucide-react-native";
 import SimpleDropdown from "../addCatch/SimpleDropdown";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function SearchFilterCard() {
+type DropdownItem = {
+  label: string;
+  value: string;
+};
+
+type Props = {
+  query: string;
+  onQueryChange: (value: string) => void;
+  speciesOptions: DropdownItem[];
+  onSpeciesChange: (value: string) => void;
+  sortOptions: DropdownItem[];
+  onSortChange: (value: string) => void;
+};
+
+export default function SearchFilterCard({
+  query,
+  onQueryChange,
+  speciesOptions,
+  onSpeciesChange,
+  sortOptions,
+  onSortChange,
+}: Props) {
   return (
     <Card
       style={{
@@ -43,6 +64,8 @@ export default function SearchFilterCard() {
             <InputField
               placeholder="Search by species or location..."
               placeholderTextColor="#6B7280"
+              value={query}
+              onChangeText={onQueryChange}
               style={{
                 color: "white",
                 paddingVertical: 10,
@@ -56,24 +79,16 @@ export default function SearchFilterCard() {
           <View style={{ flex: 1 }}>
             <SimpleDropdown
               label="Species"
-              items={[
-                { label: "All species", value: "" },
-                { label: "Pike", value: "pike" },
-                { label: "Perch", value: "perch" },
-                { label: "Trout", value: "trout" },
-              ]}
+              items={speciesOptions}
+              onSelect={onSpeciesChange}
             />
           </View>
 
           <View style={{ flex: 1 }}>
             <SimpleDropdown
               label="Sort by"
-              items={[
-                { label: "Date (newest)", value: "date_desc" },
-                { label: "Date (oldest)", value: "date_asc" },
-                { label: "Weight (heaviest)", value: "weight_desc" },
-                { label: "Weight (lightest)", value: "weight_asc" },
-              ]}
+              items={sortOptions}
+              onSelect={onSortChange}
             />
           </View>
         </View>
