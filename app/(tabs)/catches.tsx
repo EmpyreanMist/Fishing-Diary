@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+﻿import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   ScrollView,
@@ -19,11 +19,64 @@ import CreateCatchContainer from "@/components/addCatch/CreateCatchContainer";
 import { supabase } from "@/lib/supabase";
 import type { CatchRow, CatchItem } from "../../components/common/types";
 
+type SortOption =
+  | "date_desc"
+  | "date_asc"
+  | "weight_desc"
+  | "weight_asc"
+  | "length_desc"
+  | "length_asc";
+
+type DropdownItem = {
+  label: string;
+  value: string;
+};
+
+const EMPTY_VALUE = "-";
+
+const SORT_OPTIONS: { label: string; value: SortOption }[] = [
+  { label: "Date (newest)", value: "date_desc" },
+  { label: "Date (oldest)", value: "date_asc" },
+  { label: "Weight (heaviest)", value: "weight_desc" },
+  { label: "Weight (lightest)", value: "weight_asc" },
+  { label: "Length (longest)", value: "length_desc" },
+  { label: "Length (shortest)", value: "length_asc" },
+];
+
+function parseNumber(value: string): number | null {
+  const parsed = parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function parseDate(value: string): number | null {
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function compareMaybeNumber(
+  a: number | null,
+  b: number | null,
+  direction: 1 | -1
+) {
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  if (a === b) return 0;
+  return direction * (a - b);
+}
+
+function isSortOption(value: string): value is SortOption {
+  return SORT_OPTIONS.some((option) => option.value === value);
+}
+
 export default function CatchesScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [catches, setCatches] = useState<CatchItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [speciesIdFilter, setSpeciesIdFilter] = useState("");
+  const [sort, setSort] = useState<SortOption>("date_desc");
 
   useFocusEffect(
     useCallback(() => {
@@ -53,7 +106,7 @@ export default function CatchesScreen() {
               caught_at,
               notes,
               catch_photos ( image_url ),
-              fish_species ( english_name ),
+              fish_species ( id, english_name ),
               lures!catches_lure_id_fkey ( name, brand )
             `
             )
@@ -62,8 +115,8 @@ export default function CatchesScreen() {
 
           if (error) throw error;
 
-          if (isActive && data) {
-            setCatches(data.map(mapCatch));
+          if (isActive) {
+            setCatches((data ?? []).map(mapCatch));
           }
         } catch (err) {
           console.error("Catches load error:", err);
@@ -82,9 +135,11 @@ export default function CatchesScreen() {
   );
 
   function mapCatch(c: CatchRow): CatchItem {
-    const species = Array.isArray(c.fish_species)
-      ? c.fish_species[0]?.english_name
-      : c.fish_species?.english_name;
+    const speciesRow = Array.isArray(c.fish_species)
+      ? c.fish_species[0]
+      : c.fish_species;
+    const species = speciesRow?.english_name?.trim() || "Unknown";
+    const speciesId = speciesRow ? String(speciesRow.id) : "unknown";
 
     const lureObj = Array.isArray(c.lures) ? c.lures[0] : c.lures;
 
@@ -92,32 +147,117 @@ export default function CatchesScreen() {
       ? lureObj.brand
         ? `${lureObj.brand} ${lureObj.name}`
         : lureObj.name
-      : null;
+      : EMPTY_VALUE;
+
+    const notes = c.notes?.trim();
 
     return {
       id: c.id.toString(),
-      species: species ?? "Unknown",
-      weight: c.weight_kg ? `${c.weight_kg} kg` : "—",
-      length: c.length_cm ? `${c.length_cm} cm` : "—",
-      lake: c.location_name ?? "—",
+      speciesId,
+      species,
+      weight:
+        typeof c.weight_kg === "number" ? `${c.weight_kg} kg` : EMPTY_VALUE,
+      length:
+        typeof c.length_cm === "number" ? `${c.length_cm} cm` : EMPTY_VALUE,
+      lake: c.location_name?.trim() || EMPTY_VALUE,
       date: c.caught_at
         ? new Date(c.caught_at).toLocaleDateString("sv-SE")
-        : "—",
-      photos: c.catch_photos?.map((p) => p.image_url) ?? [],
+        : EMPTY_VALUE,
+      photos:
+        c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
       lure,
-      notes: c.notes ?? null,
+      notes: notes && notes.length > 0 ? notes : EMPTY_VALUE,
     };
   }
 
   function getSpeciesCount(list: CatchItem[]) {
-    return new Set(list.map((c) => c.species)).size.toString();
+    return new Set(list.map((c) => c.speciesId)).size.toString();
   }
 
   function getBiggestCatch(list: CatchItem[]) {
     const weights = list
-      .map((c) => parseFloat(c.weight))
-      .filter((n) => !isNaN(n));
-    return weights.length ? `${Math.max(...weights)} kg` : "—";
+      .map((c) => parseNumber(c.weight))
+      .filter((n): n is number => n !== null);
+    return weights.length ? `${Math.max(...weights)} kg` : EMPTY_VALUE;
+  }
+
+  const speciesOptions: DropdownItem[] = useMemo(() => {
+    const map = new Map<string, string>();
+    catches.forEach((item) => {
+      if (!map.has(item.speciesId)) {
+        map.set(item.speciesId, item.species);
+      }
+    });
+
+    const options = Array.from(map.entries()).map(([value, label]) => ({
+      label,
+      value,
+    }));
+
+    options.sort((a, b) => a.label.localeCompare(b.label));
+
+    return [{ label: "All species", value: "" }, ...options];
+  }, [catches]);
+
+  const filteredCatches = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    const filtered = catches.filter((item) => {
+      if (speciesIdFilter && item.speciesId !== speciesIdFilter) return false;
+      if (!normalizedQuery) return true;
+
+      const haystack = `${item.species} ${item.lake}`.toLowerCase();
+      return haystack.includes(normalizedQuery);
+    });
+
+    return [...filtered].sort((a, b) => {
+      switch (sort) {
+        case "date_desc":
+          return compareMaybeNumber(
+            parseDate(a.date),
+            parseDate(b.date),
+            -1
+          );
+        case "date_asc":
+          return compareMaybeNumber(
+            parseDate(a.date),
+            parseDate(b.date),
+            1
+          );
+        case "weight_desc":
+          return compareMaybeNumber(
+            parseNumber(a.weight),
+            parseNumber(b.weight),
+            -1
+          );
+        case "weight_asc":
+          return compareMaybeNumber(
+            parseNumber(a.weight),
+            parseNumber(b.weight),
+            1
+          );
+        case "length_desc":
+          return compareMaybeNumber(
+            parseNumber(a.length),
+            parseNumber(b.length),
+            -1
+          );
+        case "length_asc":
+          return compareMaybeNumber(
+            parseNumber(a.length),
+            parseNumber(b.length),
+            1
+          );
+        default:
+          return 0;
+      }
+    });
+  }, [catches, query, speciesIdFilter, sort]);
+
+  function handleSortChange(value: string) {
+    if (isSortOption(value)) {
+      setSort(value);
+    }
   }
 
   if (loading) {
@@ -125,7 +265,7 @@ export default function CatchesScreen() {
       <SafeAreaView style={styles.safe} edges={[]}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#5ACCF2" />
-          <Text style={styles.loadingText}>Loading catches…</Text>
+          <Text style={styles.loadingText}>Loading catches...</Text>
         </View>
       </SafeAreaView>
     );
@@ -144,7 +284,7 @@ export default function CatchesScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <TopBar
-        subtitle={`${catches.length} catches logged`}
+        subtitle={`${filteredCatches.length} catches logged`}
         onAddCatch={() => setShowCreateModal(true)}
       />
 
@@ -152,15 +292,22 @@ export default function CatchesScreen() {
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
       >
-        <SearchFilterCard />
-
-        <StatsRow
-          total={`${catches.length}`}
-          biggest={getBiggestCatch(catches)}
-          species={getSpeciesCount(catches)}
+        <SearchFilterCard
+          query={query}
+          onQueryChange={setQuery}
+          speciesOptions={speciesOptions}
+          onSpeciesChange={setSpeciesIdFilter}
+          sortOptions={SORT_OPTIONS}
+          onSortChange={handleSortChange}
         />
 
-        <CatchesList data={catches} />
+        <StatsRow
+          total={`${filteredCatches.length}`}
+          biggest={getBiggestCatch(filteredCatches)}
+          species={getSpeciesCount(filteredCatches)}
+        />
+
+        <CatchesList data={filteredCatches} />
 
         <View style={{ height: 24 }} />
       </ScrollView>

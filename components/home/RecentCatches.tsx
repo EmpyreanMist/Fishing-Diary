@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Modal, Pressable, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../../lib/supabase";
 import CatchCard from "../common/CatchCard";
-import type { CatchItem, CatchRow, SpeciesRow, LureRow } from "../common/types";
+import type { CatchItem, CatchRow } from "../common/types";
 
 export default function RecentCatches({
   refreshSignal,
@@ -35,7 +35,7 @@ export default function RecentCatches({
         caught_at,
         notes,
         catch_photos ( image_url ),
-        fish_species ( english_name ),
+        fish_species ( id, english_name ),
         lures!catches_lure_id_fkey ( name, brand )
       `
       )
@@ -49,11 +49,11 @@ export default function RecentCatches({
     }
 
     const mapped = data.map((c: CatchRow) => {
-      const species = Array.isArray(c.fish_species)
-        ? c.fish_species[0]?.english_name
-        : c.fish_species?.english_name;
-
-      const notes = c.notes ?? null;
+      const speciesRow = Array.isArray(c.fish_species)
+        ? c.fish_species[0]
+        : c.fish_species;
+      const species = speciesRow?.english_name?.trim() || "Unknown";
+      const speciesId = speciesRow ? String(speciesRow.id) : "unknown";
 
       const lureObj = Array.isArray(c.lures) ? c.lures[0] : c.lures;
 
@@ -61,20 +61,26 @@ export default function RecentCatches({
         ? lureObj.brand
           ? `${lureObj.brand} ${lureObj.name}`
           : lureObj.name
-        : null;
+        : "-";
+
+      const notes = c.notes?.trim();
 
       return {
         id: c.id.toString(),
-        species: species ?? "Unknown",
-        weight: c.weight_kg ? `${c.weight_kg} kg` : "—",
-        length: c.length_cm ? `${c.length_cm} cm` : "—",
-        lake: c.location_name ?? "—",
+        speciesId,
+        species,
+        weight:
+          typeof c.weight_kg === "number" ? `${c.weight_kg} kg` : "-",
+        length:
+          typeof c.length_cm === "number" ? `${c.length_cm} cm` : "-",
+        lake: c.location_name?.trim() || "-",
         date: c.caught_at
           ? new Date(c.caught_at).toLocaleDateString("sv-SE")
-          : "—",
-        photos: c.catch_photos?.map((p) => p.image_url) ?? [],
+          : "-",
+        photos:
+          c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
         lure,
-        notes,
+        notes: notes && notes.length > 0 ? notes : "-",
       };
     });
     setRecentCatches(mapped);
