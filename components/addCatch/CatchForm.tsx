@@ -34,13 +34,13 @@ export default function CatchForm({ onClose, onSaved, onSubmit, loading = false,
   const [showMap, setShowMap] = useState(false);
 
   const [form, setForm] = useState({
-    speciesId: initialValue.speciesId ?? '',
+    speciesId: initialValue.speciesId ?? "",
     lureId: initialValue.lureId ?? null,
-    lureType: initialValue.lureType ?? 'global',
-    weightKg: initialValue.weightKg ?? '',
-    lengthCm: initialValue.lengthCm ?? '',
-    locationName: initialValue.locationName ?? '',
-    notes: initialValue.notes ?? '',
+    lureType: initialValue.lureType ?? "global",
+    weightKg: initialValue.weightKg ?? "",
+    lengthCm: initialValue.lengthCm ?? "",
+    locationName: initialValue.locationName ?? "",
+    notes: initialValue.notes ?? "",
     caughtAt: initialValue.caughtAt ?? new Date(),
   });
 
@@ -168,9 +168,14 @@ export default function CatchForm({ onClose, onSaved, onSubmit, loading = false,
 
               <LureDropdown
                 onSelect={({ id, type }) => {
-                  setField('lureId', id);
-                  setField('lureType', type);
+                  setField("lureId", id);
+                  setField("lureType", type);
                 }}
+              />
+
+              <CatchDateTimeButton
+                value={form.caughtAt}
+                onPress={() => setShowDate(true)}
               />
 
               <CatchDateTimeButton value={form.caughtAt} onPress={() => setShowDate(true)} />
