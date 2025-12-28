@@ -13,7 +13,7 @@ import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import TripMapForm from './mapTrip';
 import { CatchDraft, TripLocation, TripValues } from '../common/types';
 import CatchAdded from './CatchAdded';
-import handleTripSubmit from './utils/TripSumbit';
+import handleTripSubmit from './utils/TripSubmit';
 
 interface TripFormProps {
   date: Date | null;
