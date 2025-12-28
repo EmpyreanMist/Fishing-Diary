@@ -56,9 +56,15 @@ export default function TripForm({
 
   function handleTripLocation(location: TripLocation) {
     if (location === null) return;
+
+    const placeName = location.place?.city 
+    ?? location.place?.region 
+    ?? location.place?.name 
+    ?? 'Unknown location';
+   
     setTripValues({
       ...tripValues,
-      trip_location: location.place.city,
+      trip_location: placeName,
       trip_longitude: location.longitude,
       trip_latitude: location.latitude,
     });
