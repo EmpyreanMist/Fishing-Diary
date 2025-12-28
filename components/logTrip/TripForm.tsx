@@ -1,6 +1,6 @@
 import { Input, InputField } from '@/components/ui/input';
 import DateInput from './DateInput';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Alert } from 'react-native';
 import { Heading } from '../ui/heading';
 import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
@@ -277,7 +277,12 @@ export default function TripForm({
             color="blue"
             size="md"
             onPress={async () => {
-              await handleTripSubmit(catches, tripValues);
+              const result = await handleTripSubmit(catches, tripValues);
+              if (result?.failures && result.failures.length > 0) {
+                console.warn('Trip submit failures:', result.failures);
+                Alert.alert('Some catches failed to submit', `${result.failures.length} catches failed. See console for details.`);
+              }
+
               onClose();
             }}
           />
