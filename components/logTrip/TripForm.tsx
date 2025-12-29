@@ -1,7 +1,6 @@
-import { VStack } from '@/components/ui/vstack';
 import { Input, InputField } from '@/components/ui/input';
 import DateInput from './DateInput';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Alert } from 'react-native';
 import { Heading } from '../ui/heading';
 import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
@@ -12,11 +11,9 @@ import ActionButton from '../ui/ActionButton';
 import { useState } from 'react';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import TripMapForm from './mapTrip';
-import { CatchDraft } from '../common/types';
-
+import { CatchDraft, TripLocation, TripValues } from '../common/types';
 import CatchAdded from './CatchAdded';
-import handleTripSubmit from './utils/TripSumbit';
-/* import handleTripSubmit from './utils/TripSumbit'; */
+import handleTripSubmit from './utils/TripSubmit';
 
 interface TripFormProps {
   date: Date | null;
@@ -25,8 +22,6 @@ interface TripFormProps {
   setFocusedField: (field: string | null) => void;
   handleFocus: (field: string) => void;
   onClose: () => void;
-
-  //  Ny props:
   catches: { [key: string]: CatchDraft };
   onAddCatch: () => void;
   removeCatch: (id: string) => void;
@@ -39,12 +34,11 @@ export default function TripForm({
   setFocusedField,
   handleFocus,
   onClose,
-  // NY
   catches,
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
-  const [tripValues, setTripValues] = useState({
+  const [tripValues, setTripValues] = useState<TripValues>({
     trip_name: '',
     startTime: '',
     endTime: '',
@@ -55,18 +49,35 @@ export default function TripForm({
     water_conditions: '',
     notes: '',
     fishing_method: '',
+    trip_location: '',
+    trip_longitude: null,
+    trip_latitude: null,
   });
 
-  //fitler only on numbers
+  function handleTripLocation(location: TripLocation) {
+    if (location === null) return;
+
+    const placeName = location.place?.city 
+    ?? location.place?.region 
+    ?? location.place?.name 
+    ?? 'Unknown location';
+   
+    setTripValues({
+      ...tripValues,
+      trip_location: placeName,
+      trip_longitude: location.longitude,
+      trip_latitude: location.latitude,
+    });
+  }
 
   return (
     <>
-      <VStack style={styles.container} className="gap-4">
-        <VStack className="py-2 w-[90%]">
+      <View style={[styles.container, { flexDirection: 'column' }]} className="gap-4">
+        <View style={{ flexDirection: 'column' }} className="py-2 w-[90%]">
           <Heading style={styles.heading}>Trip Details</Heading>
           <TripDivider />
           <Text className="text-gray-400 text-md mt-1 pl-2">Basic information about your fishing trip</Text>
-        </VStack>
+        </View>
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Trip name
@@ -89,7 +100,7 @@ export default function TripForm({
             <Heading className="pb-1" style={styles.heading} size="sm">
               Start time
             </Heading>
-            <Input style={[styles.input, focusedField === 'startTime' && styles.inputFocused]} size="md">
+            <Input style={[styles.input, focusedField === 'startTime' && styles.inputFocused]}>
               <InputField
                 onChangeText={(text) => setTripValues({ ...tripValues, startTime: text })}
                 placeholder="e.g., 08:00"
@@ -102,7 +113,7 @@ export default function TripForm({
             <Heading className="pb-1" style={styles.heading} size="sm">
               End time
             </Heading>
-            <Input style={[styles.input, focusedField === 'endTime' && styles.inputFocused]} size="md">
+            <Input style={[styles.input, focusedField === 'endTime' && styles.inputFocused]}>
               <InputField
                 onChangeText={(text) => setTripValues({ ...tripValues, endTime: text })}
                 placeholder="e.g., 14:30"
@@ -117,7 +128,7 @@ export default function TripForm({
         <Heading className="py-2" style={styles.heading} size="sm">
           Participants
         </Heading>
-        <Input style={[styles.input, focusedField === 'participants' && styles.inputFocused]} size="md">
+        <Input style={[styles.input, focusedField === 'participants' && styles.inputFocused]}>
           <InputField
             value={tripValues.participants}
             onChangeText={(text) => setTripValues({ ...tripValues, participants: text })}
@@ -125,25 +136,19 @@ export default function TripForm({
             onFocus={() => handleFocus('participants')}
           />
         </Input>
-      </VStack>
+      </View>
 
-      <VStack style={styles.container} className="my-5 mx-auto w-full">
-        <VStack className="py-2 w-[90%]">
+      <View style={[styles.container, { flexDirection: 'column' }]} className="my-5 mx-auto w-full">
+        <View style={{ flexDirection: 'column' }} className="py-2 w-[90%]">
           <Heading style={styles.heading}>Weather & Water Conditions</Heading>
           <TripDivider />
           <Text className="text-gray-400 text-md mt-1 pl-2">Environmental Conditions During your Trip</Text>
-        </VStack>
+        </View>
+
         <Heading className="py-2" style={styles.heading} size="sm">
           Weather Condition
         </Heading>
-        <Input
-          style={[styles.input, focusedField === 'weather' && styles.inputFocused]}
-          variant="outline"
-          size="md"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
+        <Input style={[styles.input, focusedField === 'weather' && styles.inputFocused]}>
           <InputField
             value={tripValues.weather}
             onChangeText={(text) => setTripValues({ ...tripValues, weather: text })}
@@ -157,37 +162,33 @@ export default function TripForm({
             <Heading className="py-2" style={styles.heading} size="sm">
               Temperature
             </Heading>
-            <Input
-              style={[styles.input, focusedField === 'temperature' && styles.inputFocused]}
-              variant="outline"
-              size="md"
-              isDisabled={false}
-              isInvalid={false}
-              isReadOnly={false}
-            >
+            <Input style={[styles.input, focusedField === 'temperature' && styles.inputFocused]}>
               <InputField
-                value={tripValues.temperature}
-                keyboardType='numeric'
-                onChangeText={(text) => setTripValues({ ...tripValues, temperature: text })}
-                placeholder="Enter Text here..."
+                value={tripValues.temperature?.toString() ?? ''}
+                keyboardType="numeric"
+                onChangeText={(text) => {
+                  if (text === '') {
+                    setTripValues({ ...tripValues, temperature: '' });
+                    return;
+                  }
+                  if (/^-?\d*(\.\d*)?$/.test(text)) {
+                    const num = parseFloat(text);
+                    if (!isNaN(num) && num >= -273) {
+                      setTripValues({ ...tripValues, temperature: text });
+                    }
+                  }
+                }}
                 onFocus={() => handleFocus('temperature')}
               />
             </Input>
           </Box>
+
           <Box className="flex-1">
             <Heading className="py-2" style={styles.heading} size="sm">
               Wind Condition
             </Heading>
-            <Input
-              style={[styles.input, focusedField === 'wind' && styles.inputFocused]}
-              variant="outline"
-              size="md"
-              isDisabled={false}
-              isInvalid={false}
-              isReadOnly={false}
-            >
+            <Input style={[styles.input, focusedField === 'wind' && styles.inputFocused]}>
               <InputField
-                placeholder="Enter Text here..."
                 value={tripValues.wind}
                 onChangeText={(text) => setTripValues({ ...tripValues, wind: text })}
                 onFocus={() => handleFocus('wind')}
@@ -199,23 +200,17 @@ export default function TripForm({
         <Heading className="py-2" style={styles.heading} size="sm">
           Water Condition
         </Heading>
-        <Input
-          style={[styles.input, focusedField === 'water-conditions' && styles.inputFocused]}
-          variant="outline"
-          size="md"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-        >
+        <Input style={[styles.input, focusedField === 'water_conditions' && styles.inputFocused]}>
           <InputField
+            value={tripValues.water_conditions}
             onChangeText={(text) => setTripValues({ ...tripValues, water_conditions: text })}
-            placeholder="Enter Text here..."
-            onFocus={() => handleFocus('water-conditions')}
+            placeholder="Enter Water Conditions..."
+            onFocus={() => handleFocus('water_conditions')}
           />
         </Input>
-      </VStack>
+      </View>
 
-      <VStack style={styles.container} className="my-5 mx-auto w-full">
+      <View style={[styles.container, { flexDirection: 'column' }]} className="my-5 mx-auto w-full">
         <HStack className="gap-10">
           <Box className="flex-1 pl-2">
             <HStack className="items-center space-x-2">
@@ -229,59 +224,46 @@ export default function TripForm({
           </Box>
 
           <Box className="justify-center pr-2">
-            <ActionButton
-              label="Add Catch"
-              icon="add"
-              color="blue"
-              size="sm"
-              // MODAL ÖPPNAS NU HÄR
-              onPress={onAddCatch}
-            />
+            <ActionButton label="Add Catch" icon="add" color="blue" size="sm" onPress={onAddCatch} />
           </Box>
         </HStack>
+
         {Object.keys(catches).length === 0 ? (
-          <VStack className="items-center justify-center py-10 mx-auto space-y-2">
-            <Fish size={40} color="#6B7280" /> {/* Grå ikon */}
+          <View style={{ flexDirection: 'column' }} className="items-center justify-center py-10 mx-auto space-y-2">
+            <Fish size={40} color="#6B7280" />
             <Text style={{ color: '#6B7280', fontSize: 16, fontWeight: '600' }}>No catches logged yet</Text>
-            <Text style={{ color: '#9CA3AF', fontSize: 14 }}>Click &quot;Add Catch&quot; to record your fish</Text>
-          </VStack>
+            <Text style={{ color: '#9CA3AF', fontSize: 14 }}>Click `&quotAdd Catch`` to record your fish</Text>
+          </View>
         ) : (
-          //TODO: Fix some validation for catchDraft!
           <>
-            <>
-              {Object.entries(catches).map(([id, catchData]) => (
-                <CatchAdded key={id} catchData={catchData} onDelete={() => removeCatch(id)} />
-              ))}
-            </>
+            {Object.entries(catches).map(([id, catchData]) => (
+              <CatchAdded key={id} catchData={catchData} onDelete={() => removeCatch(id)} />
+            ))}
           </>
         )}
-      </VStack>
+      </View>
 
-      <VStack style={styles.container} className="py-2">
+      <View style={[styles.container, { flexDirection: 'column' }]} className="py-2">
         <Heading style={styles.heading} className="pl-2">
           Additional Notes
         </Heading>
         <TripDivider />
         <Text className="text-gray-400 text-md mt-1 pl-2">Any other observations or memorable moments</Text>
-        <Textarea
-          style={[styles.input, focusedField === 'other' && styles.inputFocused]}
-          className="mt-2 w-full px-2"
-          size="md"
-        >
+        <Textarea style={[styles.input, focusedField === 'other' && styles.inputFocused]}>
           <TextareaInput
             onChangeText={(text) => setTripValues({ ...tripValues, notes: text })}
             onFocus={() => handleFocus('other')}
             placeholder="Your text goes here..."
           />
         </Textarea>
-      </VStack>
+      </View>
 
-      <View style={styles.container} className="mt-5">
+      <View style={[styles.container, { flexDirection: 'column' }]} className="mt-5">
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
         <Text className="text-gray-400 text-md mt-1 pl-2">Tap on the map to select your fishing spot</Text>
-        <Box className="pt-2 border-solid outline-2">
-          <TripMapForm />
+        <Box className="pt-2">
+          <TripMapForm setTripLocation={handleTripLocation} />
         </Box>
       </View>
 
@@ -290,26 +272,19 @@ export default function TripForm({
           <ActionButton label="Cancel" color="black" size="md" onPress={onClose} />
         </Box>
         <Box className="w-1/2">
-          {/* This is where the trip + all catches should be saved */}
           <ActionButton
             label="Save trip"
             color="blue"
             size="md"
-            onPress={() => {
-              handleTripSubmit(catches, tripValues);
+            onPress={async () => {
+              const result = await handleTripSubmit(catches, tripValues);
+              if (result?.failures && result.failures.length > 0) {
+                console.warn('Trip submit failures:', result.failures);
+                Alert.alert('Some catches failed to submit', `${result.failures.length} catches failed. See console for details.`);
+              }
+
               onClose();
             }}
-            // TODO: Needs to implemented with supabase
-            // now it just logs the trip values and catches to the console, for testing purposes
-            // TODO: The code below is the code that should be implemented to save the trip and catches to supabase
-            /* onPress={async () => {
-              try {
-                const result = await handleTripSubmit(catches, tripValues);
-                console.log('Trip saved!', result);
-              } catch (err) {
-                console.error('Error saving trip:', err);
-              }
-            }} */
           />
         </Box>
       </HStack>
@@ -324,10 +299,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 16,
   },
-  headerContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
-  },
   heading: {
     color: '#fff',
     padding: 5,
@@ -340,13 +311,8 @@ const styles = StyleSheet.create({
   inputFocused: {
     borderColor: '#5ACCF2',
   },
-  fish: {
-    paddingLeft: 5,
-  },
-  catchHeading: {
-    padding: 10,
-  },
 });
 
-//TODO: Add trip_id to the catches when submitting the trip and catches to supabase!
-// create a foreign key relationship between  catches.trip_id and trips.id in the database
+// TODO: implement validation and error handling for input fields§
+// TODO: fix date picker to show selected date
+// TODO: fix time inputs to use time picker component

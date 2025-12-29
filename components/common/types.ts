@@ -45,8 +45,27 @@ export interface TripValues {
   water_conditions: string;
   notes: string;
   fishing_method: string;
+  trip_location: string;
+  trip_longitude: number | null;
+  trip_latitude: number | null;
 }
 
+export type TripLocation = {
+  latitude: number;
+  longitude: number;
+  place?: any;
+} | null;
+
+export type TripMapFormProps = {
+  setTripLocation: (location: TripLocation) => void;
+};
+
+export type regionType = {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+};
 export type CatchItem = {
   id: string;
   species: string;
