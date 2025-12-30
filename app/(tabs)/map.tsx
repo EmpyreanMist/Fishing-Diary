@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MapHeader } from "@/components/map/MapHeader";
+import { BaseHeader } from "@/components/common/BaseHeader";
 import { MapPopularSpots } from "@/components/map/MapPopularSpots";
 import {
   StyleSheet,
@@ -99,7 +99,12 @@ export default function MapScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <MapHeader />
+      <BaseHeader
+        title="Fishing Map"
+        subtitle="Explore fishing spots and track your catches"
+        icon="location"
+        theme="blue"
+      />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}

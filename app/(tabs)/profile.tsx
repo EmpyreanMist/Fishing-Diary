@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "@/components/profile/Header";
+import { BaseHeader } from "@/components/common/BaseHeader";
 import ProfileCard from "@/components/profile/ProfileCard";
 import SettingsCard from "@/components/profile/SettingsCard";
 import AccountCard from "@/components/profile/AccountCard";
@@ -19,9 +19,11 @@ export default function ProfileScreen() {
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Header
+        <BaseHeader
           title="Profile"
           subtitle="Manage your account and preferences"
+          icon="person-circle-outline"
+          theme="dark"
         />
 
         <View style={styles.content}>

@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
 import { getUserStatistics } from "../../lib/stats/statService";
 
-import { StatsHeader } from "@/components/stats/StatsHeader";
+import { BaseHeader } from "@/components/common/BaseHeader";
 import { StatsGrid } from "@/components/stats/StatsGrid";
 import { StatsProgress } from "@/components/stats/StatsProgress";
 import { StatsSpeciesBreakdown } from "@/components/stats/StatsSpeciesBreakdown";
@@ -112,7 +112,12 @@ export default function StatsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.container}>
-          <StatsHeader />
+          <BaseHeader
+            title="Statistics"
+            subtitle="Track your fishing progress and achievements"
+            icon="stats-chart"
+            theme="green"
+          />
 
           <StatsGrid
             total={stats.totalCatches}
