@@ -14,6 +14,7 @@ import TripMapForm from './mapTrip';
 import { CatchDraft, TripLocation, TripValues } from '../common/types';
 import CatchAdded from './CatchAdded';
 import handleTripSubmit from './utils/TripSubmit';
+import SubmitBanner, { SubmitStatus } from './utils/SubmitBanner';
 
 interface TripFormProps {
   date: Date | null;
@@ -38,6 +39,10 @@ export default function TripForm({
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
+  // for submission status
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({ type: 'idle' });
+
+  // trip details state
   const [tripValues, setTripValues] = useState<TripValues>({
     trip_name: '',
     startTime: '',
@@ -267,6 +272,7 @@ export default function TripForm({
         </Box>
       </View>
 
+        <SubmitBanner status={submitStatus}/>
       <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
           <ActionButton label="Cancel" color="black" size="md" onPress={onClose} />
@@ -277,13 +283,26 @@ export default function TripForm({
             color="blue"
             size="md"
             onPress={async () => {
-              const result = await handleTripSubmit(catches, tripValues);
-              if (result?.failures && result.failures.length > 0) {
-                console.warn('Trip submit failures:', result.failures);
-                Alert.alert('Some catches failed to submit', `${result.failures.length} catches failed. See console for details.`);
-              }
+             setSubmitStatus({ type: 'submitting' });
 
-              onClose();
+             try {
+               const result = await handleTripSubmit(catches, tripValues);
+
+               if (result.failures?.length) {
+                 setSubmitStatus({
+                   type: 'error',
+                   message: `Trip saved, but ${result.failures.length} items failed.`,
+                 });
+                 return; // do not close
+               }
+
+               setSubmitStatus({ type: 'success', message: 'Trip submitted successfully.' });
+               setTimeout(() => onClose(), 700);
+             } catch {
+               // NO console.error to avoid RN LogBox
+               setSubmitStatus({ type: 'error', message: 'Something went wrong. Please try again.' });
+             }
+
             }}
           />
         </Box>
