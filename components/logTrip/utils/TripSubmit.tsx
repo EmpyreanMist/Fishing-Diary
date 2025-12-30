@@ -71,7 +71,7 @@ export default async function handleTripSubmit(
       );
 
       if (rpcError) {
-        console.error('Atomic RPC insert error:', rpcError);
+        console.log('Atomic RPC insert error:', rpcError);
         throw rpcError;
       }
 
@@ -102,7 +102,7 @@ export default async function handleTripSubmit(
       return { trip: returnedTrip, catches: returnedCatches, failures };
     } catch (err) {
       // Don't swallow: bubble up so caller can handle, but include context
-      console.error('Atomic insert failed:', err);
+      console.log('Atomic insert failed:', err);
       throw err;
     }
   }
@@ -132,7 +132,7 @@ export default async function handleTripSubmit(
     .single();
 
   if (tripError) {
-    console.error('Trip insert error:', tripError);
+    console.log('Trip insert error:', tripError);
     throw tripError;
   }
 
@@ -172,7 +172,7 @@ export default async function handleTripSubmit(
       .single();
 
     if (catchError) {
-      console.error('Catch insert ERROR:', catchError);
+      console.log('Catch insert ERROR:', catchError);
       failures.push({ type: 'catch_insert', key, index: undefined, error: catchError, element });
       continue;
     }
@@ -190,7 +190,7 @@ export default async function handleTripSubmit(
           failures.push({ type: 'photo_upload', key, catch_id: catchData.id, details: failedPhotos });
         }
       } catch (err) {
-        console.error('Photo upload exception:', err);
+        console.log('Photo upload exception:', err);
         failures.push({ type: 'photo_upload_exception', key, catch_id: catchData.id, error: err });
       }
     } else {
