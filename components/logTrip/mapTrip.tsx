@@ -4,10 +4,13 @@ import * as Location from "expo-location";
 import { Alert } from "react-native";
 import { TripLocation, regionType } from "../common/types";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
+import { UserTripMarkers } from "../map/UserTripMarkers";
 
 type TripMapFormProps = {
   setTripLocation: (location: TripLocation) => void;
 };
+
+const tripIcon = require("../../assets/images/fish-trip.png");
 
 export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
   // for initial region
@@ -90,6 +93,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
       }}
     >
       <UserCatchMarkers />
+      <UserTripMarkers />
 
       {selected && (
         <Marker
@@ -105,6 +109,8 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
             `${selected.place?.region}, ${selected.place?.country}` ||
             undefined
           }
+          image={tripIcon}
+          anchor={{ x: 0.5, y: 0.5 }}
         />
       )}
     </MapView>
