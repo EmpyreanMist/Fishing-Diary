@@ -1,84 +1,53 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import { Box } from '@/components/ui/box';
-import { Pressable } from '@/components/ui/pressable';
-import { Input, InputField } from '@/components/ui/input';
-import { Icon } from '@/components/ui/icon';
-import { Calendar } from 'lucide-react-native';
-import DatePicker from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
+import { Box } from "@/components/ui/box";
+import { Pressable } from "@/components/ui/pressable";
+import { Input, InputField } from "@/components/ui/input";
+import { Icon } from "@/components/ui/icon";
+import { Calendar } from "lucide-react-native";
+import { StyleSheet } from "react-native";
 
 interface DateInputProps {
   date: Date | null;
-  setDate: string; // here should date be implemented correctly
+  onOpen: () => void;
   focusedField: string | null;
   setFocusedField: (field: string | null) => void;
 }
 
-export default function DateInput({ date, setDate, focusedField, setFocusedField }: DateInputProps) {
-  const [open, setOpen] = useState(false);
-
-  const formatted = date
-    ? date.toLocaleDateString('sv-SE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
-    : '';
-
-  // close picker if focus changes
-  useEffect(() => {
-    if (focusedField !== 'date' && open) {
-      setOpen(false);
-    }
-  }, [focusedField]);
-
-  // TODO: This needs to be corrected
-  const handleSelect = (d: any) => {
-    if (!d) return;
-    console.log('Selected date:', d);
-    //setDate(""); // here should the correct date be set
-  };
+export default function DateInput({
+  date,
+  onOpen,
+  focusedField,
+  setFocusedField,
+}: DateInputProps) {
+  const formatted = (date ?? new Date()).toLocaleDateString("sv-SE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
 
   return (
     <Box>
       <Pressable
         onPress={() => {
-          setOpen(true);
-          setFocusedField('date');
+          onOpen();
+          setFocusedField("date");
         }}
       >
         <Box pointerEvents="none">
-          <Input style={[styles.input, focusedField === 'date' && styles.inputFocused]} size="md">
-            <Icon as={Calendar} />
-            <InputField editable={false} placeholder="Välj datum" value={formatted} />
+          <Input
+            style={[
+              styles.input,
+              focusedField === "date" && styles.inputFocused,
+            ]}
+            size="md"
+          >
+            <Icon as={Calendar} style={styles.calendarIcon} />
+            <InputField
+              editable={false}
+              value={formatted}
+            />
           </Input>
         </Box>
       </Pressable>
-
-      {/* Overlay + DatePicker modal */}
-      {open && (
-        <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <DatePicker
-              mode="single"
-              date={dayjs(date || new Date())}
-              onChange={handleSelect}
-              locale="sv"
-            />
-
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setOpen(false);
-                setFocusedField(null);
-              }}
-            >
-              <Text style={styles.closeText}>Klar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </Box>
   );
 }
@@ -86,42 +55,12 @@ export default function DateInput({ date, setDate, focusedField, setFocusedField
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderColor: '#475569',
+    borderColor: "#475569",
     borderRadius: 8,
   },
-  inputFocused: {
-    borderColor: '#5ACCF2',
-  },
-
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 99,
-  },
-
-  modal: {
-    backgroundColor: '#1E293B',
-    padding: 16,
-    borderRadius: 12,
-    width: '85%',
-  },
-
-  closeButton: {
-    marginTop: 12,
-    paddingVertical: 10,
-    backgroundColor: '#334155',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-
-  closeText: {
-    color: 'white',
-    fontSize: 16,
+  inputFocused: { borderColor: "#5ACCF2" },
+  calendarIcon: {
+    marginLeft: 6,
+    color: "#94A3B8",
   },
 });
