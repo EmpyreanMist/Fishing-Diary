@@ -1,6 +1,6 @@
 import { Input, InputField } from '@/components/ui/input';
 import DateInput from './DateInput';
-import { Text, StyleSheet, View, Alert } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { Heading } from '../ui/heading';
 import TripDivider from './TripDivider';
 import { HStack } from '../ui/hstack';
