@@ -1,4 +1,4 @@
-export interface ModalComponentProps {
+﻿export interface ModalComponentProps {
   onClose: () => void;
 }
 
@@ -9,14 +9,13 @@ export interface CatchFormProps {
 export interface FormState {
   speciesId: string;
   lureId: number | null;
-  lureType: "global" | "custom" | null; 
+  lureType: "global" | "custom" | null;
   weightKg: string;
   lengthCm: string;
   locationName: string;
   notes: string;
   caughtAt: Date;
 }
-
 
 export type CatchDraft = {
   speciesId: string;
@@ -68,17 +67,19 @@ export type regionType = {
 };
 export type CatchItem = {
   id: string;
+  speciesId: string;
   species: string;
   weight: string;
   length: string;
   lake: string;
   date: string;
   photos: string[];
-  lure: string | null;
-  notes: string | null;
+  lure: string;
+  notes: string;
 };
 
 export type SpeciesRow = {
+  id: number;
   english_name: string;
 };
 
