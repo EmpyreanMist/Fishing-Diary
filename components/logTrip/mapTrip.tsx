@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
-import { Alert } from 'react-native';
-import { TripLocation, regionType } from '../common/types';
+import { useEffect, useState } from "react";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import { Alert } from "react-native";
+import { TripLocation, regionType } from "../common/types";
+import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
 
 type TripMapFormProps = {
   setTripLocation: (location: TripLocation) => void;
@@ -28,8 +29,11 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== 'granted') {
-        Alert.alert('Location Permission Denied', 'Default location set to Sweden');
+      if (status !== "granted") {
+        Alert.alert(
+          "Location Permission Denied",
+          "Default location set to Sweden"
+        );
         setInitialRegion(defaultRegion);
         return;
       }
@@ -43,7 +47,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
           longitudeDelta: 0.0421,
         });
       } catch (error) {
-        console.error('Kunde inte hämta plats:', error);
+        console.error("Kunde inte hämta plats:", error);
         setInitialRegion(defaultRegion);
       }
     })();
@@ -58,7 +62,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
 
       return info;
     } catch (error) {
-      console.error('Error in reverse geocoding:', error);
+      console.error("Error in reverse geocoding:", error);
       return null;
     }
   }
@@ -66,7 +70,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
   return (
     <MapView
       className="rounded-md mx-3"
-      style={{ width: '100%', height: 300 }}
+      style={{ width: "100%", height: 300 }}
       initialRegion={initialRegion || defaultRegion}
       onPress={async (e) => {
         if (isLoadingPlace) return; // prevent multiple taps
@@ -85,14 +89,22 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
         setIsLoadingPlace(false);
       }}
     >
+      <UserCatchMarkers />
+
       {selected && (
         <Marker
           coordinate={{
             latitude: selected.latitude,
             longitude: selected.longitude,
           }}
-          title={selected.place?.name || selected.place?.city || 'Selected Location'}
-          description={selected.place?.street || `${selected.place?.region}, ${selected.place?.country}` || undefined}
+          title={
+            selected.place?.name || selected.place?.city || "Selected Location"
+          }
+          description={
+            selected.place?.street ||
+            `${selected.place?.region}, ${selected.place?.country}` ||
+            undefined
+          }
         />
       )}
     </MapView>

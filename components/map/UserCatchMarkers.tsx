@@ -14,7 +14,7 @@ type CatchMarker = {
 };
 
 type UserCatchMarkersProps = {
-  refreshKey: number;
+  refreshKey?: number;
 };
 
 export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
@@ -22,13 +22,12 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
 
   useEffect(() => {
     fetchMarkers();
-  }, [refreshKey]); // refetch på fokus
+  }, [refreshKey]);
 
   async function fetchMarkers() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
     if (!user) return;
 
     const { data, error } = await supabase
@@ -47,14 +46,14 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
 
     if (error) return console.log(error);
 
-    const formatted = data.map((row: any) => ({
-      latitude: Number(row.latitude),
-      longitude: Number(row.longitude),
-      weight_kg: row.weight_kg,
-      fish: row.fish_species,
-    }));
-
-    setMarkers(formatted);
+    setMarkers(
+      data.map((row: any) => ({
+        latitude: Number(row.latitude),
+        longitude: Number(row.longitude),
+        weight_kg: row.weight_kg,
+        fish: row.fish_species,
+      }))
+    );
   }
 
   return (
