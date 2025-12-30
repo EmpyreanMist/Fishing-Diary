@@ -6,11 +6,13 @@ import {
   Modal,
   ActivityIndicator,
   Text,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 
-import TopBar from "@/components/catches/TopBar";
+import { BaseHeader } from "@/components/common/BaseHeader";
+import ActionButton from "@/components/ui/ActionButton";
 import SearchFilterCard from "@/components/catches/SearchFilterCard";
 import StatsRow from "@/components/catches/StatRow";
 import CatchesList from "@/components/catches/CatchesList";
@@ -163,8 +165,7 @@ export default function CatchesScreen() {
       date: c.caught_at
         ? new Date(c.caught_at).toLocaleDateString("sv-SE")
         : EMPTY_VALUE,
-      photos:
-        c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
+      photos: c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
       lure,
       notes: notes && notes.length > 0 ? notes : EMPTY_VALUE,
     };
@@ -213,17 +214,9 @@ export default function CatchesScreen() {
     return [...filtered].sort((a, b) => {
       switch (sort) {
         case "date_desc":
-          return compareMaybeNumber(
-            parseDate(a.date),
-            parseDate(b.date),
-            -1
-          );
+          return compareMaybeNumber(parseDate(a.date), parseDate(b.date), -1);
         case "date_asc":
-          return compareMaybeNumber(
-            parseDate(a.date),
-            parseDate(b.date),
-            1
-          );
+          return compareMaybeNumber(parseDate(a.date), parseDate(b.date), 1);
         case "weight_desc":
           return compareMaybeNumber(
             parseNumber(a.weight),
@@ -283,10 +276,27 @@ export default function CatchesScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <TopBar
+      <BaseHeader
+        title="My Catches"
         subtitle={`${filteredCatches.length} catches logged`}
-        onAddCatch={() => setShowCreateModal(true)}
-      />
+        icon="Fish"
+        theme="green"
+        action={
+          <ActionButton
+            label="Add Catch"
+            icon="add"
+            color="transparent"
+            size="md"
+            onPress={() => setShowCreateModal(true)}
+          />
+        }
+      >
+        <StatusBar
+          barStyle="light-content"
+          translucent
+          backgroundColor="transparent"
+        />
+      </BaseHeader>
 
       <ScrollView
         style={styles.scroll}
