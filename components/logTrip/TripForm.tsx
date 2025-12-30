@@ -1,19 +1,29 @@
-import { Input, InputField } from '@/components/ui/input';
-import DateInput from './DateInput';
-import { Text, StyleSheet, View, Alert } from 'react-native';
-import { Heading } from '../ui/heading';
-import TripDivider from './TripDivider';
-import { HStack } from '../ui/hstack';
-import { Box } from '@/components/ui/box';
-import FishingMethodDropdown from './FishingMethodDropdown';
-import { Fish } from 'lucide-react-native';
-import ActionButton from '../ui/ActionButton';
-import { useState } from 'react';
-import { Textarea, TextareaInput } from '@/components/ui/textarea';
-import TripMapForm from './mapTrip';
-import { CatchDraft, TripLocation, TripValues } from '../common/types';
-import CatchAdded from './CatchAdded';
-import handleTripSubmit from './utils/TripSubmit';
+import { Input, InputField } from "@/components/ui/input";
+import DateInput from "./DateInput";
+import {
+  Text,
+  StyleSheet,
+  View,
+  Alert,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import { Heading } from "../ui/heading";
+import TripDivider from "./TripDivider";
+import { HStack } from "../ui/hstack";
+import { Box } from "@/components/ui/box";
+import FishingMethodDropdown from "./FishingMethodDropdown";
+import { Fish } from "lucide-react-native";
+import ActionButton from "../ui/ActionButton";
+import { useState } from "react";
+import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import TripMapForm from "./mapTrip";
+import { CatchDraft, TripLocation, TripValues } from "../common/types";
+import CatchAdded from "./CatchAdded";
+import handleTripSubmit from "./utils/TripSubmit";
+import { Ionicons } from "@expo/vector-icons";
+import CustomCalendar from "../CustomCalendar";
+import TimeWheelModal from "./TimeWheelModal";
 
 interface TripFormProps {
   date: Date | null;
@@ -39,29 +49,43 @@ export default function TripForm({
   removeCatch,
 }: TripFormProps) {
   const [tripValues, setTripValues] = useState<TripValues>({
-    trip_name: '',
-    startTime: '',
-    endTime: '',
-    participants: '',
-    weather: '',
-    temperature: '',
-    wind: '',
-    water_conditions: '',
-    notes: '',
-    fishing_method: '',
-    trip_location: '',
+    trip_name: "",
+    startTime: "",
+    endTime: "",
+    participants: "",
+    weather: "",
+    temperature: "",
+    wind: "",
+    water_conditions: "",
+    notes: "",
+    fishing_method: "",
+    trip_location: "",
     trip_longitude: null,
     trip_latitude: null,
   });
 
+  const [showTripDate, setShowTripDate] = useState(false);
+  type TimeField = "startTime" | "endTime" | null;
+
+  const [timePickerOpen, setTimePickerOpen] = useState(false);
+  const [timePickerField, setTimePickerField] = useState<
+    "startTime" | "endTime"
+  >("startTime");
+
+  const openTimePicker = (field: "startTime" | "endTime") => {
+    setTimePickerField(field);
+    setTimePickerOpen(true);
+  };
+
   function handleTripLocation(location: TripLocation) {
     if (location === null) return;
 
-    const placeName = location.place?.city 
-    ?? location.place?.region 
-    ?? location.place?.name 
-    ?? 'Unknown location';
-   
+    const placeName =
+      location.place?.city ??
+      location.place?.region ??
+      location.place?.name ??
+      "Unknown location";
+
     setTripValues({
       ...tripValues,
       trip_location: placeName,
@@ -72,103 +96,182 @@ export default function TripForm({
 
   return (
     <>
-      <View style={[styles.container, { flexDirection: 'column' }]} className="gap-4">
-        <View style={{ flexDirection: 'column' }} className="py-2 w-[90%]">
+      <View
+        style={[styles.container, { flexDirection: "column" }]}
+        className="gap-4"
+      >
+        <View style={{ flexDirection: "column" }} className="py-2 w-[90%]">
           <Heading style={styles.heading}>Trip Details</Heading>
           <TripDivider />
-          <Text className="text-gray-400 text-md mt-1 pl-2">Basic information about your fishing trip</Text>
+          <Text className="text-gray-400 text-md mt-1 pl-2">
+            Basic information about your fishing trip
+          </Text>
         </View>
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Trip name
         </Heading>
-        <Input style={[styles.input, focusedField === 'name' && styles.inputFocused]} size="md">
+        <Input
+          style={[styles.input, focusedField === "name" && styles.inputFocused]}
+          size="md"
+        >
           <InputField
-            onChangeText={(text) => setTripValues({ ...tripValues, trip_name: text })}
+            onChangeText={(text) =>
+              setTripValues({ ...tripValues, trip_name: text })
+            }
             placeholder="e.q., Weekend at Lake Superior"
-            onFocus={() => handleFocus('name')}
+            onFocus={() => handleFocus("name")}
           />
         </Input>
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Date
         </Heading>
-        <DateInput date={date} setDate={setDate} focusedField={focusedField} setFocusedField={setFocusedField} />
+        <DateInput
+          date={date}
+          onOpen={() => setShowTripDate(true)}
+          focusedField={focusedField}
+          setFocusedField={setFocusedField}
+        />
 
-        <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <HStack
+          className="w-full gap-4 py-2"
+          style={{ alignItems: "flex-start", justifyContent: "space-between" }}
+        >
           <Box className="flex-1">
             <Heading className="pb-1" style={styles.heading} size="sm">
               Start time
             </Heading>
-            <Input style={[styles.input, focusedField === 'startTime' && styles.inputFocused]}>
-              <InputField
-                onChangeText={(text) => setTripValues({ ...tripValues, startTime: text })}
-                placeholder="e.g., 08:00"
-                onFocus={() => handleFocus('startTime')}
-              />
-            </Input>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                setFocusedField("startTime");
+                openTimePicker("startTime");
+              }}
+            >
+              <View pointerEvents="none">
+                <Input
+                  style={[
+                    styles.input,
+                    focusedField === "startTime" && styles.inputFocused,
+                  ]}
+                >
+                  <InputField
+                    editable={false}
+                    placeholder="e.g., 08:00"
+                    value={tripValues.startTime}
+                  />
+                </Input>
+              </View>
+            </TouchableOpacity>
           </Box>
 
           <Box className="flex-1">
             <Heading className="pb-1" style={styles.heading} size="sm">
               End time
             </Heading>
-            <Input style={[styles.input, focusedField === 'endTime' && styles.inputFocused]}>
-              <InputField
-                onChangeText={(text) => setTripValues({ ...tripValues, endTime: text })}
-                placeholder="e.g., 14:30"
-                onFocus={() => handleFocus('endTime')}
-              />
-            </Input>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                setFocusedField("endTime");
+                openTimePicker("endTime");
+              }}
+            >
+              <View pointerEvents="none">
+                <Input
+                  style={[
+                    styles.input,
+                    focusedField === "endTime" && styles.inputFocused,
+                  ]}
+                >
+                  <InputField
+                    editable={false}
+                    placeholder="e.g., 14:30"
+                    value={tripValues.endTime}
+                  />
+                </Input>
+              </View>
+            </TouchableOpacity>
           </Box>
         </HStack>
 
-        <FishingMethodDropdown onSelect={(id) => setTripValues({ ...tripValues, fishing_method: id })} />
+        <FishingMethodDropdown
+          onSelect={(id) =>
+            setTripValues({ ...tripValues, fishing_method: id })
+          }
+        />
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Participants
         </Heading>
-        <Input style={[styles.input, focusedField === 'participants' && styles.inputFocused]}>
+        <Input
+          style={[
+            styles.input,
+            focusedField === "participants" && styles.inputFocused,
+          ]}
+        >
           <InputField
             value={tripValues.participants}
-            onChangeText={(text) => setTripValues({ ...tripValues, participants: text })}
+            onChangeText={(text) =>
+              setTripValues({ ...tripValues, participants: text })
+            }
             placeholder="Participants..."
-            onFocus={() => handleFocus('participants')}
+            onFocus={() => handleFocus("participants")}
           />
         </Input>
       </View>
 
-      <View style={[styles.container, { flexDirection: 'column' }]} className="my-5 mx-auto w-full">
-        <View style={{ flexDirection: 'column' }} className="py-2 w-[90%]">
+      <View
+        style={[styles.container, { flexDirection: "column" }]}
+        className="my-5 mx-auto w-full"
+      >
+        <View style={{ flexDirection: "column" }} className="py-2 w-[90%]">
           <Heading style={styles.heading}>Weather & Water Conditions</Heading>
           <TripDivider />
-          <Text className="text-gray-400 text-md mt-1 pl-2">Environmental Conditions During your Trip</Text>
+          <Text className="text-gray-400 text-md mt-1 pl-2">
+            Environmental Conditions During your Trip
+          </Text>
         </View>
 
         <Heading className="py-2" style={styles.heading} size="sm">
           Weather Condition
         </Heading>
-        <Input style={[styles.input, focusedField === 'weather' && styles.inputFocused]}>
+        <Input
+          style={[
+            styles.input,
+            focusedField === "weather" && styles.inputFocused,
+          ]}
+        >
           <InputField
             value={tripValues.weather}
-            onChangeText={(text) => setTripValues({ ...tripValues, weather: text })}
+            onChangeText={(text) =>
+              setTripValues({ ...tripValues, weather: text })
+            }
             placeholder="Enter Weather Conditions..."
-            onFocus={() => handleFocus('weather')}
+            onFocus={() => handleFocus("weather")}
           />
         </Input>
 
-        <HStack className="w-full gap-4 py-2" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <HStack
+          className="w-full gap-4 py-2"
+          style={{ alignItems: "flex-start", justifyContent: "space-between" }}
+        >
           <Box className="flex-1">
             <Heading className="py-2" style={styles.heading} size="sm">
               Temperature
             </Heading>
-            <Input style={[styles.input, focusedField === 'temperature' && styles.inputFocused]}>
+            <Input
+              style={[
+                styles.input,
+                focusedField === "temperature" && styles.inputFocused,
+              ]}
+            >
               <InputField
-                value={tripValues.temperature?.toString() ?? ''}
+                value={tripValues.temperature?.toString() ?? ""}
                 keyboardType="numeric"
                 onChangeText={(text) => {
-                  if (text === '') {
-                    setTripValues({ ...tripValues, temperature: '' });
+                  if (text === "") {
+                    setTripValues({ ...tripValues, temperature: "" });
                     return;
                   }
                   if (/^-?\d*(\.\d*)?$/.test(text)) {
@@ -178,7 +281,7 @@ export default function TripForm({
                     }
                   }
                 }}
-                onFocus={() => handleFocus('temperature')}
+                onFocus={() => handleFocus("temperature")}
               />
             </Input>
           </Box>
@@ -187,11 +290,18 @@ export default function TripForm({
             <Heading className="py-2" style={styles.heading} size="sm">
               Wind Condition
             </Heading>
-            <Input style={[styles.input, focusedField === 'wind' && styles.inputFocused]}>
+            <Input
+              style={[
+                styles.input,
+                focusedField === "wind" && styles.inputFocused,
+              ]}
+            >
               <InputField
                 value={tripValues.wind}
-                onChangeText={(text) => setTripValues({ ...tripValues, wind: text })}
-                onFocus={() => handleFocus('wind')}
+                onChangeText={(text) =>
+                  setTripValues({ ...tripValues, wind: text })
+                }
+                onFocus={() => handleFocus("wind")}
               />
             </Input>
           </Box>
@@ -200,17 +310,27 @@ export default function TripForm({
         <Heading className="py-2" style={styles.heading} size="sm">
           Water Condition
         </Heading>
-        <Input style={[styles.input, focusedField === 'water_conditions' && styles.inputFocused]}>
+        <Input
+          style={[
+            styles.input,
+            focusedField === "water_conditions" && styles.inputFocused,
+          ]}
+        >
           <InputField
             value={tripValues.water_conditions}
-            onChangeText={(text) => setTripValues({ ...tripValues, water_conditions: text })}
+            onChangeText={(text) =>
+              setTripValues({ ...tripValues, water_conditions: text })
+            }
             placeholder="Enter Water Conditions..."
-            onFocus={() => handleFocus('water_conditions')}
+            onFocus={() => handleFocus("water_conditions")}
           />
         </Input>
       </View>
 
-      <View style={[styles.container, { flexDirection: 'column' }]} className="my-5 mx-auto w-full">
+      <View
+        style={[styles.container, { flexDirection: "column" }]}
+        className="my-5 mx-auto w-full"
+      >
         <HStack className="gap-10">
           <Box className="flex-1 pl-2">
             <HStack className="items-center space-x-2">
@@ -220,48 +340,84 @@ export default function TripForm({
               </Heading>
             </HStack>
             <TripDivider />
-            <Text className="text-gray-400 text-sm mt-1">Log all fish caught during this trip</Text>
+            <Text className="text-gray-400 text-sm mt-1">
+              Log all fish caught during this trip
+            </Text>
           </Box>
 
           <Box className="justify-center pr-2">
-            <ActionButton label="Add Catch" icon="add" color="blue" size="sm" onPress={onAddCatch} />
+            <ActionButton
+              label="Add Catch"
+              icon="add"
+              color="blue"
+              size="sm"
+              onPress={onAddCatch}
+            />
           </Box>
         </HStack>
 
         {Object.keys(catches).length === 0 ? (
-          <View style={{ flexDirection: 'column' }} className="items-center justify-center py-10 mx-auto space-y-2">
+          <View
+            style={{ flexDirection: "column" }}
+            className="items-center justify-center py-10 mx-auto space-y-2"
+          >
             <Fish size={40} color="#6B7280" />
-            <Text style={{ color: '#6B7280', fontSize: 16, fontWeight: '600' }}>No catches logged yet</Text>
-            <Text style={{ color: '#9CA3AF', fontSize: 14 }}>Click `&quotAdd Catch`` to record your fish</Text>
+            <Text style={{ color: "#6B7280", fontSize: 16, fontWeight: "600" }}>
+              No catches logged yet
+            </Text>
+            <Text style={{ color: "#9CA3AF", fontSize: 14 }}>
+              Click `&quotAdd Catch`` to record your fish
+            </Text>
           </View>
         ) : (
           <>
             {Object.entries(catches).map(([id, catchData]) => (
-              <CatchAdded key={id} catchData={catchData} onDelete={() => removeCatch(id)} />
+              <CatchAdded
+                key={id}
+                catchData={catchData}
+                onDelete={() => removeCatch(id)}
+              />
             ))}
           </>
         )}
       </View>
 
-      <View style={[styles.container, { flexDirection: 'column' }]} className="py-2">
+      <View
+        style={[styles.container, { flexDirection: "column" }]}
+        className="py-2"
+      >
         <Heading style={styles.heading} className="pl-2">
           Additional Notes
         </Heading>
         <TripDivider />
-        <Text className="text-gray-400 text-md mt-1 pl-2">Any other observations or memorable moments</Text>
-        <Textarea style={[styles.input, focusedField === 'other' && styles.inputFocused]}>
+        <Text className="text-gray-400 text-md mt-1 pl-2">
+          Any other observations or memorable moments
+        </Text>
+        <Textarea
+          style={[
+            styles.input,
+            focusedField === "other" && styles.inputFocused,
+          ]}
+        >
           <TextareaInput
-            onChangeText={(text) => setTripValues({ ...tripValues, notes: text })}
-            onFocus={() => handleFocus('other')}
+            onChangeText={(text) =>
+              setTripValues({ ...tripValues, notes: text })
+            }
+            onFocus={() => handleFocus("other")}
             placeholder="Your text goes here..."
           />
         </Textarea>
       </View>
 
-      <View style={[styles.container, { flexDirection: 'column' }]} className="mt-5">
+      <View
+        style={[styles.container, { flexDirection: "column" }]}
+        className="mt-5"
+      >
         <Heading style={styles.heading}>Select Location</Heading>
         <TripDivider />
-        <Text className="text-gray-400 text-md mt-1 pl-2">Tap on the map to select your fishing spot</Text>
+        <Text className="text-gray-400 text-md mt-1 pl-2">
+          Tap on the map to select your fishing spot
+        </Text>
         <Box className="pt-2">
           <TripMapForm setTripLocation={handleTripLocation} />
         </Box>
@@ -269,7 +425,12 @@ export default function TripForm({
 
       <HStack className="w-full py-4 mt-5" space="lg">
         <Box className="w-1/2 flex-1">
-          <ActionButton label="Cancel" color="black" size="md" onPress={onClose} />
+          <ActionButton
+            label="Cancel"
+            color="black"
+            size="md"
+            onPress={onClose}
+          />
         </Box>
         <Box className="w-1/2">
           <ActionButton
@@ -279,8 +440,11 @@ export default function TripForm({
             onPress={async () => {
               const result = await handleTripSubmit(catches, tripValues);
               if (result?.failures && result.failures.length > 0) {
-                console.warn('Trip submit failures:', result.failures);
-                Alert.alert('Some catches failed to submit', `${result.failures.length} catches failed. See console for details.`);
+                console.warn("Trip submit failures:", result.failures);
+                Alert.alert(
+                  "Some catches failed to submit",
+                  `${result.failures.length} catches failed. See console for details.`
+                );
               }
 
               onClose();
@@ -288,28 +452,93 @@ export default function TripForm({
           />
         </Box>
       </HStack>
+      <Modal
+        transparent
+        visible={showTripDate}
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setShowTripDate(false)}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <TouchableOpacity
+              style={styles.closeIconButton}
+              onPress={() => setShowTripDate(false)}
+            >
+              <Ionicons name="close" size={20} color="white" />
+            </TouchableOpacity>
+
+            <CustomCalendar
+              value={date ?? new Date()}
+              onSelect={(selected) => {
+                setDate(selected);
+                setShowTripDate(false);
+                setFocusedField(null);
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+      <TimeWheelModal
+        open={timePickerOpen}
+        title={timePickerField === "startTime" ? "Start time" : "End time"}
+        value={
+          timePickerField === "startTime"
+            ? tripValues.startTime
+            : tripValues.endTime
+        }
+        onChange={(t) =>
+          setTripValues((prev) => ({ ...prev, [timePickerField]: t }))
+        }
+        onClose={() => setTimePickerOpen(false)}
+      />
     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#121B22',
-    borderColor: '#1F2937',
+    backgroundColor: "#121B22",
+    borderColor: "#1F2937",
     borderWidth: 1,
     borderRadius: 16,
   },
   heading: {
-    color: '#fff',
+    color: "#fff",
     padding: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#475569',
+    borderColor: "#475569",
     borderRadius: 8,
   },
   inputFocused: {
-    borderColor: '#5ACCF2',
+    borderColor: "#5ACCF2",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modal: {
+    width: "85%",
+    backgroundColor: "#1E293B",
+    borderRadius: 16,
+    padding: 20,
+    paddingTop: 36,
+    alignItems: "center",
+    position: "relative",
+    maxHeight: "80%",
+  },
+  closeIconButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 6,
+    borderRadius: 20,
+    zIndex: 999,
   },
 });
 
