@@ -9,6 +9,7 @@ type TripMarker = {
   longitude: number;
   title: string | null;
   date: string | null;
+  description: string | null;
 };
 
 type UserTripMarkersProps = {
@@ -25,31 +26,56 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) {
-      console.warn("No user, cannot fetch trips");
-      setIsLoading(false);
-      return;
-    }
+    if (!user) return setIsLoading(false);
 
     const { data, error } = await supabase
       .from("trip")
-      .select("trip_latitude, trip_longitude, trip_name, start_time")
+      .select(
+        `
+        id,
+        trip_name,
+        updated_at,
+        trip_latitude,
+        trip_longitude,
+        catches:catches(id)
+      `
+      )
       .eq("user_id", user.id)
       .not("trip_latitude", "is", null)
       .not("trip_longitude", "is", null);
 
     if (error) {
       console.warn("Trip fetch error:", error.message);
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
 
-    const formatted = data.map((row: any) => ({
-      latitude: Number(row.trip_latitude),
-      longitude: Number(row.trip_longitude),
-      title: row.trip_name ?? "Fishing Trip",
-      date: row.start_time ?? null,
-    }));
+    const formatted = data.map((row: any) => {
+      const d = row.updated_at ? new Date(row.updated_at) : null;
+
+      const dateLabel = d
+        ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}-${String(d.getDate()).padStart(2, "0")}`
+        : null;
+
+      const catchCount = Array.isArray(row.catches) ? row.catches.length : 0;
+
+      const description = [
+        dateLabel,
+        catchCount > 0 ? `${catchCount} catches` : null,
+      ]
+        .filter(Boolean)
+        .join(", ");
+
+      return {
+        latitude: Number(row.trip_latitude),
+        longitude: Number(row.trip_longitude),
+        title: row.trip_name ?? "Fishing Trip",
+        date: dateLabel,
+        description,
+      };
+    });
 
     setMarkers(formatted);
     setIsLoading(false);
@@ -68,7 +94,7 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
           key={`trip-${i}`}
           coordinate={{ latitude: m.latitude, longitude: m.longitude }}
           title={m.title ?? "Trip"}
-          description={m.date ?? ""}
+          description={m.description ?? m.date ?? ""}
           image={tripIcon}
           anchor={{ x: 0.5, y: 0.5 }}
         />
