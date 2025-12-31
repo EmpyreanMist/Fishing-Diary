@@ -105,9 +105,10 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
             selected.place?.name || selected.place?.city || "Selected Location"
           }
           description={
-            selected.place?.street ||
-            `${selected.place?.region}, ${selected.place?.country}` ||
-            undefined
+            selected.place?.street ??
+            (selected.place?.region && selected.place?.country
+              ? `${selected.place.region}, ${selected.place.country}`
+              : undefined)
           }
           image={tripIcon}
           anchor={{ x: 0.5, y: 0.5 }}
