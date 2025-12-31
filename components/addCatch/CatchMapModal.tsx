@@ -3,6 +3,7 @@ import MapView, { Marker, MapPressEvent, LatLng } from "react-native-maps";
 import { useState, useEffect } from "react";
 import { UserCatchMarkers } from "@/components/map/UserCatchMarkers";
 import ActionButton from "../ui/ActionButton";
+import { UserTripMarkers } from "../map/UserTripMarkers";
 
 const fishIcon = require("../../assets/images/fish2.png");
 
@@ -56,6 +57,7 @@ export default function CatchMapModal({ visible, onClose, onSave }: Props) {
             />
           )}
           <UserCatchMarkers />
+          <UserTripMarkers />
         </MapView>
         {markerPosition && (
           <View style={styles.saveWrapper}>

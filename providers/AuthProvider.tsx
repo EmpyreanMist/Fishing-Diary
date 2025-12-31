@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Session, User } from "@supabase/supabase-js";
 
@@ -17,22 +17,41 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const sawAuthEvent = useRef(false);
 
   useEffect(() => {
-    // get initial session
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+    let isMounted = true;
 
     // listen for auth changes
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        sawAuthEvent.current = true;
         setSession(session);
+        setLoading(false);
       }
     );
 
-    return () => subscription?.subscription.unsubscribe();
+    // get initial session with a short retry to let storage hydrate on native
+    const bootstrap = async () => {
+      let current: Session | null = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const { data } = await supabase.auth.getSession();
+        current = data.session ?? null;
+        if (current) break;
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+
+      if (!isMounted || sawAuthEvent.current) return;
+      setSession(current);
+      setLoading(false);
+    };
+
+    bootstrap();
+
+    return () => {
+      isMounted = false;
+      subscription?.subscription.unsubscribe();
+    };
   }, []);
 
   return (
