@@ -1,16 +1,16 @@
 @startuml add catch
-actor User
+actor "Användare" as User
 
-usecase "Add New Catch" as UC0
-usecase "Choose species" as UC1
-usecase "Enter weight" as UC2
-usecase "Enter length" as UC3
-usecase "Enter location" as UC4
-usecase "Select lure type" as UC5
-usecase "Add notes" as UC6
-usecase "Add photo" as UC7
-usecase "Use GPS location" as UC8
-usecase "Save catch" as UC9
+usecase "Lägg till ny fångst" as UC0
+usecase "Vilken art" as UC1
+usecase "Skriv in vikt" as UC2
+usecase "Skriv in längd" as UC3
+usecase "Fångstplats" as UC4
+usecase "Välj bete" as UC5
+usecase "Anteckningar" as UC6
+usecase "Lägg till photo" as UC7
+usecase "Använd GPS-position" as UC8
+usecase "Spara fångst" as UC9
 
 User --> UC0
 UC0 --> UC1 : includes
