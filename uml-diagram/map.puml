@@ -1,0 +1,33 @@
+@startuml karta
+skinparam defaultFontName "DejaVu Sans"
+left to right direction
+
+actor "Användare" as User
+
+rectangle "Fishing Diary – Karta" {
+
+  usecase "Visa karta" as UC0
+
+  usecase "Visa fångster på karta" as UC1
+  usecase "Visa turer på karta" as UC2
+
+  usecase "Klicka på markör" as UC3
+  usecase "Visa information" as UC4
+
+  usecase "Visa fångstinfo\n(art, vikt, datum)" as UC5
+  usecase "Visa turinfo\n(namn, datum, antal fångster)" as UC6
+}
+
+User --> UC0
+
+UC0 ..> UC1 : <<include>>
+UC0 ..> UC2 : <<include>>
+
+UC1 ..> UC3 : <<include>>
+UC2 ..> UC3 : <<include>>
+
+UC3 ..> UC4 : <<include>>
+
+UC5 ..> UC4 : <<extend>>
+UC6 ..> UC4 : <<extend>>
+@enduml
