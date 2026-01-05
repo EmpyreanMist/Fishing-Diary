@@ -15,6 +15,7 @@ import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import { ActivityIndicator } from "react-native";
+import { UserTripMarkers } from "@/components/map/UserTripMarkers";
 
 const fishIcon = require("../../assets/images/fish2.png");
 
@@ -131,6 +132,7 @@ export default function MapScreen() {
             onPress={handleMapPress}
           >
             <UserCatchMarkers refreshKey={refreshKey} />
+            <UserTripMarkers refreshKey={refreshKey} />
 
             {pendingMarker && (
               <Marker
