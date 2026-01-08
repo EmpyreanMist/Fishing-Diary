@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -7,9 +7,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { supabase } from "../../lib/supabase";
 import { getUserStatistics } from "../../lib/stats/statService";
+import type { UserStatistics } from "../../types/stats";
 
 import { BaseHeader } from "@/components/common/BaseHeader";
 import { StatsGrid } from "@/components/stats/StatsGrid";
@@ -19,11 +21,8 @@ import { StatsLures } from "@/components/stats/StatsLures";
 import { StatsTopLocations } from "@/components/stats/StatsTopLocations";
 import { StatsAchievements } from "@/components/stats/StatsAchievements";
 
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
-
 export default function StatsScreen() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<UserStatistics | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -31,7 +30,7 @@ export default function StatsScreen() {
     useCallback(() => {
       let isActive = true;
 
-      async function load() {
+      async function load(): Promise<void> {
         try {
           setLoading(true);
           setErrorMsg(null);
@@ -47,9 +46,8 @@ export default function StatsScreen() {
           const result = await getUserStatistics(user.id);
           if (isActive) setStats(result);
         } catch (error) {
-          console.error("Stats load error:", error);
-
           if (error instanceof Error) {
+            console.error("Stats load error:", error);
             setErrorMsg(error.message);
           } else {
             setErrorMsg("Failed to load statistics.");
@@ -67,19 +65,17 @@ export default function StatsScreen() {
     }, [])
   );
 
-  // --- LOADING STATE ---
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#5ACCF2" />
-          <Text style={styles.loadingText}>Loading statistics…</Text>
+          <Text style={styles.loadingText}>Loading statistics...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  // --- ERROR ---
   if (errorMsg) {
     return (
       <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -90,7 +86,6 @@ export default function StatsScreen() {
     );
   }
 
-  // --- EMPTY ---
   if (!stats) {
     return (
       <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -101,9 +96,8 @@ export default function StatsScreen() {
     );
   }
 
-  const biggest = stats.biggestCatch?.weight_kg ?? 0;
+  const biggest = stats.biggestCatch.weight_kg ?? 0;
 
-  // --- NORMAL RENDER ---
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ScrollView
@@ -122,7 +116,7 @@ export default function StatsScreen() {
           <StatsGrid
             total={stats.totalCatches}
             days={stats.fishingDays}
-            biggestLength={stats.longestCatch?.length_cm ?? 0}
+            biggestLength={stats.longestCatch.length_cm ?? 0}
             biggestWeight={biggest.toFixed(1)}
           />
 

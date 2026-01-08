@@ -1,15 +1,15 @@
 import { supabase } from "../../lib/supabase";
 import type { FormState } from "../../components/common/types";
+type CreatedCatch = {
+  id: number;
+};
 
-/**
- * Skapar en ny catch-post i databasen.
- */
 export default async function createCatch(
   form: FormState,
   userId: string,
   latitude: number | null,
   longitude: number | null
-) {
+): Promise<CreatedCatch | null> {
   const weight = parseFloat(form.weightKg.replace(",", "."));
   if (isNaN(weight) || weight <= 0) {
     console.error("Invalid weight:", form.weightKg);
@@ -43,5 +43,5 @@ export default async function createCatch(
     return null;
   }
 
-  return data;
+  return data as CreatedCatch;
 }

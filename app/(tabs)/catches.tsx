@@ -59,7 +59,7 @@ function compareMaybeNumber(
   a: number | null,
   b: number | null,
   direction: 1 | -1
-) {
+): number {
   if (a === null && b === null) return 0;
   if (a === null) return 1;
   if (b === null) return -1;
@@ -163,7 +163,7 @@ export default function CatchesScreen() {
         typeof c.length_cm === "number" ? `${c.length_cm} cm` : EMPTY_VALUE,
       lake: c.location_name?.trim() || EMPTY_VALUE,
       date: c.caught_at
-        ? new Date(c.caught_at).toLocaleDateString("sv-SE")
+        ? new Date(c.caught_at).toLocaleDateString("en-US")
         : EMPTY_VALUE,
       photos: c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
       lure,
@@ -171,11 +171,11 @@ export default function CatchesScreen() {
     };
   }
 
-  function getSpeciesCount(list: CatchItem[]) {
+  function getSpeciesCount(list: CatchItem[]): string {
     return new Set(list.map((c) => c.speciesId)).size.toString();
   }
 
-  function getBiggestCatch(list: CatchItem[]) {
+  function getBiggestCatch(list: CatchItem[]): string {
     const weights = list
       .map((c) => parseNumber(c.weight))
       .filter((n): n is number => n !== null);
@@ -247,7 +247,7 @@ export default function CatchesScreen() {
     });
   }, [catches, query, speciesIdFilter, sort]);
 
-  function handleSortChange(value: string) {
+  function handleSortChange(value: string): void {
     if (isSortOption(value)) {
       setSort(value);
     }

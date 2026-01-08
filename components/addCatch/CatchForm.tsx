@@ -1,10 +1,10 @@
 import {
   ScrollView,
   StyleSheet,
-  Alert,
   View,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { FormControl } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,11 +15,7 @@ import LureDropdown from "./LureDropdown";
 import CatchFormActions from "./CatchFormActions";
 import FishDropdown from "./FishDropdown";
 import { supabase } from "../../lib/supabase";
-import type {
-  ModalComponentProps,
-  FormState,
-  CatchDraft,
-} from "../common/types";
+import type { FormState, CatchDraft } from "../common/types";
 import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import { useAuth } from "@/providers/AuthProvider";
@@ -50,7 +46,7 @@ export default function CatchForm({
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     speciesId: initialValue.speciesId ?? "",
     lureId: initialValue.lureId ?? null,
     lureType: initialValue.lureType ?? "global",
@@ -72,7 +68,6 @@ export default function CatchForm({
   );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
   const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
 
@@ -84,11 +79,14 @@ export default function CatchForm({
     loadSession();
   }, []);
 
-  const setField = (key: keyof typeof form, value: any) => {
+  const setField = <K extends keyof FormState>(
+    key: K,
+    value: FormState[K]
+  ): void => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleAddPhoto = async () => {
+  const handleAddPhoto = async (): Promise<void> => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (perm.status !== "granted") {
       Alert.alert("Permission denied");
@@ -107,7 +105,7 @@ export default function CatchForm({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     const draft: CatchDraft = {
       ...form,
       latitude,
@@ -123,9 +121,13 @@ export default function CatchForm({
     saveStandaloneCatch(draft);
   };
 
-  const saveStandaloneCatch = async (draft: CatchDraft) => {
+  const saveStandaloneCatch = async (draft: CatchDraft): Promise<void> => {
     try {
-      const userId = user!.id;
+      if (!user) {
+        return;
+      }
+
+      const userId = user.id;
 
       const formState = {
         speciesId: draft.speciesId,
@@ -159,10 +161,10 @@ export default function CatchForm({
 
         if (failed.length > 0) {
           Alert.alert("Warning", "Some photos failed to upload.");
+          return;
         }
       }
 
-      Alert.alert("Success", "Catch saved!");
       if (onSaved) {
         onSaved();
       }

@@ -22,7 +22,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
-    // listen for auth changes
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         sawAuthEvent.current = true;
@@ -31,7 +30,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // get initial session with a short retry to let storage hydrate on native
     const bootstrap = async () => {
       let current: Session | null = null;
       for (let attempt = 0; attempt < 3; attempt += 1) {

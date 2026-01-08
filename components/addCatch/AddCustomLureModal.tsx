@@ -32,7 +32,7 @@ export default function AddCustomLureModal({
   const [weight, setWeight] = useState("");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
-  const takePhoto = async () => {
+  const takePhoto = async (): Promise<void> => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") return;
 
@@ -44,7 +44,7 @@ export default function AddCustomLureModal({
     if (!result.canceled) setPhotoUri(result.assets[0].uri);
   };
 
-  const pickImage = async () => {
+  const pickImage = async (): Promise<void> => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.8,
@@ -53,7 +53,7 @@ export default function AddCustomLureModal({
     if (!result.canceled) setPhotoUri(result.assets[0].uri);
   };
 
-  const saveLure = async () => {
+  const saveLure = async (): Promise<void> => {
     try {
       const { data: lure, error } = await supabase
         .from("user_lures")
@@ -92,8 +92,8 @@ export default function AddCustomLureModal({
       setColor("");
       setWeight("");
       setPhotoUri(null);
-    } catch (err) {
-      console.error("Error creating lure:", err);
+    } catch {
+      return;
     }
   };
 

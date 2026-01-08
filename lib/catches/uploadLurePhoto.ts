@@ -6,7 +6,7 @@ export async function uploadLurePhoto(
   localUri: string,
   userId: string,
   lureId: number
-) {
+): Promise<{ publicUrl: string | null; storagePath: string } | null> {
   try {
     const manipulated = await ImageManipulator.manipulateAsync(
       localUri,
@@ -34,7 +34,7 @@ export async function uploadLurePhoto(
 
     return {
       publicUrl: urlData?.publicUrl ?? null,
-      storagePath: storagePath,
+      storagePath,
     };
   } catch (err) {
     console.error("Image processing error:", err);

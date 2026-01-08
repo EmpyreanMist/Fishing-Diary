@@ -1,6 +1,6 @@
-import SimpleDropdown from '../addCatch/SimpleDropdown';
-import { supabase } from '../../lib/supabase';
-import { useEffect, useState } from 'react';
+import SimpleDropdown from "../addCatch/SimpleDropdown";
+import { supabase } from "../../lib/supabase";
+import { useEffect, useState } from "react";
 interface FishingMethod {
   id: string;
   method_name: string;
@@ -10,23 +10,23 @@ interface FishingMethodDropdownProps {
   onSelect: (id: string) => void;
 }
 
-export default function FishingMethodDropdown({onSelect} : FishingMethodDropdownProps) {
+export default function FishingMethodDropdown({
+  onSelect,
+}: FishingMethodDropdownProps) {
   const [fishMethods, setFishMethods] = useState<FishingMethod[]>([]);
 
   useEffect(() => {
-    // method to fetch fising methods
-    const fetchMethods = async () => {
-      const { data, error } = await supabase.from('fishing_methods').select('id, method_name, method_img');
-      /* .order('method_name', { ascending: true }); */
+    const fetchMethods = async (): Promise<void> => {
+      const { data, error } = await supabase
+        .from("fishing_methods")
+        .select("id, method_name, method_img");
 
       if (error) {
-        console.error('Error fetching fishing methods:', error);
         return;
       }
       setFishMethods(data ?? []);
     };
 
-    //call function
     fetchMethods();
   }, []);
 
@@ -41,7 +41,7 @@ export default function FishingMethodDropdown({onSelect} : FishingMethodDropdown
   return (
     <SimpleDropdown
       label="Choose fishing method:"
-      items={[{ label: 'Choose fishing method:', value: '' }, ...methodOptions]}
+      items={[{ label: "Choose fishing method:", value: "" }, ...methodOptions]}
       enableSearch={true}
       onSelect={onSelect}
       placeholder="Search or select method..."

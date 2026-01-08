@@ -1,7 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
-
-/* Unsure how we will actually implement achievements :) */
 const achievements = [
   {
     title: "First Pike",

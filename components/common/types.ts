@@ -1,4 +1,6 @@
-﻿export interface ModalComponentProps {
+import type { LocationGeocodedAddress } from "expo-location";
+
+export interface ModalComponentProps {
   onClose: () => void;
 }
 
@@ -26,10 +28,8 @@ export type CatchDraft = {
   locationName: string;
   notes: string;
   caughtAt: Date;
-
   latitude: number | null;
   longitude: number | null;
-
   photos: string[];
 };
 
@@ -49,10 +49,21 @@ export interface TripValues {
   trip_latitude: number | null;
 }
 
+export type Lure = {
+  id: number;
+  name: string;
+  brand: string;
+  color?: string | null;
+  weight_gram?: number | null;
+  image_url?: string | null;
+  storage_path?: string | null;
+  user_id?: string | null;
+};
+
 export type TripLocation = {
   latitude: number;
   longitude: number;
-  place?: any;
+  place?: LocationGeocodedAddress | null;
 } | null;
 
 export type TripMapFormProps = {
@@ -95,9 +106,7 @@ export type CatchRow = {
   location_name: string | null;
   caught_at: string | null;
   notes: string | null;
-
   catch_photos?: { image_url: string }[];
-
   fish_species: SpeciesRow | SpeciesRow[] | null;
   lures: LureRow | LureRow[] | null;
 };

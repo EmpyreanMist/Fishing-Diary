@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import LureRowSelectable from "./LureRowSelectable";
 import LureRow from "./LureRow";
+import type { Lure } from "../common/types";
 
 interface DropdownItem {
   label: string;
@@ -22,7 +23,7 @@ interface SimpleDropdownProps {
   label: string;
   items: DropdownItem[];
 
-  customLures?: any[];
+  customLures?: Lure[];
   refresh?: () => void;
   enableSearch?: boolean;
   placeholder?: string;
@@ -70,7 +71,8 @@ export default function SimpleDropdown({
     onSelect?.(item.value);
   };
 
-  const supportsCustomLures = Array.isArray(customLures) && typeof refresh === "function";
+  const supportsCustomLures =
+    Array.isArray(customLures) && typeof refresh === "function";
 
   return (
     <View style={styles.wrapper}>
@@ -145,7 +147,9 @@ export default function SimpleDropdown({
                   item.value.startsWith("custom-")
                 ) {
                   const lureId = Number(item.value.replace("custom-", ""));
-                  const lure = customLures!.find((l: any) => l.id === lureId);
+                  const lure = customLures?.find(
+                    (lureItem) => lureItem.id === lureId
+                  );
                   if (!lure) return null;
 
                   return (

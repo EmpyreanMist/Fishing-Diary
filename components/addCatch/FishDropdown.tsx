@@ -16,14 +16,15 @@ export default function FishDropdown({ onSelect }: FishDropdownProps) {
   const [species, setSpecies] = useState<FishSpecies[]>([]);
 
   useEffect(() => {
-    const fetchSpecies = async () => {
+    const fetchSpecies = async (): Promise<void> => {
       const { data, error } = await supabase
         .from('fish_species')
         .select('*')
         .order('english_name', { ascending: true });
 
-      if (error) console.error('Error fetching species:', error);
-      else setSpecies(data);
+      if (!error) {
+        setSpecies(data ?? []);
+      }
     };
 
     fetchSpecies();

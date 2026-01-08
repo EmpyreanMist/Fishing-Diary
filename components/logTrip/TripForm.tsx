@@ -1,13 +1,6 @@
 import { Input, InputField } from "@/components/ui/input";
 import DateInput from "./DateInput";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Alert,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { Text, StyleSheet, View, TouchableOpacity, Modal } from "react-native";
 import { Heading } from "../ui/heading";
 import TripDivider from "./TripDivider";
 import { HStack } from "../ui/hstack";
@@ -49,10 +42,8 @@ export default function TripForm({
   onAddCatch,
   removeCatch,
 }: TripFormProps) {
-  // for submission status
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({ type: 'idle' });
 
-  // trip details state
   const [tripValues, setTripValues] = useState<TripValues>({
     trip_name: "",
     startTime: "",
@@ -77,12 +68,12 @@ export default function TripForm({
     "startTime" | "endTime"
   >("startTime");
 
-  const openTimePicker = (field: "startTime" | "endTime") => {
+  const openTimePicker = (field: "startTime" | "endTime"): void => {
     setTimePickerField(field);
     setTimePickerOpen(true);
   };
 
-  function handleTripLocation(location: TripLocation) {
+  function handleTripLocation(location: TripLocation): void {
     if (location === null) return;
 
     const placeName =
@@ -460,7 +451,6 @@ export default function TripForm({
                setSubmitStatus({ type: 'success', message: 'Trip submitted successfully.' });
                setTimeout(() => onClose(), 700);
              } catch {
-               // NO console.error to avoid RN LogBox
                setSubmitStatus({ type: 'error', message: 'Something went wrong. Please try again.' });
              }
 
@@ -558,6 +548,3 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: implement validation and error handling for input fields§
-// TODO: fix date picker to show selected date
-// TODO: fix time inputs to use time picker component

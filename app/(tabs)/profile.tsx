@@ -9,8 +9,6 @@ import { useAuth } from "@/providers/AuthProvider";
 export default function ProfileScreen() {
   const { user } = useAuth();
 
-  // RootLayout guarantees that user finds
-  // But safety check is still good in TypeScript
   if (!user) return null;
 
   return (
