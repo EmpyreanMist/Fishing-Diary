@@ -31,8 +31,8 @@ export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
       if (error) throw error;
 
       refresh();
-    } catch {
-      return;
+    } catch (err) {
+      console.error("Error deleting lure:", err);
     }
   };
 
@@ -72,7 +72,9 @@ export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
               }}
               numberOfLines={2}
             >
-              {lure.brand} - {lure.name}{lure.weight_gram ? ` - ${lure.weight_gram}g` : ""}{lure.color ? ` - ${lure.color}` : ""}
+              {lure.brand} - {lure.name}
+              {lure.weight_gram ? ` - ${lure.weight_gram}g` : ""}
+              {lure.color ? ` - ${lure.color}` : ""}
             </Text>
           </View>
 

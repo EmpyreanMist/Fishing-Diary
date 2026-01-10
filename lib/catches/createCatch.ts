@@ -1,5 +1,6 @@
 import { supabase } from "../../lib/supabase";
 import type { FormState } from "../../components/common/types";
+
 type CreatedCatch = {
   id: number;
 };

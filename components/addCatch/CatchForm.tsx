@@ -124,6 +124,8 @@ export default function CatchForm({
   const saveStandaloneCatch = async (draft: CatchDraft): Promise<void> => {
     try {
       if (!user) {
+        Alert.alert("Error", "You must be logged in to save a catch.");
+
         return;
       }
 

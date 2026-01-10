@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { supabase } from "@/lib/supabase";
 import { uploadLurePhoto } from "@/lib/catches/uploadLurePhoto";
 import ActionButton from "../ui/ActionButton";
+import { Alert } from "react-native";
 
 interface AddCustomLureModalProps {
   visible: boolean;
@@ -92,7 +93,9 @@ export default function AddCustomLureModal({
       setColor("");
       setWeight("");
       setPhotoUri(null);
-    } catch {
+    } catch (err) {
+      console.error("Failed to save lure:", err);
+      Alert.alert("Error", "Failed to save lure.");
       return;
     }
   };

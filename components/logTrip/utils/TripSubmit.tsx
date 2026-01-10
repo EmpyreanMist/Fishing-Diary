@@ -89,8 +89,8 @@ export default async function handleTripSubmit(
         caught_at: element.caughtAt
           ? new Date(element.caughtAt).toISOString()
           : null,
-        latitude: element.latitude || null,
-        longitude: element.longitude || null,
+        latitude: element.latitude ?? null,
+        longitude: element.longitude ?? null,
       })
     );
 

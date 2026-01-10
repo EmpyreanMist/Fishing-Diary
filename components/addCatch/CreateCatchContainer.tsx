@@ -5,6 +5,7 @@ import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import type { ModalComponentProps } from "../common/types";
 import { useState } from "react";
+import { Alert } from "react-native";
 
 export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
   const { user } = useAuth();
@@ -45,6 +46,7 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
     setSaving(false);
 
     if (failed.length === 0) {
+      Alert.alert("Warning", "Some photos failed to upload.");
       onClose();
     }
   };
