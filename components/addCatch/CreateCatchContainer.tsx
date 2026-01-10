@@ -1,4 +1,3 @@
-import { Alert } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import CatchForm from "./CatchForm";
 import { CatchDraft } from "../common/types";
@@ -6,13 +5,18 @@ import createCatch from "../../lib/catches/createCatch";
 import { uploadCatchPhotos } from "../../lib/catches/uploadPhotos";
 import type { ModalComponentProps } from "../common/types";
 import { useState } from "react";
+import { Alert } from "react-native";
 
 export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
   const { user } = useAuth();
   const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async (draft: CatchDraft) => {
-    const userId = user!.id;
+  const handleSubmit = async (draft: CatchDraft): Promise<void> => {
+    if (!user) {
+      return;
+    }
+
+    const userId = user.id;
 
     setSaving(true);
 
@@ -20,7 +24,7 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
       {
         speciesId: draft.speciesId,
         lureId: draft.lureId,
-        lureType: draft.lureType, 
+        lureType: draft.lureType,
         weightKg: draft.weightKg,
         lengthCm: draft.lengthCm,
         locationName: draft.locationName,
@@ -34,7 +38,6 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
 
     if (!created) {
       setSaving(false);
-      Alert.alert("Failed saving catch");
       return;
     }
 
@@ -42,10 +45,8 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
 
     setSaving(false);
 
-    if (failed.length > 0) {
-      Alert.alert("Partial success");
-    } else {
-      Alert.alert("Success");
+    if (failed.length === 0) {
+      Alert.alert("Warning", "Some photos failed to upload.");
       onClose();
     }
   };

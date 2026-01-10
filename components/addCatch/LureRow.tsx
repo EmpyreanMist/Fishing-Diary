@@ -1,17 +1,7 @@
 import { Swipeable } from "react-native-gesture-handler";
 import { TouchableOpacity, Text, View, Image } from "react-native";
 import { supabase } from "@/lib/supabase";
-
-interface Lure {
-  id: number;
-  name: string;
-  brand: string;
-  color?: string;
-  weight_gram?: number;
-  image_url?: string | null;
-  storage_path?: string | null;
-  user_id?: string;
-}
+import type { Lure } from "../common/types";
 
 interface LureRowProps {
   lure: Lure;
@@ -20,10 +10,9 @@ interface LureRowProps {
 }
 
 export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
-  const handleDelete = async () => {
+  const handleDelete = async (): Promise<void> => {
     try {
       if (!lure.user_id) {
-        console.error("Cannot delete lure without user_id");
         return;
       }
 
@@ -83,7 +72,9 @@ export default function LureRow({ lure, refresh, onPress }: LureRowProps) {
               }}
               numberOfLines={2}
             >
-              {lure.brand} - {lure.name}{lure.weight_gram ? ` - ${lure.weight_gram}g` : ""}{lure.color ? ` - ${lure.color}` : ""}
+              {lure.brand} - {lure.name}
+              {lure.weight_gram ? ` - ${lure.weight_gram}g` : ""}
+              {lure.color ? ` - ${lure.color}` : ""}
             </Text>
           </View>
 

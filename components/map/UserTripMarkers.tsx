@@ -16,17 +16,28 @@ type UserTripMarkersProps = {
   refreshKey?: number;
 };
 
+type TripRow = {
+  trip_name: string | null;
+  updated_at: string | null;
+  trip_latitude: number | string | null;
+  trip_longitude: number | string | null;
+  catches: { id: number }[] | null;
+};
+
 export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
   const [markers, setMarkers] = useState<TripMarker[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchTrips = useCallback(async () => {
+  const fetchTrips = useCallback(async (): Promise<void> => {
     setIsLoading(true);
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return setIsLoading(false);
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("trip")
@@ -46,10 +57,12 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
 
     if (error) {
       console.warn("Trip fetch error:", error.message);
-      return setIsLoading(false);
+      setIsLoading(false);
+      return;
     }
 
-    const formatted = data.map((row: any) => {
+    const rows: TripRow[] = data ?? [];
+    const formatted = rows.map((row) => {
       const d = row.updated_at ? new Date(row.updated_at) : null;
 
       const dateLabel = d
@@ -61,19 +74,17 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
 
       const catchCount = Array.isArray(row.catches) ? row.catches.length : 0;
 
-      const description = [
+      const descriptionParts = [
         dateLabel,
         catchCount > 0 ? `${catchCount} catches` : null,
-      ]
-        .filter(Boolean)
-        .join(", ");
+      ].filter((value): value is string => Boolean(value));
 
       return {
         latitude: Number(row.trip_latitude),
         longitude: Number(row.trip_longitude),
         title: row.trip_name ?? "Fishing Trip",
         date: dateLabel,
-        description,
+        description: descriptionParts.join(", "),
       };
     });
 

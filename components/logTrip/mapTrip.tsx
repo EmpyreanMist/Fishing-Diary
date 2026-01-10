@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { Alert } from "react-native";
 import { TripLocation, regionType } from "../common/types";
 import { UserCatchMarkers } from "../../components/map/UserCatchMarkers";
 import { UserTripMarkers } from "../map/UserTripMarkers";
@@ -12,31 +11,23 @@ type TripMapFormProps = {
 
 const tripIcon = require("../../assets/images/fish-trip.png");
 
+const defaultRegion: regionType = {
+  latitude: 59.3293,
+  longitude: 18.0686,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
 export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
-  // for initial region
   const [initialRegion, setInitialRegion] = useState<regionType | null>(null);
-
   const [selected, setSelected] = useState<TripLocation>(null);
-  // to prevent multiple taps
-  const [isLoadingPlace, setIsLoadingPlace] = useState<boolean>(false);
-
-  // fallback place for intial region
-  const defaultRegion = {
-    latitude: 59.3293, // Stockholm
-    longitude: 18.0686,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
+  const [isLoadingPlace, setIsLoadingPlace] = useState(false);
 
   useEffect(() => {
-    (async () => {
+    const loadLocation = async (): Promise<void> => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert(
-          "Location Permission Denied",
-          "Default location set to Sweden"
-        );
         setInitialRegion(defaultRegion);
         return;
       }
@@ -49,23 +40,26 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         });
-      } catch (error) {
-        console.error("Kunde inte hämta plats:", error);
+      } catch {
         setInitialRegion(defaultRegion);
       }
-    })();
+    };
+
+    loadLocation();
   }, []);
 
-  async function getPlaceName(lat: number, lon: number) {
+  async function getPlaceName(
+    lat: number,
+    lon: number
+  ): Promise<Location.LocationGeocodedAddress | null> {
     try {
       const [info] = await Location.reverseGeocodeAsync({
         latitude: lat,
         longitude: lon,
       });
 
-      return info;
-    } catch (error) {
-      console.error("Error in reverse geocoding:", error);
+      return info ?? null;
+    } catch {
       return null;
     }
   }
@@ -76,7 +70,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
       style={{ width: "100%", height: 300 }}
       initialRegion={initialRegion || defaultRegion}
       onPress={async (e) => {
-        if (isLoadingPlace) return; // prevent multiple taps
+        if (isLoadingPlace) return;
         setIsLoadingPlace(true);
 
         const { latitude, longitude } = e.nativeEvent.coordinate;
@@ -85,7 +79,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
         setSelected({
           latitude,
           longitude,
-          place, // innehåller city, region, street osv.
+          place,
         });
 
         setTripLocation({ latitude, longitude, place });

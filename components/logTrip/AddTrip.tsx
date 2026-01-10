@@ -6,39 +6,31 @@ import { useState } from "react";
 import TripHeader from "@/components/logTrip/TripHeader";
 import { ModalComponentProps, CatchDraft } from "../common/types";
 import CatchForm from "@/components/addCatch/CatchForm";
-import uuid from 'react-native-uuid';
-
+import uuid from "react-native-uuid";
 
 export default function AddTrip({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
 
-  // NEW STATE
-  const [catches, setCatches] = useState<{ [key: string]: CatchDraft }>({});
+  const [catches, setCatches] = useState<Record<string, CatchDraft>>({});
   const [showCatchModal, setShowCatchModal] = useState(false);
 
-  const handleFocus = (field: string) => {
+  const handleFocus = (field: string): void => {
     setFocusedField(field);
   };
 
-  const generateUniqueId = () => {
-    return uuid.v4();
-  }
+  const generateUniqueId = (): string => {
+    return String(uuid.v4());
+  };
 
-  // UI: Add catch to local trip state (will be saved later in DB).
-  const handleAddCatch = (draft: CatchDraft) => {
-    // Generate a unique ID for the new catch
+  const handleAddCatch = (draft: CatchDraft): void => {
     const id = generateUniqueId();
 
-    setCatches((prev) => {
-      console.log('Adding catch draft:', draft);
-      return { ...prev, [id]: draft };
-    });
+    setCatches((prev) => ({ ...prev, [id]: draft }));
     setShowCatchModal(false);
   };
 
-  // to handle removal of a catch in the dynamic catches list in TripForm
-  const removeCatch = (id: string) => {
+  const removeCatch = (id: string): void => {
     setCatches((prevCatches) => {
       const updatedCatches = { ...prevCatches };
       delete updatedCatches[id];
@@ -46,11 +38,9 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
     });
   };
 
-  // här ser man objekt i en array med catches datan || Ta bort sen
-  console.log('Catches in trip:', catches);
   return (
     <>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View className="mb-5">
           <TripHeader />
         </View>
@@ -68,7 +58,6 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
               setFocusedField={setFocusedField}
               handleFocus={handleFocus}
               onClose={onClose}
-              // ---- NEW PROPS ----
               catches={catches}
               onAddCatch={() => setShowCatchModal(true)}
               removeCatch={removeCatch}
@@ -77,9 +66,15 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
         </ScrollView>
       </SafeAreaView>
 
-      {/* SIMPLE BUILT-IN MODAL */}
-      <Modal visible={showCatchModal} animationType="slide" onRequestClose={() => setShowCatchModal(false)}>
-        <CatchForm onClose={() => setShowCatchModal(false)} onSubmit={handleAddCatch} />
+      <Modal
+        visible={showCatchModal}
+        animationType="slide"
+        onRequestClose={() => setShowCatchModal(false)}
+      >
+        <CatchForm
+          onClose={() => setShowCatchModal(false)}
+          onSubmit={handleAddCatch}
+        />
       </Modal>
     </>
   );
