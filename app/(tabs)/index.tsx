@@ -28,10 +28,8 @@ export default function HomeScreen() {
   const onRefresh = async () => {
     setRefreshing(true);
 
-    // Triggerar barnkomponenterna
     setRefreshSignal((prev) => prev + 1);
 
-    // Fake wait
     await new Promise((res) => setTimeout(res, 300));
 
     setRefreshing(false);
@@ -96,10 +94,7 @@ export default function HomeScreen() {
         transparent={false}
         onRequestClose={() => setShowTripScreen(false)}
       >
-        <AddTrip
-          //@ts-ignore
-          onClose={() => setShowTripScreen(false)}
-        />
+        <AddTrip onClose={() => setShowTripScreen(false)} />
       </Modal>
     </SafeAreaView>
   );

@@ -78,12 +78,12 @@ export default function MapScreen() {
             <>
               <TouchableOpacity onPress={handleSave}>
                 <View style={{ padding: 10 }}>
-                  <Text>Spara</Text>
+                  <Text>Save</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleCancel}>
                 <View style={{ padding: 10 }}>
-                  <Text>Avbryt</Text>
+                  <Text>Cancel</Text>
                 </View>
               </TouchableOpacity>
             </>
@@ -112,14 +112,12 @@ export default function MapScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.mapContainer}>
-          {/* 🔹 DARK OVERLAY */}
           {loading && <View style={styles.dimOverlay} />}
 
-          {/* 🔹 SPINNER + TEXT */}
           {loading && (
             <View style={styles.loaderContainer}>
               <ActivityIndicator size="large" color="#5ACCF2" />
-              <Text style={styles.loaderText}>Loading map…</Text>
+              <Text style={styles.loaderText}>Loading map...</Text>
             </View>
           )}
 
@@ -146,7 +144,7 @@ export default function MapScreen() {
               <Marker
                 key={`saved-${i}`}
                 coordinate={m}
-                title="Sparad plats"
+                title="Saved location"
                 description={`${m.latitude.toFixed(5)}, ${m.longitude.toFixed(
                   5
                 )}`}
@@ -184,14 +182,12 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
-
   loaderText: {
     marginTop: 12,
     fontSize: 16,
     color: "white",
     opacity: 0.9,
   },
-
   dimOverlay: {
     position: "absolute",
     top: 0,
@@ -202,7 +198,6 @@ const styles = StyleSheet.create({
     zIndex: 500,
     elevation: 500,
   },
-
   loaderContainer: {
     position: "absolute",
     top: 0,

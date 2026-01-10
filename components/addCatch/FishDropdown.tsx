@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import SimpleDropdown from './SimpleDropdown';
-import { supabase } from '../../lib/supabase';
+import { useEffect, useState } from "react";
+import SimpleDropdown from "./SimpleDropdown";
+import { supabase } from "../../lib/supabase";
 
 interface FishSpecies {
   id: string;
@@ -14,19 +14,36 @@ interface FishDropdownProps {
 
 export default function FishDropdown({ onSelect }: FishDropdownProps) {
   const [species, setSpecies] = useState<FishSpecies[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSpecies = async () => {
-      const { data, error } = await supabase
-        .from('fish_species')
-        .select('*')
-        .order('english_name', { ascending: true });
+    let isMounted = true;
 
-      if (error) console.error('Error fetching species:', error);
-      else setSpecies(data);
+    const fetchSpecies = async (): Promise<void> => {
+      const { data, error } = await supabase
+        .from("fish_species")
+        .select("*")
+        .order("english_name", { ascending: true });
+
+      if (!isMounted) return;
+
+      if (error) {
+        console.error("Failed to fetch fish species", error);
+        setError("Could not load species");
+        setSpecies([]);
+      } else {
+        setSpecies(data ?? []);
+      }
+
+      setLoading(false);
     };
 
     fetchSpecies();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const speciesOptions = species.map((fish) => ({
@@ -35,10 +52,18 @@ export default function FishDropdown({ onSelect }: FishDropdownProps) {
     image: fish.image_url ?? undefined,
   }));
 
+  if (loading) {
+    return <p>Loading species...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
   return (
     <SimpleDropdown
       label="Species:"
-      items={[{ label: 'Select species', value: '' }, ...speciesOptions]}
+      items={[{ label: "Select species", value: "" }, ...speciesOptions]}
       enableSearch
       placeholder="Search or select fish..."
       onSelect={onSelect}

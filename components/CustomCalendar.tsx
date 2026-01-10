@@ -6,7 +6,7 @@ interface Props {
   onSelect: (date: Date) => void;
 }
 
-const svMonths = [
+const monthNames = [
   "January",
   "February",
   "March",
@@ -21,7 +21,7 @@ const svMonths = [
   "December",
 ];
 
-const svWeekdays = ["mo", "tu", "we", "th", "fr", "sa", "su"];
+const weekdayLabels = ["mo", "tu", "we", "th", "fr", "sa", "su"];
 
 export default function CustomCalendar({ value, onSelect }: Props) {
   const [currentMonth, setCurrentMonth] = useState(
@@ -31,8 +31,7 @@ export default function CustomCalendar({ value, onSelect }: Props) {
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
 
-  // För att generera dagarna i månaden + padding
-  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7; // Gör måndag = 0
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const days: (number | null)[] = [
@@ -47,44 +46,41 @@ export default function CustomCalendar({ value, onSelect }: Props) {
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => setCurrentMonth(new Date(year, month - 1, 1))}
         >
-          <Text style={styles.navButton}>‹</Text>
+          <Text style={styles.navButton}>{"<"}</Text>
         </TouchableOpacity>
 
         <Text style={styles.monthText}>
-          {svMonths[month]} {year}
+          {monthNames[month]} {year}
         </Text>
 
         <TouchableOpacity
           onPress={() => setCurrentMonth(new Date(year, month + 1, 1))}
         >
-          <Text style={styles.navButton}>›</Text>
+          <Text style={styles.navButton}>{">"}</Text>
         </TouchableOpacity>
       </View>
 
-     
       <View style={styles.weekRow}>
-        {svWeekdays.map((d) => (
-          <Text key={d} style={styles.weekdayText}>
-            {d}
+        {weekdayLabels.map((label) => (
+          <Text key={label} style={styles.weekdayText}>
+            {label}
           </Text>
         ))}
       </View>
 
-   
       <View style={styles.daysGrid}>
-        {days.map((day, i) => {
-          if (day === null) return <View key={i} style={styles.dayCell} />;
+        {days.map((day, index) => {
+          if (day === null) return <View key={index} style={styles.dayCell} />;
 
           const selected = isSelected(day);
 
           return (
             <TouchableOpacity
-              key={i}
+              key={index}
               style={[styles.dayCell, selected && styles.selectedDay]}
               onPress={() => onSelect(new Date(year, month, day))}
             >
@@ -146,7 +142,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 4,
   },
-
   dayText: {
     color: "white",
     fontSize: 16,

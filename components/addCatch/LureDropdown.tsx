@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 import SimpleDropdown from "./SimpleDropdown";
 import { supabase } from "../../lib/supabase";
 import AddCustomLureModal from "./AddCustomLureModal";
-
-interface Lure {
-  id: number;
-  name: string;
-  brand: string;
-  weight_gram: number;
-  color: string;
-  image_url?: string | null;
-}
+import type { Lure } from "../common/types";
 
 interface UserLure extends Lure {
   isCustom: true;

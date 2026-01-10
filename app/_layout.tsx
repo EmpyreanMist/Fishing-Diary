@@ -27,12 +27,10 @@ function RootNavigationGuard() {
 
     const inAuthGroup = segments[0] === "(auth)";
 
-    // Not logged in and trying to access protected routes
     if (!user && !inAuthGroup) {
       router.replace("/(auth)/login");
     }
 
-    // Logged in but browsing auth pages
     if (user && inAuthGroup) {
       router.replace("/(tabs)");
     }

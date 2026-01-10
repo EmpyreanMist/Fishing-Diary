@@ -17,7 +17,7 @@ export default function RecentCatches({
     fetchRecentCatches();
   }, [refreshSignal]);
 
-  async function fetchRecentCatches() {
+  async function fetchRecentCatches(): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -44,7 +44,6 @@ export default function RecentCatches({
       .limit(3);
 
     if (error || !data) {
-      console.error("Error fetching recent catches:", error);
       return;
     }
 
@@ -75,7 +74,7 @@ export default function RecentCatches({
           typeof c.length_cm === "number" ? `${c.length_cm} cm` : "-",
         lake: c.location_name?.trim() || "-",
         date: c.caught_at
-          ? new Date(c.caught_at).toLocaleDateString("sv-SE")
+          ? new Date(c.caught_at).toLocaleDateString("en-US")
           : "-",
         photos:
           c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
@@ -114,7 +113,9 @@ export default function RecentCatches({
           style={styles.modalBackground}
           onPress={() => setSelectedImage(null)}
         >
-          <Image source={{ uri: selectedImage! }} style={styles.fullImage} />
+          {selectedImage && (
+            <Image source={{ uri: selectedImage }} style={styles.fullImage} />
+          )}
         </Pressable>
       </Modal>
     </View>

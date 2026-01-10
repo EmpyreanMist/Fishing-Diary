@@ -25,7 +25,7 @@ export default function ProfileCard() {
   useEffect(() => {
     if (!user) return;
 
-    async function loadProfile(userId: string) {
+    async function loadProfile(userId: string): Promise<void> {
       const { data, error } = await supabase
         .from("profiles")
         .select("first_name, last_name, phone_number, bio")
@@ -47,7 +47,7 @@ export default function ProfileCard() {
     loadProfile(user.id);
   }, [user]);
 
-  async function saveChanges() {
+  async function saveChanges(): Promise<void> {
     if (!user) return;
 
     setSaving(true);

@@ -11,14 +11,16 @@ type StatItem = {
   sub: string;
 };
 
-export default function StatsGrid({
-  refreshSignal,
-}: {
+type StatsGridProps = {
   refreshSignal: number;
-}) {
+};
+
+const UNKNOWN_LABEL = "Unknown";
+
+export default function StatsGrid({ refreshSignal }: StatsGridProps) {
   const [totalCatches, setTotalCatches] = useState<number>(0);
-  const [favoriteSpecies, setFavoriteSpecies] = useState<string>("—");
-  const [bestMonth, setBestMonth] = useState<string>("—");
+  const [favoriteSpecies, setFavoriteSpecies] = useState<string>(UNKNOWN_LABEL);
+  const [bestMonth, setBestMonth] = useState<string>(UNKNOWN_LABEL);
 
   useEffect(() => {
     fetchTotalCatches();
@@ -26,12 +28,12 @@ export default function StatsGrid({
     fetchBestMonth().then(setBestMonth);
   }, [refreshSignal]);
 
-  async function fetchBestMonth() {
+  async function fetchBestMonth(): Promise<string> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return "—";
+    if (!user) return UNKNOWN_LABEL;
 
     const { data, error } = await supabase
       .from("catches")
@@ -39,13 +41,11 @@ export default function StatsGrid({
       .eq("user_id", user.id);
 
     if (error || !data) {
-      console.error("Error fetching months:", error);
-      return "—";
+      return UNKNOWN_LABEL;
     }
 
-    if (data.length === 0) return "—";
+    if (data.length === 0) return UNKNOWN_LABEL;
 
-    // Count by month number (0–11)
     const monthCounts: Record<number, number> = {};
 
     for (const row of data) {
@@ -56,10 +56,9 @@ export default function StatsGrid({
     }
 
     if (Object.keys(monthCounts).length === 0) {
-      return "—";
+      return UNKNOWN_LABEL;
     }
 
-    // Find best month
     const bestMonthIndex = Object.entries(monthCounts).sort(
       (a, b) => Number(b[1]) - Number(a[1])
     )[0][0];
@@ -82,14 +81,13 @@ export default function StatsGrid({
     return monthNames[Number(bestMonthIndex)];
   }
 
-  async function fetchFavoriteSpecies() {
+  async function fetchFavoriteSpecies(): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return;
 
-    // 1. Fetch species IDs + caught_at
     const { data, error } = await supabase
       .from("catches")
       .select("fish_species_id, caught_at")
@@ -97,11 +95,9 @@ export default function StatsGrid({
       .order("caught_at", { ascending: false });
 
     if (error || !data) {
-      console.error("Error fetching species:", error);
       return;
     }
 
-    // 2. Count occurrences AND track latest caught_at
     const stats: Record<number, { count: number; latest: string | null }> = {};
 
     for (const row of data) {
@@ -117,7 +113,6 @@ export default function StatsGrid({
 
       stats[id].count++;
 
-      // If this fish has a caught_at AND the stored latest is null, update
       if (
         row.caught_at &&
         (!stats[id].latest || row.caught_at > stats[id].latest)
@@ -126,51 +121,42 @@ export default function StatsGrid({
       }
     }
 
-    // If user has no catches
     if (Object.keys(stats).length === 0) {
-      setFavoriteSpecies("—");
+      setFavoriteSpecies(UNKNOWN_LABEL);
       return;
     }
 
-    // 3. Sort by:
-    //    1. highest count
-    //    2. latest date (null counts as oldest)
     const favoriteSpeciesId = Object.entries(stats)
       .sort((a, b) => {
         const [, statA] = a;
         const [, statB] = b;
 
-        // Sort by count first
         if (statB.count !== statA.count) {
           return statB.count - statA.count;
         }
 
-        // Tiebreak: sort by latest date
-        const dateA = statA.latest ?? ""; // null-safe
+        const dateA = statA.latest ?? "";
         const dateB = statB.latest ?? "";
 
-        // Newer date wins. Empty string = oldest.
         return dateB.localeCompare(dateA);
       })
       .map(([id]) => Number(id))[0];
 
-    // 4. Fetch the name of the species
     const { data: species } = await supabase
       .from("fish_species")
       .select("english_name")
       .eq("id", favoriteSpeciesId)
       .single();
 
-    setFavoriteSpecies(species?.english_name ?? "—");
+    setFavoriteSpecies(species?.english_name ?? UNKNOWN_LABEL);
   }
 
-  async function fetchTotalCatches() {
+  async function fetchTotalCatches(): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
-      console.error("User not logged in");
       return;
     }
 
@@ -180,7 +166,6 @@ export default function StatsGrid({
       .eq("user_id", user.id);
 
     if (error) {
-      console.error("Error counting catches:", error);
       return;
     }
 

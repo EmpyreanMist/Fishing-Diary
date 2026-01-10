@@ -1,4 +1,3 @@
-// TimeWheelModal.tsx
 import React, { useMemo } from "react";
 import {
   Modal,
@@ -12,17 +11,21 @@ import { Ionicons } from "@expo/vector-icons";
 import ActionButton from "../ui/ActionButton";
 
 type Props = {
-  title?: string; // t.ex. "Start time" / "End time"
-  value: string; // "HH:mm" (eller "" om inget valt än)
+  title?: string;
+  value: string;
   onChange: (time: string) => void;
   open: boolean;
   onClose: () => void;
 };
 
+type ParsedTime = {
+  h: number;
+  m: number;
+};
+
 const pad2 = (n: number) => n.toString().padStart(2, "0");
 
-const parseTime = (value: string) => {
-  // förväntar "HH:mm"
+const parseTime = (value: string): ParsedTime | null => {
   const match = /^(\d{1,2}):(\d{1,2})$/.exec(value.trim());
   if (!match) return null;
   const h = Number(match[1]);
@@ -63,7 +66,6 @@ export default function TimeWheelModal({
           <Text style={styles.title}>{title}</Text>
 
           <View style={styles.wheelContainer}>
-            {/* HOURS */}
             <View style={styles.wheel}>
               <Text style={styles.wheelLabel}>Hour</Text>
 
@@ -101,7 +103,6 @@ export default function TimeWheelModal({
               </ScrollView>
             </View>
 
-            {/* MINUTES */}
             <View style={styles.wheel}>
               <Text style={styles.wheelLabel}>Minute</Text>
 

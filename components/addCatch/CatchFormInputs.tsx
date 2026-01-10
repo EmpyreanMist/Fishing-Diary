@@ -9,13 +9,13 @@ interface CatchFormInputsProps {
   focusedField: string | null;
   setFocusedField: (field: string | null) => void;
   weightKg: string;
-  setWeightKg: React.Dispatch<React.SetStateAction<string>>;
+  setWeightKg: (value: string) => void;
   lengthCm: string;
-  setLengthCm: React.Dispatch<React.SetStateAction<string>>;
+  setLengthCm: (value: string) => void;
   locationName: string;
-  setLocationName: React.Dispatch<React.SetStateAction<string>>;
+  setLocationName: (value: string) => void;
   notes: string;
-  setNotes: React.Dispatch<React.SetStateAction<string>>;
+  setNotes: (value: string) => void;
 }
 
 export default function CatchFormInputs({

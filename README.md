@@ -95,6 +95,7 @@ To be added
 | length_cm       | numeric     | _(Optional)_ Logged length of fish in centimeters                                            |
 | notes           | text        | _(Optional)_ Free-text notes such as technique, weather or conditions                        |
 | location_name   | text        | _(Optional)_ Own written name of location (e.g "Luleälven)                                   |
+| lure_type       | text        | _(Optional)_ Global for lures from our lure database, Custom users custom lures              |
 
 ### catch_photos
 
@@ -171,18 +172,19 @@ To be added
 
 ### user_lures
 
-| Column      | Type        | Notes                                                                          |
-| ----------- | ----------- | ------------------------------------------------------------------------------ |
-| id          | int8 (PK)   | Auto-incrementing primary key                                                  |
-| user_id     | uuid (FK)   | _(Required)_ FK → `profiles.id` links lure to the owning user                  |
-| created_at  | timestamptz | Auto-set to `now()`. Timestamp when lure was created                           |
-| name        | text        | _(Required)_ Name of the lure added by the user                                |
-| brand       | text        | _(Optional)_ Brand of the lure added by the user (e.g "rapala", "Savage Gear") |
-| type        | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
-| weight_gram | numeric     | _(Optional)_ Lure weight in grams                                              |
-| color       | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
-| image_url   | text        | _(Optional)_ URL to the lure's stored image in Supabase Storage                |
-| notes       | text        | _(Optional)_ Free-form notes about the lure                                    |
+| Column       | Type        | Notes                                                                          |
+| ------------ | ----------- | ------------------------------------------------------------------------------ |
+| id           | int8 (PK)   | Auto-incrementing primary key                                                  |
+| user_id      | uuid (FK)   | _(Required)_ FK → `profiles.id` links lure to the owning user                  |
+| created_at   | timestamptz | Auto-set to `now()`. Timestamp when lure was created                           |
+| name         | text        | _(Required)_ Name of the lure added by the user                                |
+| brand        | text        | _(Optional)_ Brand of the lure added by the user (e.g "rapala", "Savage Gear") |
+| type         | text        | _(Optional)_ Lure category (e.g "Jerkbait", "Spinner")                         |
+| weight_gram  | numeric     | _(Optional)_ Lure weight in grams                                              |
+| color        | text        | _(Optional)_ Color description (e.g "Firetiger", "Silver Blue")                |
+| image_url    | text        | _(Optional)_ URL to the lure's stored image in Supabase Storage                |
+| notes        | text        | _(Optional)_ Free-form notes about the lure                                    |
+| storage_path | text        | _(Optional)_ Storage path to image                                             |
 
 <h2  style="text-align: center;">Authors</h2>
 <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">

@@ -17,6 +17,13 @@ type UserCatchMarkersProps = {
   refreshKey?: number;
 };
 
+type CatchRow = {
+  latitude: number | string | null;
+  longitude: number | string | null;
+  weight_kg: number | null;
+  fish_species: { english_name: string } | { english_name: string }[] | null;
+};
+
 export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
   const [markers, setMarkers] = useState<CatchMarker[]>([]);
 
@@ -24,7 +31,7 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
     fetchMarkers();
   }, [refreshKey]);
 
-  async function fetchMarkers() {
+  async function fetchMarkers(): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -44,15 +51,22 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
       .not("latitude", "is", null)
       .not("longitude", "is", null);
 
-    if (error) return console.log(error);
+    if (error) return;
 
+    const rows: CatchRow[] = data ?? [];
     setMarkers(
-      data.map((row: any) => ({
-        latitude: Number(row.latitude),
-        longitude: Number(row.longitude),
-        weight_kg: row.weight_kg,
-        fish: row.fish_species,
-      }))
+      rows.map((row) => {
+        const species = Array.isArray(row.fish_species)
+          ? row.fish_species[0] ?? null
+          : row.fish_species;
+
+        return {
+          latitude: Number(row.latitude),
+          longitude: Number(row.longitude),
+          weight_kg: row.weight_kg,
+          fish: species,
+        };
+      })
     );
   }
 

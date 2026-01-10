@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { supabase } from "@/lib/supabase";
 import { uploadLurePhoto } from "@/lib/catches/uploadLurePhoto";
 import ActionButton from "../ui/ActionButton";
+import { Alert } from "react-native";
 
 interface AddCustomLureModalProps {
   visible: boolean;
@@ -32,7 +33,7 @@ export default function AddCustomLureModal({
   const [weight, setWeight] = useState("");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
-  const takePhoto = async () => {
+  const takePhoto = async (): Promise<void> => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") return;
 
@@ -44,7 +45,7 @@ export default function AddCustomLureModal({
     if (!result.canceled) setPhotoUri(result.assets[0].uri);
   };
 
-  const pickImage = async () => {
+  const pickImage = async (): Promise<void> => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.8,
@@ -53,7 +54,7 @@ export default function AddCustomLureModal({
     if (!result.canceled) setPhotoUri(result.assets[0].uri);
   };
 
-  const saveLure = async () => {
+  const saveLure = async (): Promise<void> => {
     try {
       const { data: lure, error } = await supabase
         .from("user_lures")
@@ -93,7 +94,9 @@ export default function AddCustomLureModal({
       setWeight("");
       setPhotoUri(null);
     } catch (err) {
-      console.error("Error creating lure:", err);
+      console.error("Failed to save lure:", err);
+      Alert.alert("Error", "Failed to save lure.");
+      return;
     }
   };
 
