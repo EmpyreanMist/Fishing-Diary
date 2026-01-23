@@ -71,7 +71,28 @@ To be added
    EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_key
    ```
 
-3. Start the app
+3.
+
+4. Choose how to run the app
+
+   **Option A: Physical mobile device (recommended)**
+   - Install **Expo Go** from App Store (iOS) or Google Play (Android)
+   - Start the app with `npx expo start`
+   - Scan the QR code:
+     - iOS: Camera app
+     - Android: Expo Go app
+
+   **Option B: Android emulator (PC)**
+   - Install **Android Studio**
+   - Create and start an Android Virtual Device (AVD)
+   - Press `a` in the Expo terminal to launch the app
+
+   **Option C: iOS simulator (macOS only)**
+   - Install **Xcode**
+   - Open Xcode once to accept licenses
+   - Press `i` in the Expo terminal to launch the simulator
+
+5. Start the app
 
    ```bash
    npx expo start
@@ -95,6 +116,7 @@ To be added
 | length_cm       | numeric     | _(Optional)_ Logged length of fish in centimeters                                            |
 | notes           | text        | _(Optional)_ Free-text notes such as technique, weather or conditions                        |
 | location_name   | text        | _(Optional)_ Own written name of location (e.g "Luleälven)                                   |
+| lure_type       | text        | _(Optional)_ Global for lures from our lure database, Custom users custom lures              |
 
 ### catch_photos
 
