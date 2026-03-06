@@ -1,0 +1,31 @@
+name: Keep Supabase Awake
+
+on:
+  schedule:
+    # Every day at 07:00 UTC
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Supabase REST endpoint
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Missing required secrets: SUPABASE_URL and/or SUPABASE_ANON_KEY"
+            exit 1
+          fi
+
+          curl -sS -f "$SUPABASE_URL/rest/v1/" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Accept: application/json" \
+            -o /dev/null
+
+          echo "Supabase ping succeeded"
