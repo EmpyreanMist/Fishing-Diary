@@ -25,7 +25,7 @@ const svWeekdays = ["mo", "tu", "we", "th", "fr", "sa", "su"];
 
 export default function CustomCalendar({ value, onSelect }: Props) {
   const [currentMonth, setCurrentMonth] = useState(
-    new Date(value.getFullYear(), value.getMonth(), 1)
+    new Date(value.getFullYear(), value.getMonth(), 1),
   );
 
   const year = currentMonth.getFullYear();
@@ -47,7 +47,6 @@ export default function CustomCalendar({ value, onSelect }: Props) {
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => setCurrentMonth(new Date(year, month - 1, 1))}
@@ -66,7 +65,6 @@ export default function CustomCalendar({ value, onSelect }: Props) {
         </TouchableOpacity>
       </View>
 
-     
       <View style={styles.weekRow}>
         {svWeekdays.map((d) => (
           <Text key={d} style={styles.weekdayText}>
@@ -75,7 +73,6 @@ export default function CustomCalendar({ value, onSelect }: Props) {
         ))}
       </View>
 
-   
       <View style={styles.daysGrid}>
         {days.map((day, i) => {
           if (day === null) return <View key={i} style={styles.dayCell} />;

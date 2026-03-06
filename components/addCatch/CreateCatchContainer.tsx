@@ -20,7 +20,7 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
       {
         speciesId: draft.speciesId,
         lureId: draft.lureId,
-        lureType: draft.lureType, 
+        lureType: draft.lureType,
         weightKg: draft.weightKg,
         lengthCm: draft.lengthCm,
         locationName: draft.locationName,
@@ -29,7 +29,7 @@ export default function CreateCatchContainer({ onClose }: ModalComponentProps) {
       },
       userId,
       draft.latitude,
-      draft.longitude
+      draft.longitude,
     );
 
     if (!created) {

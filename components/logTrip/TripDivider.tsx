@@ -1,5 +1,5 @@
-import { Divider } from '@/components/ui/divider';
-import { StyleSheet } from 'react-native';
+import { Divider } from "@/components/ui/divider";
+import { StyleSheet } from "react-native";
 
 export default function TripDivider() {
   return <Divider className="my-0.5" style={styles.divider} />;
@@ -7,6 +7,6 @@ export default function TripDivider() {
 
 const styles = StyleSheet.create({
   divider: {
-    backgroundColor: '#5ACCF2',
+    backgroundColor: "#5ACCF2",
   },
 });

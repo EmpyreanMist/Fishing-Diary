@@ -6,7 +6,10 @@ interface CatchDateTimeButtonProps {
   onPress: () => void;
 }
 
-export default function CatchDateTimeButton({ value, onPress }: CatchDateTimeButtonProps) {
+export default function CatchDateTimeButton({
+  value,
+  onPress,
+}: CatchDateTimeButtonProps) {
   return (
     <View style={styles.row}>
       <TouchableOpacity style={styles.button} onPress={onPress}>

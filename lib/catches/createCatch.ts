@@ -8,7 +8,7 @@ export default async function createCatch(
   form: FormState,
   userId: string,
   latitude: number | null,
-  longitude: number | null
+  longitude: number | null,
 ) {
   const weight = parseFloat(form.weightKg.replace(",", "."));
   if (isNaN(weight) || weight <= 0) {

@@ -16,7 +16,7 @@ const normalizeLocal = (date: Date) => {
     date.getDate(),
     date.getHours(),
     date.getMinutes(),
-    date.getSeconds()
+    date.getSeconds(),
   );
 };
 
@@ -66,7 +66,6 @@ export default function CatchDateTimeModals({
         </View>
       )}
 
- 
       {showTime && (
         <View style={styles.overlay}>
           <View style={styles.modalDark}>
@@ -80,7 +79,6 @@ export default function CatchDateTimeModals({
             <Text style={styles.title}>Select Time</Text>
 
             <View style={styles.wheelContainer}>
-        
               <View style={styles.wheel}>
                 <Text style={styles.wheelLabel}>Hour</Text>
 
@@ -120,7 +118,6 @@ export default function CatchDateTimeModals({
                 </ScrollView>
               </View>
 
-            
               <View style={styles.wheel}>
                 <Text style={styles.wheelLabel}>Minute</Text>
 
@@ -191,24 +188,24 @@ const styles = StyleSheet.create({
   },
 
   modal: {
-  padding: 20,
-  paddingTop: 30,        
-  borderRadius: 16,
-  width: "85%",
-  backgroundColor: "#1E293B",  
-  alignItems: "center",
-  position: "relative",  
-},
+    padding: 20,
+    paddingTop: 30,
+    borderRadius: 16,
+    width: "85%",
+    backgroundColor: "#1E293B",
+    alignItems: "center",
+    position: "relative",
+  },
 
-modalDark: {
-  padding: 20,
-  paddingTop: 30,       
-  borderRadius: 16,
-  width: "85%",
-  backgroundColor: "#1E293B",
-  alignItems: "center",
-  position: "relative",
-},
+  modalDark: {
+    padding: 20,
+    paddingTop: 30,
+    borderRadius: 16,
+    width: "85%",
+    backgroundColor: "#1E293B",
+    alignItems: "center",
+    position: "relative",
+  },
 
   title: {
     color: "white",
@@ -262,12 +259,12 @@ modalDark: {
   },
 
   closeIconButton: {
-  position: "absolute",
-  top: 10,
-  right: 10,
-  padding: 6,
-  borderRadius: 20,
-  backgroundColor: "transparent",
-  zIndex: 999,
-},
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: "transparent",
+    zIndex: 999,
+  },
 });

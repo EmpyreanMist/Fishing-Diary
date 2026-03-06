@@ -62,13 +62,13 @@ export default function CatchForm({
   });
 
   const [latitude, setLatitude] = useState<number | null>(
-    initialValue.latitude ?? null
+    initialValue.latitude ?? null,
   );
   const [longitude, setLongitude] = useState<number | null>(
-    initialValue.longitude ?? null
+    initialValue.longitude ?? null,
   );
   const [localPhotos, setLocalPhotos] = useState<string[]>(
-    initialValue.photos ?? []
+    initialValue.photos ?? [],
   );
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -142,7 +142,7 @@ export default function CatchForm({
         formState,
         userId,
         draft.latitude,
-        draft.longitude
+        draft.longitude,
       );
 
       if (!created) {
@@ -154,7 +154,7 @@ export default function CatchForm({
         const failed = await uploadCatchPhotos(
           draft.photos,
           userId,
-          created.id
+          created.id,
         );
 
         if (failed.length > 0) {

@@ -61,7 +61,7 @@ export default function StatsGrid({
 
     // Find best month
     const bestMonthIndex = Object.entries(monthCounts).sort(
-      (a, b) => Number(b[1]) - Number(a[1])
+      (a, b) => Number(b[1]) - Number(a[1]),
     )[0][0];
 
     const monthNames = [

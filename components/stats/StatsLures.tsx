@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-
 type Lure = {
   name: string;
   catches: number;

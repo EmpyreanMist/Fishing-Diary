@@ -38,7 +38,7 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
         longitude,
         weight_kg,
         fish_species ( english_name )
-      `
+      `,
       )
       .eq("user_id", user.id)
       .not("latitude", "is", null)
@@ -52,7 +52,7 @@ export function UserCatchMarkers({ refreshKey }: UserCatchMarkersProps) {
         longitude: Number(row.longitude),
         weight_kg: row.weight_kg,
         fish: row.fish_species,
-      }))
+      })),
     );
   }
 

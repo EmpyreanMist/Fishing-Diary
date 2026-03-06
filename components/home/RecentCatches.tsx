@@ -37,7 +37,7 @@ export default function RecentCatches({
         catch_photos ( image_url ),
         fish_species ( id, english_name ),
         lures!catches_lure_id_fkey ( name, brand )
-      `
+      `,
       )
       .eq("user_id", user.id)
       .order("caught_at", { ascending: false })
@@ -69,16 +69,13 @@ export default function RecentCatches({
         id: c.id.toString(),
         speciesId,
         species,
-        weight:
-          typeof c.weight_kg === "number" ? `${c.weight_kg} kg` : "-",
-        length:
-          typeof c.length_cm === "number" ? `${c.length_cm} cm` : "-",
+        weight: typeof c.weight_kg === "number" ? `${c.weight_kg} kg` : "-",
+        length: typeof c.length_cm === "number" ? `${c.length_cm} cm` : "-",
         lake: c.location_name?.trim() || "-",
         date: c.caught_at
           ? new Date(c.caught_at).toLocaleDateString("sv-SE")
           : "-",
-        photos:
-          c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
+        photos: c.catch_photos?.map((p) => p.image_url).filter(Boolean) ?? [],
         lure,
         notes: notes && notes.length > 0 ? notes : "-",
       };

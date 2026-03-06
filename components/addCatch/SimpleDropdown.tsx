@@ -14,7 +14,7 @@ import LureRow from "./LureRow";
 
 interface DropdownItem {
   label: string;
-  value: string; 
+  value: string;
   image?: string;
 }
 
@@ -59,7 +59,7 @@ export default function SimpleDropdown({
 
   const filteredItems = enableSearch
     ? items.filter((item) =>
-        item.label.toLowerCase().includes(searchQuery.toLowerCase())
+        item.label.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : items;
 
@@ -70,7 +70,8 @@ export default function SimpleDropdown({
     onSelect?.(item.value);
   };
 
-  const supportsCustomLures = Array.isArray(customLures) && typeof refresh === "function";
+  const supportsCustomLures =
+    Array.isArray(customLures) && typeof refresh === "function";
 
   return (
     <View style={styles.wrapper}>

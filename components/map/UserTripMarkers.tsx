@@ -38,7 +38,7 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
         trip_latitude,
         trip_longitude,
         catches:catches(id)
-      `
+      `,
       )
       .eq("user_id", user.id)
       .not("trip_latitude", "is", null)
@@ -55,7 +55,7 @@ export function UserTripMarkers({ refreshKey }: UserTripMarkersProps) {
       const dateLabel = d
         ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
             2,
-            "0"
+            "0",
           )}-${String(d.getDate()).padStart(2, "0")}`
         : null;
 

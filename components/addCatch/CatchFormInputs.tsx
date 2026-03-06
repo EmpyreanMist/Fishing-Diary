@@ -44,10 +44,10 @@ export default function CatchFormInputs({
             ]}
           >
             <InputField
-              value={weightKg} 
-              onChangeText={setWeightKg} 
+              value={weightKg}
+              onChangeText={setWeightKg}
               placeholder="Enter weight..."
-              keyboardType="decimal-pad" 
+              keyboardType="decimal-pad"
               onFocus={() => setFocusedField("weight")}
               onBlur={() => setFocusedField(null)}
             />

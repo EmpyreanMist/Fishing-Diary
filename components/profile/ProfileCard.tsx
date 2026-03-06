@@ -74,7 +74,7 @@ export default function ProfileCard() {
               phone_number: phone,
               bio,
             }
-          : prev
+          : prev,
       );
       setEditMode(false);
     }

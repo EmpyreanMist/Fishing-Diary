@@ -56,7 +56,7 @@ export default function MapScreen() {
     if (!target) return;
     mapRef.current?.animateCamera(
       { center: target, zoom: 14 },
-      { duration: 700 }
+      { duration: 700 },
     );
   };
 
@@ -67,7 +67,7 @@ export default function MapScreen() {
 
       const timeout = setTimeout(() => setLoading(false), 300);
       return () => clearTimeout(timeout);
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function MapScreen() {
                 coordinate={m}
                 title="Sparad plats"
                 description={`${m.latitude.toFixed(5)}, ${m.longitude.toFixed(
-                  5
+                  5,
                 )}`}
               />
             ))}

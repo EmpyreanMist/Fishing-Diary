@@ -45,7 +45,6 @@ export function StatsProgress({ data }: Props) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#121B22",

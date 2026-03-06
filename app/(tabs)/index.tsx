@@ -6,7 +6,7 @@ import {
   ScrollView,
   View,
   Modal,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import { Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";

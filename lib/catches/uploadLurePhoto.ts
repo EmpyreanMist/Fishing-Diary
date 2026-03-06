@@ -5,13 +5,13 @@ import { supabase } from "@/lib/supabase";
 export async function uploadLurePhoto(
   localUri: string,
   userId: string,
-  lureId: number
+  lureId: number,
 ) {
   try {
     const manipulated = await ImageManipulator.manipulateAsync(
       localUri,
       [{ resize: { width: 1080 } }],
-      { compress: 0.8, format: ImageManipulator.SaveFormat.WEBP, base64: true }
+      { compress: 0.8, format: ImageManipulator.SaveFormat.WEBP, base64: true },
     );
 
     const storagePath = `${userId}/${lureId}.webp`;

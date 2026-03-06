@@ -35,7 +35,7 @@ export default function TripMapForm({ setTripLocation }: TripMapFormProps) {
       if (status !== "granted") {
         Alert.alert(
           "Location Permission Denied",
-          "Default location set to Sweden"
+          "Default location set to Sweden",
         );
         setInitialRegion(defaultRegion);
         return;

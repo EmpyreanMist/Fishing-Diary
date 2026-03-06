@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         sawAuthEvent.current = true;
         setSession(session);
         setLoading(false);
-      }
+      },
     );
 
     // get initial session with a short retry to let storage hydrate on native

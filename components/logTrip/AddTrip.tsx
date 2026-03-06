@@ -6,8 +6,7 @@ import { useState } from "react";
 import TripHeader from "@/components/logTrip/TripHeader";
 import { ModalComponentProps, CatchDraft } from "../common/types";
 import CatchForm from "@/components/addCatch/CatchForm";
-import uuid from 'react-native-uuid';
-
+import uuid from "react-native-uuid";
 
 export default function AddTrip({ onClose }: ModalComponentProps) {
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -23,7 +22,7 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
 
   const generateUniqueId = () => {
     return uuid.v4();
-  }
+  };
 
   // UI: Add catch to local trip state (will be saved later in DB).
   const handleAddCatch = (draft: CatchDraft) => {
@@ -31,7 +30,7 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
     const id = generateUniqueId();
 
     setCatches((prev) => {
-      console.log('Adding catch draft:', draft);
+      console.log("Adding catch draft:", draft);
       return { ...prev, [id]: draft };
     });
     setShowCatchModal(false);
@@ -47,10 +46,10 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
   };
 
   // här ser man objekt i en array med catches datan || Ta bort sen
-  console.log('Catches in trip:', catches);
+  console.log("Catches in trip:", catches);
   return (
     <>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View className="mb-5">
           <TripHeader />
         </View>
@@ -78,8 +77,15 @@ export default function AddTrip({ onClose }: ModalComponentProps) {
       </SafeAreaView>
 
       {/* SIMPLE BUILT-IN MODAL */}
-      <Modal visible={showCatchModal} animationType="slide" onRequestClose={() => setShowCatchModal(false)}>
-        <CatchForm onClose={() => setShowCatchModal(false)} onSubmit={handleAddCatch} />
+      <Modal
+        visible={showCatchModal}
+        animationType="slide"
+        onRequestClose={() => setShowCatchModal(false)}
+      >
+        <CatchForm
+          onClose={() => setShowCatchModal(false)}
+          onSubmit={handleAddCatch}
+        />
       </Modal>
     </>
   );

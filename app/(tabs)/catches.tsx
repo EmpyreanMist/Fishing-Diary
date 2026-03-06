@@ -58,7 +58,7 @@ function parseDate(value: string): number | null {
 function compareMaybeNumber(
   a: number | null,
   b: number | null,
-  direction: 1 | -1
+  direction: 1 | -1,
 ) {
   if (a === null && b === null) return 0;
   if (a === null) return 1;
@@ -110,7 +110,7 @@ export default function CatchesScreen() {
               catch_photos ( image_url ),
               fish_species ( id, english_name ),
               lures!catches_lure_id_fkey ( name, brand )
-            `
+            `,
             )
             .eq("user_id", user.id)
             .order("caught_at", { ascending: false });
@@ -133,7 +133,7 @@ export default function CatchesScreen() {
       return () => {
         isActive = false;
       };
-    }, [])
+    }, []),
   );
 
   function mapCatch(c: CatchRow): CatchItem {
@@ -221,25 +221,25 @@ export default function CatchesScreen() {
           return compareMaybeNumber(
             parseNumber(a.weight),
             parseNumber(b.weight),
-            -1
+            -1,
           );
         case "weight_asc":
           return compareMaybeNumber(
             parseNumber(a.weight),
             parseNumber(b.weight),
-            1
+            1,
           );
         case "length_desc":
           return compareMaybeNumber(
             parseNumber(a.length),
             parseNumber(b.length),
-            -1
+            -1,
           );
         case "length_asc":
           return compareMaybeNumber(
             parseNumber(a.length),
             parseNumber(b.length),
-            1
+            1,
           );
         default:
           return 0;

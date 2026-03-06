@@ -64,7 +64,7 @@ export default function StatsScreen() {
       return () => {
         isActive = false;
       };
-    }, [])
+    }, []),
   );
 
   // --- LOADING STATE ---

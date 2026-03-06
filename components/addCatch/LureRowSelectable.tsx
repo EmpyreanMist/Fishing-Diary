@@ -6,7 +6,11 @@ interface LureSelectableProps {
   onPress: () => void;
 }
 
-export default function LureRowSelectable({ label, image, onPress }: LureSelectableProps) {
+export default function LureRowSelectable({
+  label,
+  image,
+  onPress,
+}: LureSelectableProps) {
   return (
     <TouchableOpacity
       onPress={onPress}

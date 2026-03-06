@@ -19,10 +19,10 @@ export default function DateInput({
   setFocusedField,
 }: DateInputProps) {
   const formatted = (date ?? new Date()).toLocaleDateString("sv-SE", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 
   return (
     <Box>
@@ -41,10 +41,7 @@ export default function DateInput({
             size="md"
           >
             <Icon as={Calendar} style={styles.calendarIcon} />
-            <InputField
-              editable={false}
-              value={formatted}
-            />
+            <InputField editable={false} value={formatted} />
           </Input>
         </Box>
       </Pressable>
